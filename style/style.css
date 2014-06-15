@@ -1,0 +1,64 @@
+/* 
+    Document   : style
+    Created on : 4.10.2013, 13:28:20
+    Author     : hosekp
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+canvas {
+    position:absolute;
+    /*top:40px;*/
+    left:30px;
+}
+#console{
+    top:610px;
+    position: absolute;
+}
+#slider{
+    top:580px;
+    position: absolute;
+}
+#axis{
+    /*top:30px;*/
+    left:0px;
+}
+#left{
+    width:500px;
+    position: absolute;
+    top:30px;
+    left:550px;
+}
+#settings{
+    /*height:30px;*/
+    border: 1px solid black;
+}
+#measure{
+    /*height:30px;*/
+    position: relative;
+    border: 1px solid black;
+    height:26px;
+}
+.button{
+    margin: 1px;
+    background-color: #dddddd;
+    border: 1px solid black;
+    height:22px;
+    width:75px;
+    float:left;
+    text-align: center;
+}
+#meas_val{
+    position: absolute;
+    left:79px;
+    border:1px solid black;
+    height:25px;
+    width:200px;
+}
+.pressed{
+    background-color: #aaaaaa;
+}
+
