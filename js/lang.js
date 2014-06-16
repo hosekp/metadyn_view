@@ -1,8 +1,17 @@
 Lang={
-  lang:"czech",
-  czech:{},
+  lang:"cs",
+  cs:{
+      Settings:"Nastavení",
+      Hide:"Skrýt",
+      Speed:"Rychlost",
+      Height:"Výška",
+      Resolution:"Rozlišení",
+      Track:"Stopování pohybu",
+      Repetition:"Opakování",
+      Measure:"Měření"
+  },
   text:function(text){
-    if(this.lang!=="english"){
+    if(this.lang!=="en"){
       var ntext=this[this.lang][text];
       if(ntext){
         text=ntext;
@@ -15,5 +24,6 @@ Lang={
     for (var i = 0; i < arguments.length; i++) {
       text.replace("$"+i,arguments[i]);
     }
+    return text;
   }
 };

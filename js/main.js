@@ -74,7 +74,7 @@ main={
         init:function(){
             var measdiv=$("#measure").click($.proxy(this.toggle,this));
             this.div.measure=measdiv;
-            this.div.on=$("<div>").attr({id:"meas_on"}).addClass("button").html("Měření");
+            this.div.on=$("<div>").attr({id:"meas_on"}).addClass("button").html(Lang.text("Measure"));
             this.div.val=$("<div>").attr({id:"meas_val"});
             measdiv.append(this.div.on,this.div.val);
         },
@@ -118,12 +118,12 @@ main={
         div:{},
         init:function(){
             this.div.cont=$("#settings");
-            this.div.toggle=$("<input>").attr({id:"set_toggle",type:"button",value:"Nastavení"}).click($.proxy(this.toggle,this));
+            this.div.toggle=$("<input>").attr({id:"set_toggle",type:"button",value:Lang.text("Settings")}).click($.proxy(this.toggle,this));
             this.div.opts=$("<div>").attr({id:"set_opts"}).css({clear:"both"}).hide();
             this.div.table=$("<table>").attr({id:"set_table"});
             
             var set=["speed","height","resol","lines","repet"];
-            var labels={speed:"Rychlost",height:"Výška",resol:"Rozlišení",lines:"Pohyb hillu",repet:"Opakování"};
+            var labels={speed:Lang.text("Speed"),height:Lang.text("Height"),resol:Lang.text("Resolution"),lines:Lang.text("Track"),repet:Lang.text("Repetition")};
             
             this.div.speed=$("<select>").html(
                     '<option id="0.001x" value=0.001 >0.001x</option><option id="0.01x" value=0.01 >0.01x</option><option id="0.03x" value=0.03 >0.03x</option><option id="0.1x" value=0.1 >0.1x</option><option id="0.3x" value=0.3 >0.3x</option><option id="1x" value=1 >1x</option><option id="5x" value=5 >5x</option><option id="20x" value=20 >20x</option><option id="50x" value=50 >50x</option><option id="300x" value=300 >300x</option>'
@@ -160,11 +160,11 @@ main={
         toggle:function(){
             if(this.visib){
                 this.visib=false;
-                this.div.toggle.val("Nastavení");
+                this.div.toggle.val(Lang.text("Settings"));
                 //this.div.cont.css({height:"30px"});
                 this.div.opts.hide();
             }else{
-                this.div.toggle.val("Skryj");
+                this.div.toggle.val(Lang.text("Hide"));
                 this.visib=true;
                 //this.div.cont.css({height:"300px"});
                 this.div.opts.show();

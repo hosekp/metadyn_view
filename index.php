@@ -7,6 +7,7 @@
         <!--<script type="text/javascript" src="js/lib/closure-library/closure/goog/base.js"></script>-->
         <script type="text/javascript" src="js/lib/jquery_v2.0.2.js"></script>
         <script type="text/javascript" src="js/lib/stats.js"></script>
+        <script type="text/javascript" src="js/lang.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
         <script type="text/javascript" src="js/graf.js"></script>
         <!--<script type="text/javascript" src="js/menu.js"></script>-->
