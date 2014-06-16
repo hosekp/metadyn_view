@@ -111,8 +111,7 @@ main={
             }else{
                 this.on();this.run=true;this.div.on.addClass("pressed");
             }
-        }
-        
+        } 
     },
     settings:{
         visib:false,

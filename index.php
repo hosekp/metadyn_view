@@ -15,18 +15,7 @@
     <body>
         <div id="content">
             <div id="inputs">
-                <input type="file" id="file"></input>
-                <!--<input type="button" id="load" value="Load" />-->
-<!--                <select id="speed">
-                    <option id="0.001x" value=0.001 >0.001x</option>
-                    <option id="0.01x" value=0.01 >0.01x</option>
-                    <option id="0.1x" value=0.1 selected >0.1x</option>
-                    <option id="1x" value=1 >1x</option>
-                    <option id="5x" value=5 >5x</option>
-                    <option id="20x" value=20 >20x</option>
-                    <option id="50x" value=50 >50x</option>
-                    <option id="300x" value=300 >300x</option>
-                </select>-->
+                <input type="file" id="file" />
                 <input id="start" type="button" value="Start" />
                 <input id="reset" type="button" value="Reset" />
                 <!--<input id="walker" type="button" value="Reset" />-->
@@ -66,8 +55,15 @@
                 }else{
                     if(d<0.75){return vec4(d*4.0-2.0,1,0,1);}else{return vec4(1,4.0-d*4.0,0,1);}
                 }*/
-                float sigma=5.0;
-                return vec4(max(1.0-(0.9-d)*(0.9-d)*sigma,0.0),max(1.0-(0.5-d)*(0.5-d)*sigma,0.0),max(1.0-(0.1-d)*(0.1-d)*sigma,0.0),1);
+                //d=d/255.0;
+                float sigma=1000.0/255.0;
+                float hei = 380.0/255.0;
+                //return vec4(max(1.0-(0.9-d)*(0.9-d)*sigma,0.0),max(1.0-(0.5-d)*(0.5-d)*sigma,0.0),max(1.0-(0.1-d)*(0.1-d)*sigma,0.0),1);
+                return vec4(
+                  min(max(hei-abs(d-0.23)*sigma,0.0),1.0),
+                  min(max(hei-abs(d-0.49)*sigma,0.0),1.0),
+                  min(max(hei-abs(d-0.77)*sigma,0.0),1.0),
+                  1);
             }
             void main() {
                 //vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;

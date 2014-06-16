@@ -332,6 +332,7 @@ graf={
             for(var i in byte){
                 var val=Math.floor(this.arrall[i]*this.heigkoef);
                 if(val>255){byte[i]=0;}else{byte[i]=255-val;}
+                //byte[i]=100;
             }
         /*}else{
             for(var i in byte){
@@ -394,6 +395,7 @@ graf={
                 var midx=Math.floor(midd[0]*this.resol);
                 var midy=Math.floor(midd[1]*this.resol);
                 var hei=array[h+2];
+                //if(!hei){alert("chybí hei");}
                 //var hei=midd[2]*this.heigkoef;
                 for(var y=0;y<nsy6;y++){
                     var blobline=blob[y];
@@ -401,7 +403,12 @@ graf={
                     var canline=(y+midy-nsy3+height)%height;
                     //var canline=arr[(y+midy-nsy3+height)%height];
                     for(var x=0;x<nsx6;x++){
-                        if(periodx){var f=(x+midx-nsx3+width)%width;}else{var f=x+midx-nsx3;if(f<0||f>=width){continue;}}
+                        if(periodx){
+                            var f=(x+midx-nsx3+width)%width;
+                        }else{
+                            var f=x+midx-nsx3;
+                            if(f<0||f>=width){continue;}
+                        }
                         
                         //canline[f]=Math.min(canline[f]+hei*blobline[x],255);
                         val=arr[canline*width+f]+hei*blobline[x];
