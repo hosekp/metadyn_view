@@ -6,16 +6,24 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Metadynamic viewer</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript" src="js/libs/mustache.js/mustache.js"></script>
         <script type="text/javascript" src="js/libs/jquery/jquery.js"></script>
         <script type="text/javascript" src="js/libs/stats.js/Stats.js"></script>
+        <script type="text/javascript" src="js/compute/reader.js"></script>
+        <script type="text/javascript" src="js/compute/parser.js"></script>
+        <script type="text/javascript" src="js/manage/console.js"></script>
     </head>
     <body>
         <div>
             <input type="file" id="file" multiple/>
+            <div id="cons"></div>
         </div>
+        <script type="text/javascript">
+            compute.reader.initEvents();
+            $("#file").trigger("change");
+        </script>
     </body>
 </html>
