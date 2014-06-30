@@ -73,7 +73,7 @@ $.extend(compute.parser,{
                         cv.max=parseFloat(val);
                     }
                 }else{
-                    manage.console.log("Unknown parameter "+line[2]);
+                    manage.console.warning("Unknown parameter "+line[2]);
                 }
             }
         }
@@ -129,21 +129,28 @@ $.extend(compute.parser,{
         return data;
     },
     findLimits:function(array,cv){
-        if(cv.min<cv.max){return;}
-        var max=cv.max,min=cv.min;
-        var nbody=array.length;
-        if(min===100000000&&max===-100000000){
-            for(var i=0;i<nbody;i++){
-                if(array[i]<min){min=array[i];}
-                if(array[i]>max){max=array[i];}
+        if(cv.min>=cv.max){
+            var max=cv.max,min=cv.min;
+            var nbody=array.length;
+            if(min===100000000&&max===-100000000){
+                for(var i=0;i<nbody;i++){
+                    if(array[i]<min){min=array[i];}
+                    if(array[i]>max){max=array[i];}
+                }
+            }else
+            if(min===100000000) {
+                for(var i=0;i<nbody;i++){
+                    if (array[i] < min) {min = array[i];}
+                }
+            } else {
+                for(var i=0;i<nbody;i++){
+                    if (array[i] > max) {max = array[i];}
+                }
             }
-        }else
-        if(min===100000000) {
-            if (array[i] < min) {min = array[i];}
-        } else {
-            if (array[i] > max) {max = array[i];}
+            cv.min=min;cv.max=max;
+            cv.diff=cv.max-cv.min;
         }
-        cv.min=min;cv.max=max;
+        
     },
     sortTime:function(array){
         
@@ -180,7 +187,7 @@ compute.parser.sorter={
     findSplitPoint:function(array){
         var len=array.length;
         var middle=Math.floor(len/2);
-        manage.console.log("SplitPoint from "+middle+" in <"+array+">");
+        manage.console.debug("SplitPoint from "+middle+" in <"+array+">");
         for(var i=0;i<middle;i++){
             if(!this.compare(array[middle+i],array[middle+i+1])){return middle+i+1;}
             if(!this.compare(array[middle-i-1],array[middle-i])){return middle-i+1;}
@@ -188,7 +195,7 @@ compute.parser.sorter={
         if(middle*2===len){
             if(!this.compare(array[len-2],array[len-1])){return len-1;}
         }
-        manage.console.log("Error: no SplitPoint");
+        manage.console.error("Error: no SplitPoint");
         return -1;
     },
     split:function(array){
@@ -231,5 +238,99 @@ compute.parser.sorter={
     },
     sort:function(array){
         return this.split(array);
+    }
+};
+compute.parser.TAsorter={
+    arraytosort:null,
+    array:null,
+    workarray:null,
+//    issorted:function(start,end){
+//        var array=this.array;
+//        if(end-start<=1){manage.console.log("Array["+start+":"+end+"] is sorted");return true;}
+//        for(var i=start+1;i<end;i++){
+//            if(!this.compare(array[i-1],array[i])){return false;}
+//        }
+//        manage.console.debug("Array["+start+":"+end+"] is sorted");
+//        return true;
+//    },
+    compare:function(a,b){
+        //return a<=b;
+        return this.arraytosort[a]<=this.arraytosort[b];
+    },
+    findSplitPoint:function(start,end){
+        var len=end-start;
+        if (len>2){
+            var array=this.array;
+            var span=Math.floor(len/2);
+            var middle=start+span;
+            //manage.console.log("SplitPoint at "+middle);
+            for(var i=0;i<span;i++){
+                if(!this.compare(array[middle+i],array[middle+i+1])){return middle+i+1;}
+                if(!this.compare(array[middle-i-1],array[middle-i])){return middle-i+1;}
+            }
+            if(span*2===len){
+                if(!this.compare(array[end-2],array[end-1])){return end-1;}
+            }
+            //manage.console.error("Error: no SplitPoint");
+        }
+        manage.console.debug("Array["+start+":"+end+"] is sorted");
+        return -1;
+    },
+    split:function(start,end){
+        var middle=this.findSplitPoint(start,end);
+        if(middle===-1){return [start,end];}
+        manage.console.debug("Split: ["+start+":"+middle+":"+end+"]");
+        //manage.console.log("Split on "+splpoint);
+        return this.merge(this.split(start,middle),this.split(middle,end));
+    },
+    merge:function(larray1,larray2){
+        var narray=this.workarray;
+        var array=this.array;
+        var start=larray1[0];
+        var end=larray2[1];
+        var middle=larray1[1];
+        manage.console.debug("Merge: ["+start+":"+middle+":"+end+"]");
+        if(middle!==larray2[0]){
+            manage.console.error("Wrong middle point");
+        }
+        //manage.console.log("array1="+array1);
+        //manage.console.log("array2="+array2);
+        var i1=start,i2=middle,nsum=end-start;
+        for(var i=0;i<nsum;i++){
+            if( i2 === end || i1 !== middle && this.compare(array[i1],array[i2]) ){
+                narray[i]=(array[i1]);i1++;
+            }else{
+                narray[i]=(array[i2]);i2++;
+            }
+        }
+        for(var i=0;i<nsum;i++){
+            array[start+i]=narray[i];
+        }
+        return [start,end];
+    },
+    sort:function(array){
+        this.arraytosort=array;
+        var arlen=array.length;
+        var indices=new Float32Array(arlen);
+        for(var i=0;i<arlen;i++){
+            indices[i]=i;
+        }
+        this.array=indices;
+        //this.array=array;
+        this.workarray=new Float32Array(arlen);
+        this.split(0,arlen);
+        manage.console.log("Sorted");
+        return this.array;
+    },
+    rearrange:function(array,mustr){
+        var arlen=array.length;
+        if(arlen!==mustr.length){
+            manage.console.error("Error: Cannot rearrange array, wrong length");
+        }
+        var narr=new Float32Array(arlen);
+        for(var i=0;i<arlen;i++){
+            narr[i]=array[mustr[i]];
+        }
+        return narr;
     }
 };
