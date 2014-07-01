@@ -27,12 +27,12 @@ and open the template in the editor.
             //$("#file").trigger("change");
             //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
             manage.console.loglevel=4;
-            var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
+            /*var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
             var mustr=compute.parser.TAsorter.sort(array);
             result=compute.parser.TAsorter.rearrange(array,mustr);
             var i=5;
-            manage.console.log(i.length);
-            //result=compute.parser.sorter.sort([12,25,13]);
+            manage.console.log(i.length);*/
+            blob=compute.sum_hill.createBlob(20,{cvs:[{diff:3.1},{diff:3.1},{diff:3.1}],ncv:3});
         </script>
     </body>
 </html>
