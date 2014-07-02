@@ -30,6 +30,8 @@ compute.sum_hill.tspace={
         }else if(ncv===3){
             this.plane=this.plane3;
             this.add=this.add3;
+        }else{
+            manage.console.error("Error: More than 3 CVs is not implemented");
         }
     },
     copy:function(){

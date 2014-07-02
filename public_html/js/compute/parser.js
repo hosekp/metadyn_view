@@ -90,9 +90,7 @@ $.extend(compute.parser,{
             manage.console.error("Error: Parser: Empty file");
             return;
         }
-        //if(isnan(parseFloat(line[nelem-1]))){
             nelem--;
-        //}
         var ncv=Math.floor((nelem-2)/2);
         params.heipos=2*ncv+1;
         var cvs=[];

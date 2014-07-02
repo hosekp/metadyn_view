@@ -82,7 +82,6 @@ $.extend(compute.sum_hill,{
             manage.console.warning("Warning: Variable sigma is not implemented");
         }
         return sigmas;
-        
     },
     toIndices:function(pos){
         var inds=[];
