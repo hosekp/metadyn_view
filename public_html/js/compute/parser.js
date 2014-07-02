@@ -18,11 +18,13 @@ $.extend(compute.parser,{
             var header=lines.slice(0,i);
             params=this.parseHeader(header,params);
         }else{
-            params=this.analyzeFirstLine(lines[0],params);
+            params=this.implicitHeader(lines[0],params);
         }
         var body=lines.slice(i+1);
-        this.parseBody(body,params);
+        var data=this.parseBody(body,params);
         manage.console.log("parsovano");
+        compute.sum_hill.load(data,params);
+        runit();
     },
     //parseCOLVAR:function(){},
     parseHeader:function(header,params){
@@ -84,14 +86,23 @@ $.extend(compute.parser,{
         var line=firstline.match(/[^ ]+/g);
         params.timepos=0;
         var nelem=line.length;
+        if(nelem===0){
+            manage.console.error("Error: Parser: Empty file");
+            return;
+        }
+        //if(isnan(parseFloat(line[nelem-1]))){
+            nelem--;
+        //}
         var ncv=Math.floor((nelem-2)/2);
         params.heipos=2*ncv+1;
         var cvs=[];
         for(var i=1;i<=ncv;i++){
             cvs.push($.extend({},compute.parser.tcv,{name:"CV_"+i,pos:i,sigmapos:ncv+i,defsigma:line[ncv+i]}));
         }
+        params.cvs=cvs;
         params.ncv=ncv;
         params.fulllen=nelem;
+        return params;
     },
     parseBody:function(body,params){
         //var data={time:null,cvs:[],hei:null,sigma:[]};
@@ -125,7 +136,7 @@ $.extend(compute.parser,{
             this.findLimits(cvs[c],pcvs[c]);
         }
         var sorted=this.sortTime(time); // TODO
-        var data={time:time,cvs:cvs,hei:hei,sigma:sigma,sorted:sorted};
+        var data={time:time,cvs:cvs,height:hei,sigma:sigma,sorted:sorted};
         return data;
     },
     findLimits:function(array,cv){

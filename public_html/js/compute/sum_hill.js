@@ -7,7 +7,7 @@ $.extend(compute.sum_hill,{
     artime:[],
     ncv:1,
     nbody:0,
-    msi:2,  // const - multiple of sigma
+    msi:2,  // const - multiple of sigma   2=95%
     blob:null,
     load:function(arrs,params){
         this.arhei=arrs["height"];
@@ -16,8 +16,10 @@ $.extend(compute.sum_hill,{
         this.artime=arrs["time"];
         this.nbody=this.arhei.length;
         this.ncv=this.arcvs.length;
-        this.blob=this.createBlob(500,params);
+        this.nbins=this.multibin(50);
         this.setRealLimits(params);
+        this.blob=this.createBlob(params);
+        manage.console.log("Sum_hills: loaded");
     },
     setRealLimits:function(params){
         this.mins=[];
@@ -30,22 +32,20 @@ $.extend(compute.sum_hill,{
         }
     },
     createSpace:function(nbins){
-        //this.nbins=nbins;
-        nbins=this.multibin(nbins);
+        if(typeof nbins==="undefined"){nbins=this.nbins;}
         var space=$.extend({},compute.sum_hill.tspace);
         space.init(nbins,this.ncv);
         return space;
     },
-    createBlob:function(nbins,params){
-        //var sigmas=this.checkSigmaConst();
-        nbins=this.multibin(nbins);
-        var sigmas=[0.3,0.3,0.3];
+    createBlob:function(){
+        var sigmas=this.checkSigmaConst();
+        //var sigmas=[0.3,0.3,0.3];
         var sigmas8=[];
         var sigmas1=[];
-        for(var i=0;i<params.ncv;i++){
-            var cvstep=nbins[i]/params.cvs[i].diff;
+        for(var i=0;i<this.ncv;i++){
+            var cvstep=this.nbins[i]/this.diffs[i];
             sigmas1.push(sigmas[i]*cvstep);
-            sigmas8.push(Math.floor(sigmas1[i])*this.msi+1);
+            sigmas8.push(Math.floor(sigmas1[i])*this.msi*2+1);
         }
         var space=this.createSpace(sigmas8);
         //space.all(1);
@@ -73,9 +73,9 @@ $.extend(compute.sum_hill,{
         for(var i=0;i<this.ncv;i++){
             var sig=this.arsigma[i][0];
             sigmas.push(sig);
-            if(sig!==this.arsigma[i][math.floor(this.nbody/4)]){valid=false;break;}
-            if(sig!==this.arsigma[i][math.floor(this.nbody/2)]){valid=false;break;}
-            if(sig!==this.arsigma[i][math.floor(this.nbody/4*3)]){valid=false;break;}
+            if(sig!==this.arsigma[i][Math.floor(this.nbody/4)]){valid=false;break;}
+            if(sig!==this.arsigma[i][Math.floor(this.nbody/2)]){valid=false;break;}
+            if(sig!==this.arsigma[i][Math.floor(this.nbody/4*3)]){valid=false;break;}
             if(sig!==this.arsigma[i][this.nbody-1]){valid=false;break;}
         }
         if(!valid){
