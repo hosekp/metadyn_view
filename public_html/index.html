@@ -15,6 +15,7 @@ and open the template in the editor.
         <script type="text/javascript" src="js/compute/reader.js"></script>
         <script type="text/javascript" src="js/compute/parser.js"></script>
         <script type="text/javascript" src="js/compute/sum_hill.js"></script>
+        <script type="text/javascript" src="js/compute/tspace.js"></script>
         <script type="text/javascript" src="js/manage/console.js"></script>
     </head>
     <body>
@@ -32,7 +33,15 @@ and open the template in the editor.
             result=compute.parser.TAsorter.rearrange(array,mustr);
             var i=5;
             manage.console.log(i.length);*/
-            blob=compute.sum_hill.createBlob(20,{cvs:[{diff:3.1},{diff:3.1},{diff:3.1}],ncv:3});
+            var nbins=[30,30];
+            var params={cvs:[{min:-3,diff:3},{min:0,diff:3.1},{diff:3.1}],ncv:2}
+            compute.sum_hill.ncv=2;
+            compute.sum_hill.setRealLimits(params);
+            blob=compute.sum_hill.createBlob(nbins,params);
+            space=compute.sum_hill.createSpace(nbins);
+            compute.sum_hill.add(space,blob,[-3,0]);
+            compute.sum_hill.add(space,blob,[0,3]);
+            
         </script>
     </body>
 </html>
