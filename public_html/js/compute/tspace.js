@@ -32,11 +32,6 @@ compute.sum_hill.tspace={
             this.add=this.add3;
         }
     },
-    copy:function(){
-        var space=$.extend({},compute.sum_hill.tspace);
-        space.init(this.nbins,this.ncv);
-        return space;
-    },
     set:function(cvs,value){
         var ndx=0;
         for(var i=0;i<this.ncv;i++){
@@ -222,25 +217,6 @@ compute.sum_hill.tspace={
         for(var i=0;i<len;i++){
             this.spacearr[i]=Math.exp(-this.spacearr[i]/2);
         }
-    },
-    print:function(){
-        var canvas=$("<canvas>").attr({width:this.dims[0],height:this.dims[1]});
-        var len=this.nwhole;
-        var data=new Uint8ClampedArray(len*4);
-        var hei=1;var sig=0.03;
-        var ctx=canvas[0].getContext("2d");
-        //var data=imageData.data;
-        for(var i=0;i<len;i++){
-            
-            data[4*i]=255*Math.exp(-Math.pow(this.spacearr[i]/hei-0.8,2)/sig);
-            data[4*i+1]=255*Math.exp(-Math.pow(this.spacearr[i]/hei-0.5,2)/sig);
-            data[4*i+2]=255*Math.exp(-Math.pow(this.spacearr[i]/hei-0.2,2)/sig);
-            data[4*i+3]=255;
-        }
-        var imageData=ctx.createImageData(this.dims[0],this.dims[1]);
-        imageData.data.set(data);
-        ctx.putImageData(imageData,0,0);
-        return canvas;
     }
 };
 

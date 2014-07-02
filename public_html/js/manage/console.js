@@ -16,15 +16,13 @@ $.extend(manage.console,{
     addText:function(string){
         if(this.$console===null){this.init();}
         var txt=this.constext;
-        txt.push(string);
-        if(txt.length>20){
-            txt.shift();
-        }
         var str="";
-        for(var i=0;i<txt.length;i++){
+        for(var i=19;i>0;i--){
+            txt[i]=txt[i-1];
             str=txt[i]+"<br>"+str;
         }
-        this.$console.html(str);
+        txt[0]=string;
+        this.$console.html(txt[0]+"<br>"+str);
     },
     debug:function(string){if(this.loglevel>=4)this.addText(string);},
     log:function(string){if(this.loglevel>=3)this.addText(string);},
