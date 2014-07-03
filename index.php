@@ -5,7 +5,7 @@
         <link href="style/style.css" rel="stylesheet" type="text/css" media="screen" />
         <!--<link rel="shortcut icon" href="img/erbs/ico3.ico" />-->
         <!--<script type="text/javascript" src="js/lib/closure-library/closure/goog/base.js"></script>-->
-        <script type="text/javascript" src="js/lib/jquery_v2.0.2.js"></script>
+        <script type="text/javascript" src="js/lib/jquery_v2.1.1.js"></script>
         <script type="text/javascript" src="js/lib/stats.js"></script>
         <script type="text/javascript" src="js/lang.js"></script>
         <script type="text/javascript" src="js/main.js"></script>

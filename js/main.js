@@ -228,8 +228,13 @@ main={
                     if(!cv){cv={title:cvtitle};param.cv.push(cv);}
                     value=line[3];
                     var periodic=false;
-                    if(value==="-pi"){value=-Math.PI;periodic=true;}else if(value==="pi"){value=Math.PI;periodic=true;}
-                    cv[titspl[0]]=value;
+                    var ind=value.indexOf("pi");
+                    if(ind>=0){
+                        value=value.replace("pi","3.14159");
+                        periodic=true;
+                    }
+                    //if(value==="-pi"){value=-Math.PI;periodic=true;}else if(value==="pi"){value=Math.PI;periodic=true;}
+                    cv[titspl[0]]=parseFloat(value);
                     if(periodic){cv.period=true;}
                 }
             }
@@ -289,8 +294,7 @@ main={
         body[0]=this.analyzeSecondLine(body[1],body[0],param);
         var ncv=param.cv.length;
         var CV1=ncv+1;
-        var databuf=new ArrayBuffer(body.length*CV1*4);
-        var data=new Float32Array(databuf);                // Float32 Array
+        var data=new Float32Array(body.length*CV1);                // Float32 Array
         var timepos=param.timepos | 0;
         var heipos=param.heipos;
         if(!heipos){heipos=1+2*ncv;}
@@ -432,10 +436,8 @@ main={
     },
     readData:function(data,stamps,stamdata,param){
         //var times=[];
-        var timesbuf=new ArrayBuffer(stamps.length*2*4);
-        var times=new Float32Array(timesbuf);
-        var ndatabuf=new ArrayBuffer(data.length*4);
-        var ndata=new Float32Array(ndatabuf);
+        var times=new Float32Array(stamps.length*2);
+        var ndata=new Float32Array(data.length);
         stamps=stamps.sort(function(a,b){return a-b;});
         var counter=0;
         var CV=param.cv.length;
@@ -452,7 +454,7 @@ main={
                 counter+=CV+1;
             }
         }
-        graf.databuf=ndatabuf;
+        graf.databuf=ndata.buffer;
         graf.data=ndata;
         graf.loadPar(param);
         graf.slide.load(times,{min:stamps[0],max:stamps[stamps.length-1]});

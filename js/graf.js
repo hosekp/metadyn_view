@@ -350,6 +350,7 @@ graf={
         if(!array){return;}
         if(this.param.moving||array.byteOffset===0){this.makeArr();}
         if(array.length===0){return;}
+        //main.cons("Frames ["+array[0]+","+array[1]+","+array[2]+"]");
         var par=this.param;
         /*var nsx=this.param.coosigx;
         var nsx3=Math.floor(nsx*3);
