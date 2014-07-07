@@ -1,0 +1,52 @@
+#cont{
+    width:600px;
+    border: 1px solid black;
+}
+.incont{
+    width:100%;
+}
+#ctrl_cont{
+    height:25px;
+    background-color: black;
+}
+#main_cont{
+    height: 450px;
+}
+#cons{
+    float:left;
+}
+.ctrl{
+    height:25px;
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+#resol_ctrl{
+    background-image: url("../img/frame.png");
+    width:50px;
+    height:25px;
+    color:white;
+    text-align: center;
+    cursor: default;
+}
+.unselect{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#tooltip{
+    border:1px solid #ccc;
+    background:white;
+    position:absolute;
+    z-index:200;
+    padding:10px;
+    left:0px;
+    top:0px;
+    display:none;
+}

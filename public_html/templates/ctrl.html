@@ -1,0 +1,27 @@
+<div id="play_ctrl" class="ctrl left" data-ctrl="play">
+    {{^sett.play}}<img alt="Play" src="img/play.png" />{{/sett.play}}
+    {{#sett.play}}<img alt="Stop" src="img/stop.png" />{{/sett.play}}
+</div>
+<div id="reset_ctrl" class="ctrl left" data-ctrl="reset">
+    <img alt="Reset" src="img/reset.png" />
+</div>
+<div id="resize_ctrl" class="ctrl right" data-ctrl="resize">
+    {{^sett.resize}}<img alt="Resize" src="img/resize.png" />{{/sett.resize}}
+    {{#sett.resize}}<img alt="Resize" src="img/resize_on.png" />{{/sett.resize}}
+</div>
+<div id="loop_ctrl" class="ctrl right" data-ctrl="loop">
+    {{^sett.loop}}<img alt="Loop" src="img/loop.png" />{{/sett.loop}}
+    {{#sett.loop}}<img alt="Loop" src="img/loop_on.png" />{{/sett.loop}}
+</div>
+{{#sett.measure}}<div id="measure_ctrl_value" class="ctrl right">{{/sett.measure}}
+</div>
+<div id="pict_ctrl" class="ctrl right" data-ctrl="pict">
+    <img alt="Picture" src="img/pict.png" />
+</div>
+<div id="resol_ctrl" class="ctrl right unselect" data-ctrl="resol">
+    {{sett.resol}}px
+</div>
+<div id="measure_ctrl" class="ctrl right" data-ctrl="measure">
+    {{^sett.measure}}<img alt="Measure" src="img/measure.png" />{{/sett.measure}}
+    {{#sett.measure}}<img alt="Measure" src="img/measure_on.png" />{{/sett.measure}}
+</div>

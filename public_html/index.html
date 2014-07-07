@@ -9,6 +9,7 @@ and open the template in the editor.
         <title>Metadynamic viewer</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="style/style.css" rel="stylesheet" type="text/css" media="screen" />
         <script type="text/javascript" src="js/libs/mustache.js/mustache.js"></script>
         <script type="text/javascript" src="js/libs/jquery/jquery.js"></script>
         <script type="text/javascript" src="js/libs/stats.js/Stats.js"></script>
@@ -16,22 +17,31 @@ and open the template in the editor.
         <script type="text/javascript" src="js/compute/parser.js"></script>
         <script type="text/javascript" src="js/compute/sum_hill.js"></script>
         <script type="text/javascript" src="js/manage/console.js"></script>
+        <script type="text/javascript" src="js/view/ctrl.js"></script>
     </head>
     <body>
-        <div>
-            <input type="file" id="file" multiple/>
+        <!--<script id="ctrl_template" type="text/html" src="templates/ctrl.html"></script>-->
+        <div id="cont">
+            <div id="file_cont" class="incont">
+                <input type="file" id="file" multiple/>
+            </div>
+            <div id="main_cont" class="incont"></div>
+            <div id="ctrl_cont" class="incont"></div>
             <div id="cons"></div>
+            <div id="tooltip"></div>
         </div>
         <script type="text/javascript">
+            view.ctrl.init();
+            //Mustache.parse(template);
             //compute.reader.initEvents();
             //$("#file").trigger("change");
             //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
-            manage.console.loglevel=4;
+            /*manage.console.loglevel=4;
             var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
             var mustr=compute.parser.TAsorter.sort(array);
             result=compute.parser.TAsorter.rearrange(array,mustr);
             var i=5;
-            manage.console.log(i.length);
+            manage.console.log(i.length);*/
             //result=compute.parser.sorter.sort([12,25,13]);
         </script>
     </body>
