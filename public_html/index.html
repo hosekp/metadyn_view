@@ -26,7 +26,15 @@ and open the template in the editor.
             <div id="file_cont" class="incont">
                 <input type="file" id="file" multiple/>
             </div>
-            <div id="main_cont" class="incont"></div>
+            <div id="main_cont" class="incont">
+                <div id="main_cont_top">
+                    <canvas id="axi_y"></canvas>
+                </div>
+                <div id="main_cont_bottom">
+                    <div id="axi_select"></div>
+                    <canvas id="axi_x"></canvas>
+                </div>
+            </div>
             <div id="ctrl_cont" class="incont"></div>
             <div id="cons"></div>
             <div id="tooltip"></div>
@@ -58,14 +66,14 @@ and open the template in the editor.
             compute.sum_hill.setRealLimits(params);
             blob=compute.sum_hill.createBlob(nbins,params);*/
     
-            function runit(){
+            /*function runit(){
                 space=compute.sum_hill.createSpace();
                 blob=compute.sum_hill.blob;
                 compute.sum_hill.add(space,blob,[-3,0]);
                 compute.sum_hill.add(space,blob,[0,3]);
                 manage.console.debug("CheckPoint");
                 $("body").append(space.print());
-            }
+            }*/
             
             
         </script>

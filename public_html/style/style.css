@@ -50,3 +50,32 @@
     top:0px;
     display:none;
 }
+#axi_x{
+    background-color: yellow;
+    float:left;
+    height:30px;
+    width:calc(100%-30px);
+    width: -moz-calc(100% - 30px);
+    width: -webkit-calc(100% - 30px);
+    width: -o-calc(100% - 30px);
+    width: calc(100% - 30px);
+}
+#axi_y{
+    background-color: yellow;
+    float:left;
+    width:30px;
+    height:100%;
+}
+#main_cont_top{
+    height:calc(100%-30px);
+    height: -moz-calc(100% - 30px);
+    height: -webkit-calc(100% - 30px);
+    height: -o-calc(100% - 30px);
+    height: calc(100% - 30px);
+}
+#axi_select{
+    float:left;
+    width:30px;
+    height:30px;
+    background-color: red;
+}
