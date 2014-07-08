@@ -1,3 +1,7 @@
+#all{
+    width:100%;
+    height:100%;
+}
 #cont{
     width:600px;
     border: 1px solid black;
@@ -5,19 +9,22 @@
 .incont{
     width:100%;
 }
+#file_cont{
+    background-color: #66ccff
+}
 #ctrl_cont{
     height:25px;
     background-color: black;
 }
 #main_cont{
-    height: 450px;
+    height:450px;
+    width:100%;
+    position:relative;
 }
 #cons{
     float:left;
 }
-.ctrl{
-    height:25px;
-}
+.ctrl{}
 .left{
     float:left;
 }
@@ -50,32 +57,19 @@
     top:0px;
     display:none;
 }
-#axi_x{
+.axis{
     background-color: yellow;
-    float:left;
-    height:30px;
-    width:calc(100%-30px);
-    width: -moz-calc(100% - 30px);
-    width: -webkit-calc(100% - 30px);
-    width: -o-calc(100% - 30px);
-    width: calc(100% - 30px);
 }
-#axi_y{
-    background-color: yellow;
-    float:left;
-    width:30px;
-    height:100%;
+.axi_all{
+    position:absolute;
+    /*float:left;*/
 }
-#main_cont_top{
-    height:calc(100%-30px);
-    height: -moz-calc(100% - 30px);
-    height: -webkit-calc(100% - 30px);
-    height: -o-calc(100% - 30px);
-    height: calc(100% - 30px);
+#canvas_cont{
+    
 }
-#axi_select{
-    float:left;
-    width:30px;
-    height:30px;
+.actrl{
+    background-color: red;
+}
+.red{
     background-color: red;
 }
