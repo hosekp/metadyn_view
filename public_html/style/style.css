@@ -13,7 +13,7 @@
     background-color: #66ccff
 }
 #ctrl_cont{
-    height:25px;
+    height:50px;
     background-color: black;
 }
 #main_cont{
@@ -72,4 +72,28 @@
 }
 .red{
     background-color: red;
+}
+#slide_cont{
+    position:relative;
+    width:100%;
+    height:25px;
+    background-color: black;
+}
+#slide{
+    width:calc(100%-10px);
+    width: -moz-calc(100% - 10px);
+    height:11px;
+    top:7px;
+    left:5px;
+    position:absolute;
+    background-color: darkred;
+}
+#slider{
+    position:absolute;
+    z-index: 10;
+    width:16px;
+    height:21px;
+    border: 2px solid black;
+    background-color: red;
+    left:0px;
 }

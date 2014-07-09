@@ -1,0 +1,68 @@
+if(typeof control==="undefined"){control={};}
+if(typeof control.settings==="undefined"){control.settings={};}
+$.extend(control.settings,{
+    init:function(){
+        this.resol=$.extend({},this.template);
+        this.play=$.extend({},this.template);
+        this.measure=$.extend({},this.template);
+        this.loop=$.extend({},this.template);
+        this.axi_x=$.extend({},this.template);
+        this.axi_y=$.extend({},this.template);
+        this.height=$.extend({},this.template);
+        this.speed=$.extend({},this.template);
+        
+        /*this.resol.call=function(){
+            view.ctrl.render();
+        };
+        this.play.call=function(){
+            view.ctrl.render();
+        };
+        this.loop.call=function(){
+            view.ctrl.render();
+        };
+        this.measure.call=function(){
+            view.ctrl.render();
+        };*/
+        this.resol.value=100;
+        this.speed.value=0.3;
+        this.loop.value=true;
+        this.height.value=1;
+    },
+    /*newHash:function(){
+        var ret="";
+        if(this.slide.speed!==this.defsett.speed){ret+="&spd="+this.slide.speed;}
+        if(this.heigkoef!==this.defsett.height){ret+="&hei="+this.heigkoef;}
+        if(this.resol!==this.defsett.resol){ret+="&res="+this.resol;}
+        if(this.drawline!==this.defsett.drawline){ret+="&lns="+this.drawline;}
+        if(this.slide.repet!==this.defsett.repet){ret+="&rpt="+this.slide.repet;}
+        if(ret){
+            window.location.hash="#"+ret.substring(1);
+        }else{
+            window.location.hash="";
+        }
+    }*/
+});
+control.settings.template={
+    value:false,
+    set:function(val){
+        this.value=val;
+        if(this.call){
+            this.call();
+        }
+    },
+    get:function(){
+        return this.value;
+    },
+    add:function(val){
+        this.value+=val;
+        if(this.call){
+            this.call();
+        }
+    },
+    toggle:function(){
+        this.value=!this.value;
+        if(this.call){
+            this.call();
+        }
+    }
+};
