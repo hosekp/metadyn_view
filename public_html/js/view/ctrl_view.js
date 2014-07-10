@@ -8,21 +8,21 @@ $.extend(view.ctrl,{
     width:600,
     resizing:false,  // event 
     temp:{resizepos:false},
-    tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider"},
+    tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
     //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
     init:function(){
         this.div=$("#ctrl_cont");
         this.tooltipdiv=$("#tooltip");
+        this.slide.init();
         $.get("templates/ctrl.html",$.proxy(function(data){
             this.template=data;
             this.render();
             this.bind();
-            this.slide.init();
         },this));
     },
     getSettings:function(){
         var sett=control.settings;
-        return {play:sett.play.get(),measure:sett.measure.get(),loop:sett.loop.get(),resol:sett.resol.get(),resize:!!this.temp.resizepos,slider:this.slide.left};
+        return {play:sett.play.get(),measure:sett.measure.get()?"on":"",loop:sett.loop.get()?"on":"",resol:sett.resol.get(),resize:(!!this.temp.resizepos)?"on":"",speed:sett.speed.get()};
     },
     render:function(){
         var vars={sett:this.getSettings()};
@@ -40,6 +40,11 @@ $.extend(view.ctrl,{
                 //this.settings.resol+=100;
                 //if(this.settings.resol===600){this.settings.resol=100;}
                 control.settings.resol.set((val)%500+100);
+            }else if(ctrl==="speed"){
+                var val=control.settings.speed.get();
+                //this.settings.resol+=100;
+                //if(this.settings.resol===600){this.settings.resol=100;}
+                control.settings.speed.set((val)%500+100);
             }else if(ctrl==="resize"){
                 
             }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play"){
@@ -61,7 +66,7 @@ $.extend(view.ctrl,{
                 //this.settings.resize=false;
                 this.temp.resizepos=false;
                 this.render();
-                this.resize(event);
+                //this.resize(event);
                 $("body").off("mousemove");
                 $("body").off("mouseup");
                 $("body").off("mouseout");
@@ -87,10 +92,12 @@ $.extend(view.ctrl,{
         if(this.resizing===false){
             setTimeout($.proxy(function(){
                 var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x)+"px";
-                this.width=wid;
+                //manage.console.debug("width="+this.temp.resizepos.x);
+                this.width=parseInt(wid);
                 $("#cont").css({width:wid});
                 $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
                 view.axi.arrange();
+                view.ctrl.slide.render();
                 this.resizing=false;
             },this),50);
         }
@@ -133,22 +140,43 @@ $.extend(view.ctrl,{
 view.ctrl.slide={
     eventpos:null,
     ctrl:view.ctrl,
-    left:100,
+    slider:null,
+    template:"",
+    ratio:0.2,
     init:function(){
-        this.bind();
+        $.get("templates/slide.html",$.proxy(function(data){
+            this.template=data;
+            var rendered=Mustache.render(this.template,{left:this.left()});
+            $("#slide_cont").html(rendered);
+            //this.render();
+            this.slider=$("#slider");
+            this.cont=$("#slide_cont");
+            this.bind();
+        },this));
+    },
+    left:function(){
+        return Math.round((this.ctrl.width-20)*this.ratio);
+    },
+    toratio:function(val){
+        return val/(this.ctrl.width-20);
     },
     byratio:function(val){
-        var lft=((this.width-10)*val);
-        this.move(lft);
+        this.ratio=val;
+        this.render();
+    },
+    render:function(){
+        this.move(this.left());
     },
     bind:function(){
-        this.ctrl.div
+        this.cont
         .on("mousedown","#slider",$.proxy(function(event){
             this.eventpos=event.pageX-$("#slider").position().left;
             $("body").on("mousemove",$.proxy(function(event){
                 //manage.console.debug("mouse.which="+event.which);
                 //if(event.which!==1){this.mouseup(event);}
-                this.move(event.pageX-this.eventpos);
+                var lft=event.pageX-this.eventpos;
+                this.ratio=this.toratio(lft);
+                this.move(lft);
                 //$("#slider").css("left",Math.max(Math.min(event.pageX-this.eventpos,this.ctrl.width-10),0));
             },this));
             $("body").on("mouseup",$.proxy(this.mouseup,this));
@@ -163,8 +191,10 @@ view.ctrl.slide={
     },
     move:function(lft){
         //manage.console.debug("left="+left);
-        this.left=lft;
+        //this.left=lft;
         //div.css("left",lft);
-        $("#slider").css("left",Math.max(Math.min(lft,this.ctrl.width-20),0));
+        lft=Math.max(Math.min(lft,this.ctrl.width-20),0);
+        //manage.console.debug("left="+lft);
+        this.slider.css("left",lft);
     }
 };

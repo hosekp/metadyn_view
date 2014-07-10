@@ -5,6 +5,7 @@
 #cont{
     width:600px;
     border: 1px solid black;
+    margin-bottom: 200px;
 }
 .incont{
     width:100%;
@@ -13,7 +14,11 @@
     background-color: #66ccff
 }
 #ctrl_cont{
-    height:50px;
+    height:25px;
+    background-color: black;
+}
+#slide_cont{
+    height:25px;
     background-color: black;
 }
 #main_cont{
@@ -31,14 +36,15 @@
 .right{
     float:right;
 }
-#resol_ctrl{
-    background-image: url("../img/frame.png");
-    width:50px;
+/*#resol_ctrl{
     height:25px;
     color:white;
     text-align: center;
     cursor: default;
 }
+#speed_ctrl{
+    height:25px;
+}*/
 .unselect{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -78,6 +84,48 @@
     width:100%;
     height:25px;
     background-color: black;
+}
+.ctrl.button{
+    height: 21px;
+    min-width: 21px;
+    border-width: 2px;
+    border-style: solid;
+    margin-left:1px;
+    margin-right:1px;
+    /*padding:1px;*/
+    background-color: red;
+    border-color: red;
+}
+.ctrl.button:hover{
+    border-color: lightcoral;
+}
+.ctrl.button:hover:not(.text), #slider:hover, .abutton:hover{
+    background-color: lightcoral;
+}
+.ctrl.on{
+    background-color: yellow;
+    border-color: yellow;
+}
+.ctrl.on:hover{
+    background-color: white;
+    border-color: white;
+}
+.ctrl.text{
+    color:white;
+    text-align: center;
+    cursor: default;
+    background-color: black;
+    padding-left:2px;
+    padding-right:2px;
+}
+.abutton{
+    background-color: red;
+}
+.abutton img{
+    width:calc(100%-4px);
+    width: -moz-calc(100% - 4px);
+    height:auto;
+    margin: 2px;
 }
 #slide{
     width:calc(100%-10px);

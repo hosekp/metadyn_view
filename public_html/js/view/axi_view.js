@@ -20,7 +20,7 @@ $.extend(view.axi,{
         var template=this.template;
         this.div.$cancont=$("#canvas_cont");
         this.div.$main_cont=$("#main_cont");
-        var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:this.autoset}));
+        var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:this.autoset?"on":""}));
         this.div.$main_cont.html(rendered);
         this.div.$x=$("#axi_x");
         this.div.$y=$("#axi_y");
@@ -52,7 +52,12 @@ $.extend(view.axi,{
             //alert(ctrl);
             if(ctrl==="auto"){
                 this.autoset=!this.autoset;
-                this.div.$z_auto.children("img").attr("src","img/auto"+(this.autoset?"_on":"")+".png");
+                if(this.autoset){
+                    this.div.$z_auto.addClass("on");
+                }else{
+                    this.div.$z_auto.removeClass("on");
+                }
+                //this.div.$z_auto.children("img").attr("src","img/new/auto"+(this.autoset?"_on":"")+".png");
             }else{
             }
         },this));

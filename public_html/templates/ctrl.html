@@ -1,31 +1,27 @@
-<div id="slide_cont">
-    <div id="slide"></div>
-    <div id="slider" data-ctrl="slider" class="ctrl" style="left:{{sett.slider}}px"></div>
+<div id="play_ctrl" class="ctrl left button" data-ctrl="play">
+    {{^sett.play}}<img alt="Play" src="img/new/play.png" />{{/sett.play}}
+    {{#sett.play}}<img alt="Stop" src="img/new/stop.png" />{{/sett.play}}
 </div>
-<div id="play_ctrl" class="ctrl left" data-ctrl="play">
-    {{^sett.play}}<img alt="Play" src="img/play.png" />{{/sett.play}}
-    {{#sett.play}}<img alt="Stop" src="img/stop.png" />{{/sett.play}}
+<div id="reset_ctrl" class="ctrl left button" data-ctrl="reset">
+    <img alt="Reset" src="img/new/reset.png" />
 </div>
-<div id="reset_ctrl" class="ctrl left" data-ctrl="reset">
-    <img alt="Reset" src="img/reset.png" />
+<div id="resize_ctrl" class="ctrl right button {{sett.resize}}" data-ctrl="resize">
+    <img alt="Resize" src="img/new/resize.png" />
 </div>
-<div id="resize_ctrl" class="ctrl right" data-ctrl="resize">
-    {{^sett.resize}}<img alt="Resize" src="img/resize.png" />{{/sett.resize}}
-    {{#sett.resize}}<img alt="Resize" src="img/resize_on.png" />{{/sett.resize}}
+<div id="loop_ctrl" class="ctrl right button {{sett.loop}}" data-ctrl="loop">
+    <img alt="Loop" src="img/new/loop.png" />
 </div>
-<div id="loop_ctrl" class="ctrl right" data-ctrl="loop">
-    {{^sett.loop}}<img alt="Loop" src="img/loop.png" />{{/sett.loop}}
-    {{#sett.loop}}<img alt="Loop" src="img/loop_on.png" />{{/sett.loop}}
+
+<div id="pict_ctrl" class="ctrl right button" data-ctrl="pict">
+    <img alt="Picture" src="img/new/pict.png" />
 </div>
-{{#sett.measure}}<div id="measure_ctrl_value" class="ctrl right">{{/sett.measure}}
-</div>
-<div id="pict_ctrl" class="ctrl right" data-ctrl="pict">
-    <img alt="Picture" src="img/pict.png" />
-</div>
-<div id="resol_ctrl" class="ctrl right unselect" data-ctrl="resol">
+<div id="resol_ctrl" class="ctrl right text button unselect" data-ctrl="resol">
     {{sett.resol}}px
 </div>
-<div id="measure_ctrl" class="ctrl right" data-ctrl="measure">
-    {{^sett.measure}}<img alt="Measure" src="img/measure.png" />{{/sett.measure}}
-    {{#sett.measure}}<img alt="Measure" src="img/measure_on.png" />{{/sett.measure}}
+<div id="speed_ctrl" class="ctrl right text button unselect" data-ctrl="speed">
+    {{sett.speed}} x
 </div>
+<div id="measure_ctrl" class="ctrl right button {{sett.measure}}" data-ctrl="measure">
+    <img alt="Measure" src="img/new/measure.png" />
+</div>
+{{#sett.measure}}<div id="measure_ctrl_value" class="ctrl right button"></div>{{/sett.measure}}
