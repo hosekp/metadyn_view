@@ -7,7 +7,7 @@ $.extend(view.ctrl,{
     tooldelay:false,
     width:600,
     resizing:false,  // event 
-    temp:{resizepos:false},
+    temp:{resizepos:false,resoldata:[100,200,300,400],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
     tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
     //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
     init:function(){
@@ -19,6 +19,7 @@ $.extend(view.ctrl,{
             this.render();
             this.bind();
         },this));
+
     },
     getSettings:function(){
         var sett=control.settings;
@@ -39,12 +40,31 @@ $.extend(view.ctrl,{
                 var val=control.settings.resol.get();
                 //this.settings.resol+=100;
                 //if(this.settings.resol===600){this.settings.resol=100;}
-                control.settings.resol.set((val)%500+100);
+                var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
+                var resoldata=this.preMustache(this.temp.resoldata,val);
+                //var resoldata=$.extend({},this.temp.resoldata);
+                var rendered=Mustache.render(template,{poss:resoldata});
+                //$(rendered).val(val);
+                this.summonSelect(event.currentTarget,rendered,function(event){
+                    control.settings.resol.set(parseInt(event.target.getAttribute("data-val")));
+                    $("#ctrl_select").hide();
+                    view.ctrl.render();
+                });
+                //control.settings.resol.set((val)%500+100);
             }else if(ctrl==="speed"){
                 var val=control.settings.speed.get();
                 //this.settings.resol+=100;
                 //if(this.settings.resol===600){this.settings.resol=100;}
-                control.settings.speed.set((val)%500+100);
+                var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
+                var speeddata=this.preMustache(this.temp.speeddata,val);
+                //var resoldata=$.extend({},this.temp.resoldata);
+                var rendered=Mustache.render(template,{poss:speeddata});
+                //$(rendered).val(val);
+                this.summonSelect(event.currentTarget,rendered,function(event){
+                    control.settings.speed.set(parseFloat(event.target.getAttribute("data-val")));
+                    $("#ctrl_select").hide();
+                    view.ctrl.render();
+                });
             }else if(ctrl==="resize"){
                 
             }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play"){
@@ -84,6 +104,21 @@ $.extend(view.ctrl,{
             
         },this));
         this.bindTips(this.div,this.tips);
+    },
+    preMustache:function(arr,val){
+        var data=[];
+        for(var i=0;i<arr.length;i++){
+            data.push({val:arr[i],sel:val===arr[i]?"on":""});
+        }
+        return data;
+    },
+    summonSelect:function(ctrl,rendered,callback){
+        var div=$("#ctrl_select");
+        var off = $(ctrl).offset();
+        div.css({"left":(off.left)+"px","top":(off.top+25)+"px"});
+        div.html(rendered);
+        div.show();
+        div.children("div").click(callback);
     },
     resize:function(event){
         /*$("#cont").css({width:Math.max(400,event.pageX-this.temp.resizepos.x)+"px"});
