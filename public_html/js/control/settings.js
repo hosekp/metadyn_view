@@ -14,18 +14,15 @@ $.extend(control.settings,{
         this.axi_y=this.create(1);
         this.axi_auto=this.create(false);
         this.readHash();
-        /*this.resol.call=function(){
-            view.ctrl.render();
+        this.resol.call=function(){
         };
         this.play.call=function(){
-            view.ctrl.render();
+            draw.gl.draw();
         };
         this.loop.call=function(){
-            view.ctrl.render();
         };
         this.measure.call=function(){
-            view.ctrl.render();
-        };*/
+        };
     },
     readHash:function(){
         var hashstr=window.location.hash;

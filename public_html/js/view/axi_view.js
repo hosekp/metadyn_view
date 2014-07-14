@@ -43,6 +43,7 @@ $.extend(view.axi,{
         this.div.$z.css({top:this.menuwidth+"px",width:this.menuwidth+"px",height:"100%"}).css({height:"-="+(3*this.menuwidth)+"px"});
         this.div.$z_down.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(2*this.menuwidth)+"px"});
         this.div.$z_auto.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(this.menuwidth)+"px"});
+        draw.gl.resize();
     },
     bind:function (){
         //var thisctrl=this;
