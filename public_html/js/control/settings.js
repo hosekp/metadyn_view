@@ -17,7 +17,14 @@ $.extend(control.settings,{
         this.resol.call=function(){
         };
         this.play.call=function(){
-            draw.gl.draw();
+            var resol=control.settings.resol.get();
+            var byte=new Uint8Array(resol*resol);
+            for(var i=0;i<resol;i++){
+                for(var j=0;j<resol;j++){
+                    byte[i*resol+j]=255*Math.sin(100*i*Math.PI/resol)*Math.sin(100*j*Math.PI/resol);
+                }
+            }
+            draw.gl.draw(byte);
         };
         this.loop.call=function(){
         };

@@ -7,7 +7,7 @@ $.extend(view.axi,{
     menuwidth:40,
     autoset:true,
     init:function(){
-        $.get("templates/axi.html",$.proxy(this.loaded,this));
+        $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
     },
     loaded:function(template){
         if(template){

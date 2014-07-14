@@ -18,7 +18,7 @@ $.extend(view.ctrl,{
             this.template=data;
             this.render();
             this.bind();
-        },this));
+        },this),"text");
 
     },
     getSettings:function(){

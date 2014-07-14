@@ -19,16 +19,16 @@ $.extend(draw.gl,{
         //gl.uniform2f(resolutionLocation, main.width, main.height);
     },
     resize:function(){
+        var gl=this.g1;
         var width=this.$can_cont.width();
         var height=this.$can_cont.height();
         this.$can.width(width);
         this.$can.height(height);
         this.$can.attr({width:width,height:height});
-        var resol=control.settings.resol.get();
+        //var resol=control.settings.resol.get();
 //        this.g1.viewportWidth = resol;
 //        this.g1.viewportHeight = resol;
-        this.g1.viewportWidth = width;
-        this.g1.viewportHeight = height;
+        gl.viewport(0, 0, width, height);
         
     },
     initGL:function(){
@@ -99,7 +99,7 @@ $.extend(draw.gl,{
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         manage.console.log("WebGL loaded");
     },
-    draw:function(){
+    draw:function(array){
         //if(!gl){this.init();}
         var gl=this.g1;
         manage.console.debug("drawing");
@@ -113,21 +113,18 @@ $.extend(draw.gl,{
         //main.cons(graf.bytearr.length);
         var resol=control.settings.resol.get();
         
-        var byte=new Uint8Array(resol*resol);
-        for(var i=0;i<resol;i++){
-            for(var j=0;j<resol;j++){
-                byte[i*resol+j]=255*Math.sin(i*Math.PI/resol)*Math.sin(j*Math.PI/resol);
-            }
+        if(resol*resol!==array.length){
+            manage.console.error("Error: Wrong length of texture array");
         }
         
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,byte);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //texImage2D (ulong target, long level, ulong intformat, ulong width, ulong height, long border, ulong format, ulong type, Object data )
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     },
     getShader:function(id,typ) {
         $.get("shaders/"+id,$.proxy(function(str){
             this.parseShader(str,typ);
-        },this));
+        },this),"text");
     },
     parseShader:function(str,typ){
         var gl=this.g1;
