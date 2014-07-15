@@ -44,6 +44,7 @@ $.extend(view.axi,{
         this.div.$z_down.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(2*this.menuwidth)+"px"});
         this.div.$z_auto.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(this.menuwidth)+"px"});
         draw.gl.resize();
+        //manage.console.debug("Axis resized");
     },
     bind:function (){
         //var thisctrl=this;
@@ -52,8 +53,8 @@ $.extend(view.axi,{
             var ctrl=event.currentTarget.getAttribute("data-ctrl");
             //alert(ctrl);
             if(ctrl==="auto"){
-                this.autoset=!this.autoset;
-                if(this.autoset){
+                var autoset=control.settings.axi_auto.toggle();
+                if(autoset){
                     this.div.$z_auto.addClass("on");
                 }else{
                     this.div.$z_auto.removeClass("on");

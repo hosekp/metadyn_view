@@ -7,6 +7,7 @@ $.extend(draw.gl,{
     vertex:null,
     fragment:null,
     program:null,
+    inited:false,
     init:function(){
         if(!this.initGL()){return false;}
         this.getShader("2d-vertex.shd","vertex");
@@ -25,6 +26,8 @@ $.extend(draw.gl,{
         this.$can.width(width);
         this.$can.height(height);
         this.$can.attr({width:width,height:height});
+//        this.$can[0].width=width;
+//        this.$can[0].height=height;
         //var resol=control.settings.resol.get();
 //        this.g1.viewportWidth = resol;
 //        this.g1.viewportHeight = resol;
@@ -98,11 +101,12 @@ $.extend(draw.gl,{
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         manage.console.log("WebGL loaded");
+        this.inited=true;
     },
     draw:function(array){
         //if(!gl){this.init();}
         var gl=this.g1;
-        manage.console.debug("drawing");
+        //manage.console.debug("drawing");
         gl.vertexAttribPointer(this.program.positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
         /*var arrBuffer=gl.createBuffer();

@@ -5,7 +5,9 @@ $.extend(view.ctrl,{
     div:null,
     tooltipdiv:null,
     tooldelay:false,
+    ctrlRequested:false,
     width:600,
+    inited:false,
     resizing:false,  // event 
     temp:{resizepos:false,resoldata:[100,200,300,400],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
     tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
@@ -18,6 +20,7 @@ $.extend(view.ctrl,{
             this.template=data;
             this.render();
             this.bind();
+            this.inited=true;
         },this),"text");
 
     },
@@ -26,9 +29,17 @@ $.extend(view.ctrl,{
         return {play:sett.play.get(),measure:sett.measure.get()?"on":"",loop:sett.loop.get()?"on":"",resol:sett.resol.get(),resize:(!!this.temp.resizepos)?"on":"",speed:sett.speed.get()};
     },
     render:function(){
-        var vars={sett:this.getSettings()};
-        var rendered=Mustache.render(this.template,vars);
-        this.div.html(rendered);
+        if(this.ctrlRequested){return;}
+        this.ctrlRequested=true;
+    }, 
+    redraw:function(){
+        if(this.ctrlRequested){
+            var vars={sett:this.getSettings()};
+            var rendered=Mustache.render(this.template,vars);
+            this.div.html(rendered);
+            //manage.console.debug("CTRL redrawed");
+            this.ctrlRequested=false;
+        }
     },
     bind:function (){
         //var thisctrl=this;
@@ -63,23 +74,25 @@ $.extend(view.ctrl,{
                 this.summonSelect(event.currentTarget,rendered,function(event){
                     control.settings.speed.set(parseFloat(event.target.getAttribute("data-val")));
                     $("#ctrl_select").hide();
-                    view.ctrl.render();
+                    //view.ctrl.render();
                 });
             }else if(ctrl==="resize"){
                 
             }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play"){
                 control.settings[ctrl].toggle();
+            }else if(ctrl==="reset"){
+                control.control.reset();
             }
-            this.render();
+            //this.render();
         },this))
         .on("mousedown","#resize_ctrl",$.proxy(function(event){
             //this.settings.resize=true;
             this.stopTip();
             var div=$("#main_cont");
             this.temp.resizepos={x:event.pageX-div.width(),y:event.pageY-div.height()};
-            this.render();
+            //this.render();
             $("body").on("mousemove",$.proxy(function(event){
-                this.resize(event);
+                this.resizing=event;
                 this.stopTip();
             },this));
             $("body").on("mouseup",$.proxy(function(event){
@@ -120,23 +133,20 @@ $.extend(view.ctrl,{
         div.show();
         div.children("div").click(callback);
     },
-    resize:function(event){
+    resize:function(){
         /*$("#cont").css({width:Math.max(400,event.pageX-this.temp.resizepos.x)+"px"});
         $("#main_cont").css({height:Math.max(300,event.pageY-this.temp.resizepos.y)+"px"});
         view.axi.arrange();*/
-        if(this.resizing===false){
-            setTimeout($.proxy(function(){
-                var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x)+"px";
-                //manage.console.debug("width="+this.temp.resizepos.x);
-                this.width=parseInt(wid);
-                $("#cont").css({width:wid});
-                $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
-                view.axi.arrange();
-                view.ctrl.slide.render();
-                this.resizing=false;
-            },this),50);
+        if(this.resizing!==false){
+            var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x)+"px";
+            //manage.console.debug("width="+this.temp.resizepos.x);
+            this.width=parseInt(wid);
+            $("#cont").css({width:wid});
+            $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
+            view.axi.arrange();
+            view.ctrl.slide.render();
+            this.resizing=false;
         }
-        this.resizing=event;
     },
     bindTips:function(div,tips){
         div
@@ -177,7 +187,7 @@ view.ctrl.slide={
     ctrl:view.ctrl,
     slider:null,
     template:"",
-    ratio:0.2,
+    ratio:0.0,
     init:function(){
         $.get("templates/slide.html",$.proxy(function(data){
             this.template=data;
@@ -193,7 +203,7 @@ view.ctrl.slide={
         return Math.round((this.ctrl.width-20)*this.ratio);
     },
     toratio:function(val){
-        return val/(this.ctrl.width-20);
+        return Math.max(Math.min(val/(this.ctrl.width-20),1),0);
     },
     byratio:function(val){
         this.ratio=val;
@@ -206,12 +216,15 @@ view.ctrl.slide={
         this.cont
         .on("mousedown","#slider",$.proxy(function(event){
             this.eventpos=event.pageX-$("#slider").position().left;
+            control.settings.play.set(false);
+            //view.ctrl.render();
             $("body").on("mousemove",$.proxy(function(event){
                 //manage.console.debug("mouse.which="+event.which);
                 //if(event.which!==1){this.mouseup(event);}
                 var lft=event.pageX-this.eventpos;
-                this.ratio=this.toratio(lft);
-                this.move(lft);
+                var ratio=this.toratio(lft);
+                control.control.set(ratio);
+                //this.move(lft);
                 //$("#slider").css("left",Math.max(Math.min(event.pageX-this.eventpos,this.ctrl.width-10),0));
             },this));
             $("body").on("mouseup",$.proxy(this.mouseup,this));

@@ -170,3 +170,8 @@
     background-color: yellow;
     color:black;
 }
+#stats{
+    position:absolute;
+    right:5px;
+    top:5px;
+}

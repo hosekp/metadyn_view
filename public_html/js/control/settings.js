@@ -17,14 +17,11 @@ $.extend(control.settings,{
         this.resol.call=function(){
         };
         this.play.call=function(){
-            var resol=control.settings.resol.get();
-            var byte=new Uint8Array(resol*resol);
-            for(var i=0;i<resol;i++){
-                for(var j=0;j<resol;j++){
-                    byte[i*resol+j]=255*Math.sin(100*i*Math.PI/resol)*Math.sin(100*j*Math.PI/resol);
-                }
+            if(control.settings.play.value){
+                control.control.start();
+            }else{
+                control.control.stop();
             }
-            draw.gl.draw(byte);
         };
         this.loop.call=function(){
         };
@@ -51,10 +48,14 @@ $.extend(control.settings,{
             if(hash["mes"]){this.measure.set(hash["mes"]==="true");}
             if(hash["res"]){this.resol.set(parseFloat(hash["res"]));}
             if(hash["lop"]){this.loop.set(hash["rpt"]==="true");}
-            this.newHash();
+            this.hashRequested=true;
         }
     },
     newHash:function(){
+        if(!this.hashRequested){return;}
+        if(view.ctrl.inited){
+            view.ctrl.render();
+        }
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
@@ -75,7 +76,7 @@ $.extend(control.settings,{
     requestNewHash:function(){
         if(this.hashRequested){return;}
         this.hashRequested=true;
-        setTimeout($.proxy(this.newHash,this),100);
+        //setTimeout($.proxy(this.newHash,this),100);
     },
     create:function(def){
         var s=$.extend({},this.template,{def:def});
@@ -109,8 +110,10 @@ control.settings.template={
             this.call();
         }
         control.settings.requestNewHash();
+        return this.value;
     },
     isdef:function(){
         return this.value===this.def;
     }
 };
+            

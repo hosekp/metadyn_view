@@ -13,10 +13,12 @@ $.extend(manage.console,{
     init:function(){
         this.$console=$("#cons");
     },
-    addText:function(string){
+    addText:function(string,loglvl){
+        if(this.loglevel<loglvl){return;}
         if(this.$console===null){this.init();}
         var txt=this.constext;
-        txt.push(string);
+        var colors={1:"red",2:"orange",3:"black",4:"blue"};
+        txt.push("<span style='color:"+colors[loglvl]+"'>"+string+"</span>");
         if(txt.length>20){
             txt.shift();
         }
@@ -26,9 +28,9 @@ $.extend(manage.console,{
         }
         this.$console.html(str);
     },
-    debug:function(string){if(this.loglevel>=4)this.addText(string);},
-    log:function(string){if(this.loglevel>=3)this.addText(string);},
-    warning:function(string){if(this.loglevel>=2)this.addText(string);},
-    error:function(string){if(this.loglevel>=1)this.addText(string);}
+    debug:function(string){this.addText(string,4);},
+    log:function(string){this.addText(string,3);},
+    warning:function(string){this.addText(string,2);},
+    error:function(string){this.addText(string,1);}
 });
 
