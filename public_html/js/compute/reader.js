@@ -4,17 +4,19 @@ compute.reader={
         var $filer=$(event.target);
         var files=$filer[0].files;
         if(!files){
-            alert("není files property");
+            manage.console.error("Reader: není files property");
+            return;
         }else if(!files[0]){
-            //alert("no file");
+            manage.console.error("Reader: No file");
             return;
         }else{
+            manage.manager.purge();
             for(var f=0;f<files.length;f++){
                 var file=files[f];
                 var fr=new FileReader();
                 //fr.onload = compute.reader.readed;
                 fr.onload = compute.reader.readed;
-                fr.onerror = function(){alert("Error occured");};
+                fr.onerror = function(){manage.console.error("Reader: Reading failed");};
                 fr.readAsText(file);
             }
         }

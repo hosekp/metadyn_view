@@ -15,6 +15,7 @@ $.extend(control.settings,{
         this.axi_auto=this.create(false);
         this.readHash();
         this.resol.call=function(){
+            manage.manager.setResol();
         };
         this.play.call=function(){
             if(control.settings.play.value){
