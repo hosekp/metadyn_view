@@ -17,13 +17,14 @@ and open the template in the editor.
         <script type="text/javascript" src="js/compute/parser.js"></script>
         <script type="text/javascript" src="js/compute/sum_hill.js"></script>
         <script type="text/javascript" src="js/compute/tspace.js"></script>
+        <script type="text/javascript" src="js/compute/axi.js"></script>
         <script type="text/javascript" src="js/manage/console.js"></script>
         <script type="text/javascript" src="js/manage/manager.js"></script>
         <script type="text/javascript" src="js/view/ctrl_view.js"></script>
         <script type="text/javascript" src="js/view/axi_view.js"></script>
         <script type="text/javascript" src="js/control/settings.js"></script>
         <script type="text/javascript" src="js/control/control.js"></script>
-        <script type="text/javascript" src="js/control/axi.js"></script>
+        <script type="text/javascript" src="js/control/measure.js"></script>
         <script type="text/javascript" src="js/draw/webgl.js"></script>
     </head>
     <body>
@@ -31,7 +32,7 @@ and open the template in the editor.
         <div id="all">
             <div id="cont">
                 <div id="file_cont" class="incont">
-                    <input type="file" id="file" multiple/>
+                    
                 </div>
                 <div id="main_cont" class="incont">
                     <div id="canvas_cont" class="axi_all"></div>
@@ -60,7 +61,7 @@ and open the template in the editor.
 
             
             
-            compute.reader.initEvents();
+            compute.reader.init();
             //$("#file").trigger("change");
             //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
             /*var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);

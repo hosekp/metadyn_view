@@ -7,9 +7,10 @@ $.extend(compute.sum_hill,{
     artime:null,
     ncv:1,
     nbody:0,
-    msi:2,  // const - multiple of sigma   2=95%
+    msi:2.3,  // const - multiple of sigma   2=95%
     blobs:{},
     params:null,
+    loaded:false,
     load:function(arrs,params){
         if(this.arhei===null){
             this.arhei=arrs["height"];
@@ -33,13 +34,14 @@ $.extend(compute.sum_hill,{
             this.artime=sorter.rearrange(nartime,sorted);
             this.arhei=sorter.rearrange(this.join(this.arhei,arrs["height"]),sorted);
             for(var i=0;i<ncv;i++){
-                this.cvs[i]=sorter.rearrange(this.join(this.cvs[i],arrs["cvs"][i]),sorted);
-                this.sigma[i]=sorter.rearrange(this.join(this.sigma[i],arrs["sigma"][i]),sorted);
+                this.arcvs[i]=sorter.rearrange(this.join(this.arcvs[i],arrs["cvs"][i]),sorted);
+                this.arsigma[i]=sorter.rearrange(this.join(this.arsigma[i],arrs["sigma"][i]),sorted);
             }
             this.nbody+=params.nbody;
             this.params=this.joinParams(this.params,params);
         }
         this.setRealLimits();
+        this.loaded=true;
         //this.blob=this.createBlob();
         manage.console.log("Sum_hills: loaded");
     },
@@ -70,6 +72,7 @@ $.extend(compute.sum_hill,{
         this.arsigma=null;
         this.artime=null;
         this.blobs={};
+        this.loaded=false;
     },
     setRealLimits:function(){
         var params=this.params;
@@ -97,7 +100,7 @@ $.extend(compute.sum_hill,{
         for(var i=0;i<this.ncv;i++){
             var cvstep=resol/this.diffs[i];
             sigmas1.push(sigmas[i]*cvstep);
-            sigmas8.push(Math.floor(sigmas1[i])*this.msi*2+1);
+            sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
         }
         var space=this.createSpace(sigmas8);
         //space.all(1);
@@ -130,7 +133,7 @@ $.extend(compute.sum_hill,{
             if(sig!==this.arsigma[i][quarter*2]){valid=false;}
             if(sig!==this.arsigma[i][quarter*3]){valid=false;}
             if(sig!==this.arsigma[i][this.nbody-1]){valid=false;}
-            manage.console.debug(this.arcvs[i][this.nbody-1]+" "+this.arhei[this.nbody-1]);
+            //manage.console.debug(this.arcvs[i][this.nbody-1]+" "+this.arhei[this.nbody-1]);
             
         }
         if(!valid){
@@ -146,9 +149,10 @@ $.extend(compute.sum_hill,{
         return inds;
     },*/
     toIndices:function(line){
-        var inds=[];
+        var inds = new Float32Array(this.ncv);
+        //var inds=[];
         for(var i=0;i<this.ncv;i++){
-            inds.push((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);
+            inds[i]=((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);
         }
         return inds;
     },
@@ -170,6 +174,7 @@ $.extend(compute.sum_hill,{
             var inds=this.toIndices(i);
             space.add(inds,blob);
         }
+        //manage.console.debug("Added "+(to-last)+" frames");
         return space;
         
     },
@@ -179,7 +184,7 @@ $.extend(compute.sum_hill,{
         var t1=this.artime[this.nbody-1];
         var tr=t0+rat*(t1-t0);
         var lower=0;
-        manage.console.debug("Locate from "+t0+" to "+t1+" through "+tr);
+        //manage.console.debug("Locate from "+t0+" to "+t1+" through "+tr);
         var higher=this.nbody;
         /*var exp=this.nbody*rat-1;
         var lexp=Math.max(exp-5,lower);
@@ -198,6 +203,6 @@ $.extend(compute.sum_hill,{
         return higher;
         
     },
-    haveData:function(){return this.arhei!==null;}
+    haveData:function(){return this.loaded;}
     
 });

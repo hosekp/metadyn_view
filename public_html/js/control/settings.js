@@ -12,7 +12,7 @@ $.extend(control.settings,{
         this.height=this.create(1);
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
-        this.axi_auto=this.create(false);
+        this.axi_auto=this.create(true);
         this.readHash();
         this.resol.call=function(){
             manage.manager.setResol();

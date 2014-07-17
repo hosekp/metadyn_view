@@ -20,7 +20,7 @@ $.extend(compute.parser,{
         }else{
             params=this.implicitHeader(lines[0],params);
         }
-        var body=lines.slice(i+1);
+        var body=lines.slice(i);
         var data=this.parseBody(body,params);
         manage.console.log("parsovano");
         compute.sum_hill.load(data,params);
@@ -107,6 +107,9 @@ $.extend(compute.parser,{
     parseBody:function(body,params){
         //var data={time:null,cvs:[],hei:null,sigma:[]};
         var nbody=body.length;
+        if(body[nbody-1].length<3){
+            body.pop();nbody-=1;
+        }
         var cvbuffer=new ArrayBuffer(4*nbody*params.ncv);
         var sigmabuffer=new ArrayBuffer(4*nbody*params.ncv);
         var restbuffer=new ArrayBuffer(4*nbody*3);
@@ -122,32 +125,34 @@ $.extend(compute.parser,{
         var pcvs=params.cvs;
         var ncv=params.ncv;
         var fulllen=params.fulllen;
-        var l=0;
+        var len=0;
+        manage.console.debug("length: "+nbody);
         for(var i=0;i<nbody;i++){
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
-            time[l]=parseFloat(line[timepos]);
-            clock[l]=parseInt(line[clockpos]);
-            hei[l]=parseFloat(line[heipos]);
+            time[len]=parseFloat(line[timepos]);
+            clock[len]=parseInt(line[clockpos]);
+            hei[len]=parseFloat(line[heipos]);
             for(var j=0;j<ncv;j++){
                 var pcv=pcvs[j];
-                cvs[j][l]=parseFloat(line[pcv.pos]);
-                sigma[j][l]=parseFloat(line[pcv.sigmapos]);
+                cvs[j][len]=parseFloat(line[pcv.pos]);
+                sigma[j][len]=parseFloat(line[pcv.sigmapos]);
             }
-            l++;
+            len++;
             //manage.console.debug("Line: "+body[i]);
         }
-        var len=i;
         params.nbody=len;
-        for(var i=0;i<params.ncv;i++){
-            cvs[i]=new Float32Array(cvbuffer,4*i*nbody,len);
-            sigma[i]=new Float32Array(sigmabuffer,4*i*nbody,len);
+        //manage.console.debug("length: "+len);
+        if(len!==nbody){
+            for(var i=0;i<params.ncv;i++){
+                cvs[i]=new Float32Array(cvbuffer,4*i*nbody,len);
+                sigma[i]=new Float32Array(sigmabuffer,4*i*nbody,len);
+            }
+            time=new Float32Array(restbuffer,0,len);
+            hei=new Float32Array(restbuffer,4*nbody,len);
+            clock=new Float32Array(restbuffer,8*nbody,len);
         }
-        time=new Float32Array(restbuffer,0,len);
-        hei=new Float32Array(restbuffer,4*nbody,len);
-        clock=new Float32Array(restbuffer,8*nbody,len);
-        /*manage.console.debug("length: "+i);
-        for(var i=4;i>=1;i--){
+        /*for(var i=4;i>=1;i--){
             manage.console.debug("last: "+body[params.nbody-i]+""+cvs[0][params.nbody-i]+" "+hei[params.nbody-i]);
         }*/
         for(var c=0;c<cvs.length;c++){
@@ -166,7 +171,7 @@ $.extend(compute.parser,{
             clock=sorter.rearrange(clock,sorted);
             hei=sorter.rearrange(hei,sorted);
         }
-        var data={time:time,cvs:cvs,height:hei,sigma:sigma};
+        var data={time:time,cvs:cvs,height:hei,sigma:sigma,clock:clock};
         return data;
     },
     findLimits:function(array,cv){

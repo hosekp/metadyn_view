@@ -2,6 +2,7 @@ if(typeof manage==="undefined"){manage={};}
 if(typeof manage.manager==="undefined"){manage.manager={};}
 $.extend(manage.manager,{
     lastSpace:null,
+    lastDrawable:null,
     lastRat:-1,
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
@@ -19,8 +20,7 @@ $.extend(manage.manager,{
         if(!draw.gl.inited){return false;}
         if(!compute.sum_hill.haveData()){return false;}
         if(rat<this.lastRat){
-            this.lastRat=-1;
-            this.lastSpace=null;
+            this.reset();
         }
         if(this.lastSpace===null){
             this.initSpace();
@@ -28,35 +28,33 @@ $.extend(manage.manager,{
         //var nar=this.lastSpace;
         if(rat!==this.lastRat){
             this.lastSpace=compute.sum_hill.add(this.lastSpace,this.lastRat,rat);
-            manage.console.debug("Add from "+this.lastRat+" to "+rat);
+            //manage.console.debug("Add from "+this.lastRat+" to "+rat);
             this.lastRat=rat;
         }
-        var arr=this.lastSpace.spacearr;
-        draw.gl.draw(this.touint(arr));
+        this.lastDrawable=compute.axi.transform(this.lastSpace);
+        draw.gl.draw(this.lastDrawable);
         return true;
-        
     },
     initSpace:function(){
         //var resol=control.settings.resol.get();
         this.lastSpace=compute.sum_hill.createSpace();
     },
     setResol:function(){
+        this.reset();
+    },
+    reset:function(){
         this.lastSpace=null;
         this.lastRat=-1;
+        this.lastDrawable=null;
         control.control.needRedraw=true;
     },
     purge:function(){
-        this.lastSpace=null;
         compute.sum_hill.purge();
-    },
-    touint:function(array){
-        var len=array.length;
-        var nar=new Uint8Array(len);
-        for (var i=0;i<len;i++){
-            nar[i]=array[i];
-        }
-        return nar;
+        this.reset();
+        view.axi.needRedraw=true;
+        compute.axi.reset();
     }
+    
 });
 
 

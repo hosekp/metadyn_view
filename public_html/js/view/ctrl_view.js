@@ -223,7 +223,8 @@ view.ctrl.slide={
                 //if(event.which!==1){this.mouseup(event);}
                 var lft=event.pageX-this.eventpos;
                 var ratio=this.toratio(lft);
-                control.control.set(ratio);
+                this.byratio(ratio);
+                //control.control.set(ratio);
                 //this.move(lft);
                 //$("#slider").css("left",Math.max(Math.min(event.pageX-this.eventpos,this.ctrl.width-10),0));
             },this));
@@ -235,6 +236,7 @@ view.ctrl.slide={
         $("body").off("mouseup");
         $("body").off("mouseout");
         this.eventpos=false;
+        control.control.set(this.ratio);
         
     },
     move:function(lft){

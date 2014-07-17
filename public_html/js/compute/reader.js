@@ -1,5 +1,7 @@
 if(typeof compute==="undefined"){compute={};}
 compute.reader={
+    template:null,
+    inited:false,
     read:function(event){
         var $filer=$(event.target);
         var files=$filer[0].files;
@@ -28,12 +30,35 @@ compute.reader={
         }
     },
     initEvents:function(){
-        var $filer=$("#file");
-        if(!$filer.ebind){
-            $filer.change(this.read);
-            $filer.ebind=true;
-        }
+        var $file_cont=$("#file_cont");
+        $file_cont
+        .on("change","input",compute.reader.read)
+        .on("click","button",function(event){
+            var tar=event.currentTarget;
+            var path=tar.getAttribute("data-path");
+            $.get(path,function(data){
+                manage.manager.purge();
+                compute.parser.parse(data);
+            },"text");
+        });
         
+    },
+    init:function(){
+        this.initEvents();
+        $.get("templates/examples.html",$.proxy(function(data){
+            this.template=data;
+            this.render();
+            this.inited=true;
+        },this),"text");
+    },
+    render:function(){
+        var obj={examples:[
+            {id:"HILLS.amber03",name:"HILLS_2.0 dlouhý"},
+            {id:"HILLS_2.0",name:"HILLS_2.0 krátký"},
+            {id:"HILLS_1.3",name:"HILLS_1.3"}
+        ]};
+        var rendered=Mustache.render(this.template,obj);
+        $("#file_cont").html(rendered);
     }
 };
 

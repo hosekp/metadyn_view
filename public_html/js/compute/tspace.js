@@ -158,15 +158,20 @@ compute.sum_hill.tspace={
             if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;}
             if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];}
         }
+        //var lims=this.computeLims(inds,space);
         var len0=lims[1]-lims[0];
         var len1=lims[3+1]-lims[3];
         var tcoef=this.coefs;var bcoef=space.coefs;
-        for(var i=0;i<len0;i++){
-            for(var j=0;j<len1;j++){
-                this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)];
+        var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
+        var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
+        for(var j=0;j<len1;j++){
+            var tp1=tp+tcoef[1]*j;
+            var bp1=bp+bcoef[1]*j;
+            for(var i=0;i<len0;i++){
+                //this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)];
+                this.spacearr[tp1+tcoef[0]*i]+=space.spacearr[bp1+bcoef[0]*i];
             }
         }
-        
     },
     add3:function(inds,space){
         if(this.res!==space.res){
@@ -213,7 +218,7 @@ compute.sum_hill.tspace={
     },
     blob:function(sigmastep){
         for(var c=0;c<this.ncv;c++){
-            var dim2=(this.dims[c]-1)/2;
+            var dim2=Math.floor((this.dims[c]-1)/2);
             var sigma=sigmastep[c];
             for(var i=-dim2;i<=dim2;i++){
                 var val=Math.pow(i/sigma,2);
