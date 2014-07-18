@@ -7,6 +7,11 @@ $.extend(compute.parser,{
                 return this.slice(0, str.length) === str;
             };
         }
+        if (typeof String.prototype.endsWith !== 'function') {
+            String.prototype.endsWith = function(str) {
+                return this.slice(-str.length) === str;
+            };
+        }
         var lines=toparse.split("\n");
         var i=0;
         while(lines[i].startsWith("#!")){
@@ -33,11 +38,12 @@ $.extend(compute.parser,{
         params.timepos=0;
         var cvs=[];
         var p=3;
-        while(!line[p].contains("sigma")){
-            cvs.push($.extend({},compute.parser.tcv,{name:line[p],pos:p-2}));
+        while(!line[p].startsWith("sigma")){
+            var cv=$.extend({},compute.parser.tcv,{name:line[p],pos:p-2});
+            cvs.push(cv);
             p++;
         }
-        while(line[p].contains("sigma")){
+        while(line[p].startsWith("sigma")){
             var elspl=line[p].split("_");
             var cv=this.getCVByName(cvs,elspl[1]);
             cv.sigmapos=p-2;
@@ -45,10 +51,10 @@ $.extend(compute.parser,{
         }
         params.heipos=p-2;
         for(;p<line.length;p++){
-            if(line[p].contains(".bias")||line[p].contains("height")){
+            if(line[p].endsWith(".bias")||line[p].startsWith("height")){
                 params.heipos=p-2;
             }
-            if(line[p].contains("clock")){
+            if(line[p].startsWith("clock")){
                 params.clockpos=p-2;
             }
         }
