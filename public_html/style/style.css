@@ -127,12 +127,14 @@
 .abutton img{
     width:calc(100%-4px);
     width: -moz-calc(100% - 4px);
+    width: -webkit-calc(100% - 4px);
     height:auto;
     margin: 2px;
 }
 #slide{
     width:calc(100%-10px);
     width: -moz-calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
     height:11px;
     top:7px;
     left:5px;
