@@ -3,6 +3,7 @@ if(typeof manage.manager==="undefined"){manage.manager={};}
 $.extend(manage.manager,{
     lastSpace:null,
     lastDrawable:null,
+    lastTransformed:null,
     lastRat:-1,
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
@@ -32,6 +33,7 @@ $.extend(manage.manager,{
             this.lastRat=rat;
         }
         this.lastDrawable=compute.axi.transform(this.lastSpace);
+        this.lastTransformed=null;
         draw.gl.draw(this.lastDrawable);
         return true;
     },
@@ -53,6 +55,17 @@ $.extend(manage.manager,{
         this.reset();
         view.axi.needRedraw=true;
         compute.axi.reset();
+    },
+    getSpace:function(){
+        return this.lastSpace;
+    },
+    getTransformed:function(){
+        if(this.lastTransformed===null){
+            if(this.lastSpace!==null){
+                this.lastTransformed=compute.axi.transform(this.lastSpace,true);
+            }
+        }
+        return this.lastTransformed;
     }
     
 });
