@@ -6,6 +6,7 @@ $.extend(control.control,{
     needRedraw:true,
     running:false,
     lasttime:0,
+    RAFprefix:null,
     init:function(){
         var stt=new Stats();
         stt.setMode(0);
@@ -18,7 +19,7 @@ $.extend(control.control,{
         this.running=true;
         this.lasttime=window.performance.now();
     },
-    cycle:function(stamp){
+    /*cycle:function(stamp){
         var cont=control.control;
         if(cont.running){
             var dt = stamp - cont.lasttime;
@@ -47,8 +48,8 @@ $.extend(control.control,{
         //graf.draw(this.set(newtime));
         cont.lasttime = stamp;
         requestAnimationFrame(cont.cycle);
-    },
-    /*cycle:function(stamp){
+    },*/
+    cycle:function(stamp){
         if(this.running){
             var dt = stamp - this.lasttime;
             var nratio=this.ratio+dt*control.settings.speed.get()/10000;
@@ -75,8 +76,31 @@ $.extend(control.control,{
         //var newtime=this.time+dt*control.settings.speed.get()/1000;
         //graf.draw(this.set(newtime));
         this.lasttime = stamp;
-        requestAnimationFrame($.proxy(this.cycle,this));
-    },*/
+        this.requestAnimFrame(function(stamp){
+            control.control.cycle(stamp);
+        });
+    },
+    requestAnimFrame:function(func){
+        if(this.RAFprefix===null){
+            if(window.requestAnimationFrame){
+                this.RAFprefix=0;
+            }else if(window.webkitRequestAnimationFrame){
+                this.RAFprefix=1;
+            }else if(window.mozRequestAnimationFrame){
+                this.RAFprefix=2;
+            }else{
+                this.RAFprefix=3;
+                manage.console.error("Control: RequestAnimationFrame not supported");
+            }
+        }
+        if(this.RAFprefix===0){
+            window.requestAnimationFrame(func);
+        }else if(this.RAFprefix===1){
+            window.webkitRequestAnimationFrame(func);
+        }else if(this.RAFprefix===2){
+            window.mozRequestAnimationFrame(func);
+        }
+    },
     draw:function(){
         if(this.needRedraw){
             this.needRedraw=!manage.manager.draw(this.ratio);
