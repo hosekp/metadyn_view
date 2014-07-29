@@ -160,20 +160,21 @@ $.extend(compute.sum_hill,{
         var inds=this.toIndices(pos);
         return space.add(inds,blob);
     },
-    add:function(space,lastrat,torat){
+    add:function(space,torat){
         var resol=control.settings.resol.get();
         if(!this.blobs[resol]){
             this.blobs[resol]=this.createBlob(resol);
         }
         var blob=this.blobs[resol];
         var ncv=this.ncv;
-        var last=this.locate(lastrat);
+        var last=this.locate(space.ratio);
         var to=this.locate(torat);
         //manage.console.debug("Add from "+last+" to "+to);
         for(var i=last;i<to;i++){
             var inds=this.toIndices(i);
             space.add(inds,blob);
         }
+        space.ratio=torat;
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;
         

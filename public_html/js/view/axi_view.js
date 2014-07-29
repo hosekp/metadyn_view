@@ -31,6 +31,8 @@ $.extend(view.axi,{
         this.div.$z_up=$("#axi_z_up");
         this.div.$z_down=$("#axi_z_down");
         this.div.$x.before(this.div.$cancont);
+        //if(this.div.$cancont.children().length <= 0){manage.console.warning("Canvas not appended");}
+        if(this.div.$cancont.children().length <= 0){draw.gl.appendCans();}
         this.arrange();
     },
     arrange:function(){
@@ -214,6 +216,7 @@ view.axi.bar={
                 imd.data[ind+3]=255;
             }
         }
+        this.lastHei=height;
         this.lastBar=imd;
         return imd;
     }

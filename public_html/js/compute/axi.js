@@ -3,12 +3,12 @@ if(typeof compute.axi==="undefined"){compute.axi={};}
 $.extend(compute.axi,{
     zmax:0,
     firstcycle:true,
-    transform:function(space){
+    transform:function(space,nar){
         var array=space.spacearr;
         var zm=this.zmax;
         if(space.ncv===2){
             var len=array.length;
-            var nar=new Uint8Array(len);
+            //var nar=new Uint8Array(len);
             if(this.firstcycle&&control.settings.axi_auto.get()){
                 for (var i=0;i<len;i++){
                     if(array[i]>zm){

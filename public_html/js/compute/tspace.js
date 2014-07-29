@@ -1,6 +1,8 @@
 if(typeof compute==="undefined"){compute={};}
 if(typeof compute.sum_hill==="undefined"){compute.sum_hill={};}
 compute.sum_hill.tspace={
+    id:0,
+    lastid:0,
     spacearr:null,
     dims:null,
     coefs:null,
@@ -8,7 +10,9 @@ compute.sum_hill.tspace={
     nbins:0,
     res:1,
     nwhole:0,
+    ratio:-1,
     init:function(nbins,ncv){
+        this.id=this.lastid++;
         this.ncv=ncv;
         this.nbins=nbins;
         var nwh=1;
@@ -35,16 +39,42 @@ compute.sum_hill.tspace={
         }
     },
     copy:function(){
-        var space=$.extend({},compute.sum_hill.tspace);
-        space.init(this.nbins,this.ncv);
+        var space=$.extend(true,{},this);
+        this.id=this.lastid++;
+        //space.init(this.nbins,this.ncv);
+        space.spacearr=this.copyFloat32Array(this.spacearr);
+        space.coefs=this.copyInt32Array(this.coefs);
+        space.dims=this.copyInt32Array(this.dims);
+        //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
     },
-    set:function(cvs,value){
+    copyFloat32Array:function(array){
+        var nar=new Float32Array(array.length);
+        nar.set(array);
+        return nar;
+    },
+    copyInt32Array:function(array){
+        var nar=new Int32Array(array.length);
+        nar.set(array);
+        return nar;
+    },
+    /*set:function(cvs,value){
         var ndx=0;
         for(var i=0;i<this.ncv;i++){
             ndx+=cvs[i]*this.coefs[i];
         }
         this.spacearr[ndx]=value;
+    },*/
+    set:function(space){
+        if(this.ncv!==space.ncv){manage.console.error("Storage: Incompatible arrays");return;}
+        if(this.nwhole!==space.nwhole){manage.console.error("Storage: Incompatible arrays");return;}
+        this.spacearr.set(space.spacearr);
+        this.ratio=space.ratio;
+        if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
+    },
+    reset:function(){
+        this.ratio=-1;
+        this.spacearr=new Float32Array(this.nwhole);
     },
     all:function(value,typ){
         var len=this.nwhole;

@@ -20,6 +20,7 @@ and open the template in the editor.
         <script type="text/javascript" src="js/compute/axi.js"></script>
         <script type="text/javascript" src="js/manage/console.js"></script>
         <script type="text/javascript" src="js/manage/manager.js"></script>
+        <script type="text/javascript" src="js/manage/storage.js"></script>
         <script type="text/javascript" src="js/view/ctrl_view.js"></script>
         <script type="text/javascript" src="js/view/axi_view.js"></script>
         <script type="text/javascript" src="js/control/settings.js"></script>
@@ -46,45 +47,48 @@ and open the template in the editor.
             <div id="cons"></div>
         </div>
         <script type="text/javascript">
-            manage.console.loglevel=4;
-            control.settings.init();
-            view.ctrl.init();
-            view.axi.init();
-            draw.gl.init();
-            control.control.init();
-            //view.ctrl.renderProgress(1);
-            //Mustache.parse(template);
-            //compute.reader.initEvents();
-            //$("#file").trigger("change");
-            //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
-            //var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
+            $(function(){
+                manage.console.loglevel=4;
+                control.settings.init();
+                view.ctrl.init();
+                view.axi.init();
+                draw.gl.init();
+                control.control.init();
+                //view.ctrl.renderProgress(1);
+                //Mustache.parse(template);
+                //compute.reader.initEvents();
+                //$("#file").trigger("change");
+                //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
+                //var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
 
-            
-            
-            compute.reader.init();
-            //$("#file").trigger("change");
-            //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
-            /*var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
 
-            var mustr=compute.parser.TAsorter.sort(array);
-            result=compute.parser.TAsorter.rearrange(array,mustr);
-            var i=5;
-            manage.console.log(i.length);*/
-    
-            /*var nbins=[30,30];
-            var params={cvs:[{min:-3,diff:3},{min:0,diff:3.1},{diff:3.1}],ncv:2}
-            compute.sum_hill.ncv=2;
-            compute.sum_hill.setRealLimits(params);
-            blob=compute.sum_hill.createBlob(nbins,params);*/
-    
-            /*function runit(){
-                space=compute.sum_hill.createSpace();
-                blob=compute.sum_hill.blob;
-                compute.sum_hill.add(space,blob,[-3,0]);
-                compute.sum_hill.add(space,blob,[0,3]);
-                manage.console.debug("CheckPoint");
-                $("body").append(space.print());
-            }*/
+
+                compute.reader.init();
+                //$("#file").trigger("change");
+                //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
+                /*var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
+
+                var mustr=compute.parser.TAsorter.sort(array);
+                result=compute.parser.TAsorter.rearrange(array,mustr);
+                var i=5;
+                manage.console.log(i.length);*/
+
+                /*var nbins=[30,30];
+                var params={cvs:[{min:-3,diff:3},{min:0,diff:3.1},{diff:3.1}],ncv:2}
+                compute.sum_hill.ncv=2;
+                compute.sum_hill.setRealLimits(params);
+                blob=compute.sum_hill.createBlob(nbins,params);*/
+
+                /*function runit(){
+                    space=compute.sum_hill.createSpace();
+                    blob=compute.sum_hill.blob;
+                    compute.sum_hill.add(space,blob,[-3,0]);
+                    compute.sum_hill.add(space,blob,[0,3]);
+                    manage.console.debug("CheckPoint");
+                    $("body").append(space.print());
+                }*/
+                
+            });
             
             
         </script>
