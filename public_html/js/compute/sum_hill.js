@@ -149,7 +149,10 @@ $.extend(compute.sum_hill,{
         return inds;
     },*/
     toIndices:function(line){
-        var inds = new Float32Array(this.ncv);
+        if(!this.tempind){
+            this.tempind = new Float32Array(this.ncv);
+        }
+        var inds=this.tempind;
         //var inds=[];
         for(var i=0;i<this.ncv;i++){
             inds[i]=((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);

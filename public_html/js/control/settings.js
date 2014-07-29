@@ -13,7 +13,6 @@ $.extend(control.settings,{
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(true);
-        this.readHash();
         this.resol.call=function(){
             manage.manager.setResol();
         };
@@ -27,7 +26,13 @@ $.extend(control.settings,{
         this.loop.call=function(){
         };
         this.measure.call=function(){
+            if(control.settings.measure.value){
+                control.measure.bind();
+            }else{
+                control.measure.unbind();
+            }
         };
+        this.readHash();
     },
     readHash:function(){
         var hashstr=window.location.hash;
@@ -46,7 +51,7 @@ $.extend(control.settings,{
             if(hash["axa"]){this.axi_auto.set(hash["axa"]==="true");}
             if(hash["hei"]){this.height.set(parseFloat(hash["hei"]));}
             if(hash["spd"]){this.speed.set(parseFloat(hash["spd"]));}
-            if(hash["mes"]){this.measure.set(hash["mes"]==="true");}
+            //if(hash["mes"]){this.measure.set(hash["mes"]==="true");}
             if(hash["res"]){this.resol.set(parseFloat(hash["res"]));}
             if(hash["lop"]){this.loop.set(hash["rpt"]==="true");}
             this.hashRequested=true;
@@ -59,7 +64,7 @@ $.extend(control.settings,{
         }
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
-        if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
+        //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
         if(!this.speed.isdef()){ret+="&spd="+this.speed.value;}
         if(!this.resol.isdef()){ret+="&res="+this.resol.value;}
         if(!this.loop.isdef()){ret+="&lop="+this.loop.value;}

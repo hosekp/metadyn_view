@@ -145,6 +145,7 @@ $.extend(view.ctrl,{
             $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
             view.axi.arrange();
             view.ctrl.slide.render();
+            control.measure.needRecompute=true;
             this.resizing=false;
         }
     },

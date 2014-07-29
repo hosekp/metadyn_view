@@ -4,6 +4,7 @@ $.extend(manage.manager,{
     lastSpace:null,
     lastDrawable:null,
     counter:0,
+    lastTransformed:null,
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
         var resol=control.settings.resol.get();
@@ -39,6 +40,7 @@ $.extend(manage.manager,{
             //manage.console.debug("Add from "+this.lastRat+" to "+rat);
             this.counter++;
             compute.axi.transform(this.lastSpace,this.lastDrawable);
+            this.lastTransformed=null;
         }
         draw.gl.draw(this.lastDrawable);
         return true;
@@ -68,6 +70,17 @@ $.extend(manage.manager,{
         view.axi.needRedraw=true;
         compute.axi.reset();
         manage.storage.reset();
+    },
+    getSpace:function(){
+        return this.lastSpace;
+    },
+    getTransformed:function(){
+        if(this.lastTransformed===null){
+            if(this.lastSpace!==null){
+                this.lastTransformed=compute.axi.transform(this.lastSpace,null);
+            }
+        }
+        return this.lastTransformed;
     }
     
 });

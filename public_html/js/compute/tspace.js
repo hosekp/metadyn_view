@@ -179,7 +179,10 @@ compute.sum_hill.tspace={
         }
         var tdims=this.dims;
         var bdims=space.dims;
-        var lims=new Float32Array(2*(2+1));
+        if(!this.templims){
+            this.templims=new Float32Array(2*(2+1));
+        }
+        var lims=this.templims;
         for(var i=0;i<2;i++){
             var icv=3*i;
             lims[icv]=Math.floor(inds[i]*tdims[i])-(bdims[i]-1)/2;
