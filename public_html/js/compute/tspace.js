@@ -193,7 +193,8 @@ compute.sum_hill.tspace={
         }
         //var lims=this.computeLims(inds,space);
         var len0=lims[1]-lims[0];
-        var len1=lims[3+1]-lims[3];
+        var len1=lims[4]-lims[3];
+        if(len0<1||len1<1){return;}
         var tcoef=this.coefs;var bcoef=space.coefs;
         var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
         var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
