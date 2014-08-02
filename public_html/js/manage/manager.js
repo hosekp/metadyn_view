@@ -3,8 +3,8 @@ if(typeof manage.manager==="undefined"){manage.manager={};}
 $.extend(manage.manager,{
     lastSpace:null,
     lastDrawable:null,
+    counter:0,
     lastTransformed:null,
-    lastRat:-1,
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
         var resol=control.settings.resol.get();
@@ -20,41 +20,56 @@ $.extend(manage.manager,{
     draw:function(rat){
         if(!draw.gl.inited){return false;}
         if(!compute.sum_hill.haveData()){return false;}
-        if(rat<this.lastRat){
-            this.reset();
-        }
         if(this.lastSpace===null){
             this.initSpace();
         }
-        //var nar=this.lastSpace;
-        if(rat!==this.lastRat){
-            this.lastSpace=compute.sum_hill.add(this.lastSpace,this.lastRat,rat);
-            //manage.console.debug("Add from "+this.lastRat+" to "+rat);
-            this.lastRat=rat;
+        var lrat=this.lastSpace.ratio;
+        if(rat<lrat){
+            this.reset();
+            lrat=-1;
         }
-        this.lastDrawable=compute.axi.transform(this.lastSpace);
-        this.lastTransformed=null;
+        //var nar=this.lastSpace;
+        if(rat!==lrat){
+            var isload=manage.storage.load(this.lastSpace,rat);
+            /*if(isload){
+                manage.console.log("Is loaded at "+this.lastSpace.ratio);
+            }*/
+            //manage.console.debug("Manager: summing "+this.lastSpace.ratio+" to "+rat);
+            compute.sum_hill.add(this.lastSpace,rat);
+            manage.storage.save(this.lastSpace);
+            //manage.console.debug("Add from "+this.lastRat+" to "+rat);
+            this.counter++;
+            compute.axi.transform(this.lastSpace,this.lastDrawable);
+            this.lastTransformed=null;
+        }
         draw.gl.draw(this.lastDrawable);
         return true;
     },
     initSpace:function(){
         //var resol=control.settings.resol.get();
         this.lastSpace=compute.sum_hill.createSpace();
+        this.lastDrawable=new Uint8Array(this.lastSpace.nwhole);
     },
     setResol:function(){
-        this.reset();
+        //this.reset();
+        this.lastSpace=null;
+        this.lastDrawable=null;
+        manage.storage.reset();
+        control.control.needRedraw=true;
     },
     reset:function(){
-        this.lastSpace=null;
-        this.lastRat=-1;
-        this.lastDrawable=null;
+        manage.console.debug("Counter: "+this.counter);
+        this.counter=0;
+        this.lastSpace.reset();
         control.control.needRedraw=true;
     },
     purge:function(){
         compute.sum_hill.purge();
-        this.reset();
+        //this.reset();
+        this.setResol();
         view.axi.needRedraw=true;
         compute.axi.reset();
+        manage.storage.reset();
     },
     getSpace:function(){
         return this.lastSpace;
@@ -62,7 +77,7 @@ $.extend(manage.manager,{
     getTransformed:function(){
         if(this.lastTransformed===null){
             if(this.lastSpace!==null){
-                this.lastTransformed=compute.axi.transform(this.lastSpace,true);
+                this.lastTransformed=compute.axi.transform(this.lastSpace,null);
             }
         }
         return this.lastTransformed;

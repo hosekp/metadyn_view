@@ -3,7 +3,7 @@ if(typeof compute.axi==="undefined"){compute.axi={};}
 $.extend(compute.axi,{
     zmax:0,
     firstcycle:true,
-    transform:function(space,full){
+    transform:function(space,nar){
         var array=space.spacearr;
         var zm=this.zmax;
         if(space.ncv===2){
@@ -16,14 +16,12 @@ $.extend(compute.axi,{
                     }
                 }
             }
-            var nar;
-            if(full){
+            if(!nar){
                 nar=new Float32Array(len);
                 for (var i=0;i<len;i++){
                     nar[i]=array[i];
                 }
             }else{
-                nar=new Uint8Array(len);
                 for (var i=0;i<len;i++){
                     nar[i]=array[i]/zm*255;
                 }

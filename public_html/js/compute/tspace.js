@@ -1,6 +1,8 @@
 if(typeof compute==="undefined"){compute={};}
 if(typeof compute.sum_hill==="undefined"){compute.sum_hill={};}
 compute.sum_hill.tspace={
+    id:0,
+    lastid:0,
     spacearr:null,
     dims:null,
     coefs:null,
@@ -8,7 +10,9 @@ compute.sum_hill.tspace={
     nbins:0,
     res:1,
     nwhole:0,
+    ratio:-1,
     init:function(nbins,ncv){
+        this.id=this.lastid++;
         this.ncv=ncv;
         this.nbins=nbins;
         var nwh=1;
@@ -35,16 +39,42 @@ compute.sum_hill.tspace={
         }
     },
     copy:function(){
-        var space=$.extend({},compute.sum_hill.tspace);
-        space.init(this.nbins,this.ncv);
+        var space=$.extend(true,{},this);
+        this.id=this.lastid++;
+        //space.init(this.nbins,this.ncv);
+        space.spacearr=this.copyFloat32Array(this.spacearr);
+        space.coefs=this.copyInt32Array(this.coefs);
+        space.dims=this.copyInt32Array(this.dims);
+        //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
     },
-    set:function(cvs,value){
+    copyFloat32Array:function(array){
+        var nar=new Float32Array(array.length);
+        nar.set(array);
+        return nar;
+    },
+    copyInt32Array:function(array){
+        var nar=new Int32Array(array.length);
+        nar.set(array);
+        return nar;
+    },
+    /*set:function(cvs,value){
         var ndx=0;
         for(var i=0;i<this.ncv;i++){
             ndx+=cvs[i]*this.coefs[i];
         }
         this.spacearr[ndx]=value;
+    },*/
+    set:function(space){
+        if(this.ncv!==space.ncv){manage.console.error("Storage: Incompatible arrays");return;}
+        if(this.nwhole!==space.nwhole){manage.console.error("Storage: Incompatible arrays");return;}
+        this.spacearr.set(space.spacearr);
+        this.ratio=space.ratio;
+        if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
+    },
+    reset:function(){
+        this.ratio=-1;
+        this.spacearr=new Float32Array(this.nwhole);
     },
     all:function(value,typ){
         var len=this.nwhole;
@@ -142,15 +172,18 @@ compute.sum_hill.tspace={
             this.spacearr[tcoef0*(tmin0+i)]+=space.spacearr[bcoef0*(bmin0+i)];
         }
     },
-    add2:function(inds,space,checkDivis){
+    add2:function(inds,space){
         if(this.res!==space.res){
             manage.console.error("Space.add: Variable resolution not implemented");
             return;
         }
         var tdims=this.dims;
         var bdims=space.dims;
-        var lims=new Float32Array(2*(2+1));
         var divis=[false,false,false,false];
+        if(!this.templims){
+            this.templims=new Float32Array(2*(2+1));
+        }
+        var lims=this.templims;
         for(var i=0;i<2;i++){
             var icv=3*i;
             lims[icv]=Math.floor(inds[i]*tdims[i])-(bdims[i]-1)/2;
@@ -161,7 +194,8 @@ compute.sum_hill.tspace={
         }
         //var lims=this.computeLims(inds,space);
         var len0=lims[1]-lims[0];
-        var len1=lims[3+1]-lims[3];
+        var len1=lims[4]-lims[3];
+        if(len0<1||len1<1){return;}
         var tcoef=this.coefs;var bcoef=space.coefs;
         var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
         var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
