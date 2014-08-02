@@ -199,9 +199,10 @@ compute.sum_hill.tspace={
         var tcoef=this.coefs;var bcoef=space.coefs;
         var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
         var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
+        var tp1,bp1;
         for(var j=0;j<len1;j++){
-            var tp1=tp+tcoef[1]*j;
-            var bp1=bp+bcoef[1]*j;
+            tp1=tp+tcoef[1]*j;
+            bp1=bp+bcoef[1]*j;
             for(var i=0;i<len0;i++){
                 //this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)];
                 this.spacearr[tp1+tcoef[0]*i]+=space.spacearr[bp1+bcoef[0]*i];

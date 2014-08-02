@@ -128,7 +128,9 @@
     width:calc(100% - 4px);
     width: -moz-calc(100% - 4px);
     width: -webkit-calc(100% - 4px);
-    height:auto;
+    height:calc(100% - 4px);
+    height: -moz-calc(100% - 4px);
+    height: -webkit-calc(100% - 4px);
     margin: 2px;
 }
 #slide{
