@@ -179,6 +179,7 @@ compute.sum_hill.tspace={
         }
         var tdims=this.dims;
         var bdims=space.dims;
+        var divis=[false,false,false,false];
         if(!this.templims){
             this.templims=new Float32Array(2*(2+1));
         }
@@ -188,8 +189,8 @@ compute.sum_hill.tspace={
             lims[icv]=Math.floor(inds[i]*tdims[i])-(bdims[i]-1)/2;
             lims[icv+1]=Math.floor(inds[i]*tdims[i])+(bdims[i]-1)/2+1;
             lims[icv+2]=0;
-            if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;}
-            if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];}
+            if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;divis[i*2]=true;}
+            if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];divis[i*2+1]=true;}
         }
         //var lims=this.computeLims(inds,space);
         var len0=lims[1]-lims[0];
@@ -206,6 +207,7 @@ compute.sum_hill.tspace={
                 this.spacearr[tp1+tcoef[0]*i]+=space.spacearr[bp1+bcoef[0]*i];
             }
         }
+        return divis;
     },
     add3:function(inds,space){
         if(this.res!==space.res){
