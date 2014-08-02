@@ -149,7 +149,10 @@ $.extend(compute.sum_hill,{
         return inds;
     },*/
     toIndices:function(line){
-        var inds = new Float32Array(this.ncv);
+        if(!this.tempind){
+            this.tempind = new Float32Array(this.ncv);
+        }
+        var inds=this.tempind;
         //var inds=[];
         for(var i=0;i<this.ncv;i++){
             inds[i]=((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);
@@ -160,14 +163,14 @@ $.extend(compute.sum_hill,{
         var inds=this.toIndices(pos);
         return space.add(inds,blob);
     },
-    add:function(space,lastrat,torat){
+    add:function(space,torat){
         var resol=control.settings.resol.get();
         if(!this.blobs[resol]){
             this.blobs[resol]=this.createBlob(resol);
         }
         var blob=this.blobs[resol];
         var ncv=this.ncv;
-        var last=this.locate(lastrat);
+        var last=this.locate(space.ratio);
         var to=this.locate(torat);
         var periods=this.isPeriodic();
         //manage.console.debug("Add from "+last+" to "+to);
@@ -208,6 +211,7 @@ $.extend(compute.sum_hill,{
                 space.add(inds,blob);
             }
         }
+        space.ratio=torat;
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;
         

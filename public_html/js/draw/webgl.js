@@ -34,10 +34,17 @@ $.extend(draw.gl,{
         gl.viewport(0, 0, width, height);
         
     },
+    appendCans:function(){
+        this.$can_cont.append(this.$can);
+    },
     initGL:function(){
         this.$can_cont=$("#canvas_cont");
+        //manage.console.debug("GL: #canvas_cont id = "+this.$can_cont.attr("id"));
+        //var cantext='<canvas id="main_can"></canvas>';
+        //this.$can_cont.html(cantext);
+        //this.$can=this.$can_cont.children();
         this.$can=$("<canvas>").attr({id:"main_can"});
-        this.$can_cont.append(this.$can);
+        this.appendCans();
         try {
             var gl = this.$can[0].getContext("webgl") || this.$can[0].getContext("experimental-webgl");
             //gl = getWebGLContext(main.div.canvas[0]);
@@ -80,12 +87,13 @@ $.extend(draw.gl,{
     },
     initBuffers:function(){
         var gl=this.g1;
-        var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0,  1.0, -1.0,  1.0, 1.0, -1.0, 1.0,  1.0]), gl.STATIC_DRAW);
-        var texCoordBuffer=gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER,texCoordBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0.0,0.0,1.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0]),gl.STATIC_DRAW);
+        this.coordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
+        //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0,  1.0, -1.0,  1.0, 1.0, -1.0, 1.0,  1.0]), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
+        this.texCoordBuffer=gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER,this.texCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
         //gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1.0,-1.0,1.0,-1.0,-1.0,1.0,-1.0,1.0,1.0,-1.0,1.0,1.0]),gl.STATIC_DRAW);
         this.initTextures();
     },
@@ -107,7 +115,9 @@ $.extend(draw.gl,{
         //if(!gl){this.init();}
         var gl=this.g1;
         //manage.console.debug("drawing");
-        gl.vertexAttribPointer(this.program.positionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
+        gl.vertexAttribPointer(this.program.positionLocation,2,gl.FLOAT,false,0,0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
         /*var arrBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,arrBuffer);
@@ -122,6 +132,8 @@ $.extend(draw.gl,{
         }
         
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
+        //array=new Uint8Array([0,80,160,240]);
+        //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,2,2,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //texImage2D (ulong target, long level, ulong intformat, ulong width, ulong height, long border, ulong format, ulong type, Object data )
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     },
