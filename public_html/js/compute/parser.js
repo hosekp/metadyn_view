@@ -103,7 +103,7 @@ $.extend(compute.parser,{
         params.heipos=2*ncv+1;
         var cvs=[];
         for(var i=1;i<=ncv;i++){
-            cvs.push($.extend({},compute.parser.tcv,{name:"CV_"+i,pos:i,sigmapos:ncv+i,defsigma:line[ncv+i]}));
+            cvs.push($.extend({},compute.parser.tcv,{name:"CV_"+i,pos:i,sigmapos:ncv+i,defsigma:parseFloat(line[ncv+i])}));
         }
         params.cvs=cvs;
         params.ncv=ncv;
@@ -201,6 +201,16 @@ $.extend(compute.parser,{
             }
             cv.min=min;cv.max=max;
             cv.diff=cv.max-cv.min;
+            var d=Math.abs(cv.diff-2*Math.PI);
+            if(d<0.3){
+                cv.periodic=true;
+                cv.max=Math.PI;
+                cv.min=-Math.PI;
+            }else{
+                cv.min-=3*cv.defsigma;
+                cv.max+=3*cv.defsigma;
+                cv.diff=cv.max-cv.min;
+            }
         }
         
     },

@@ -169,14 +169,55 @@ $.extend(compute.sum_hill,{
         var ncv=this.ncv;
         var last=this.locate(lastrat);
         var to=this.locate(torat);
+        var periods=this.isPeriodic();
         //manage.console.debug("Add from "+last+" to "+to);
-        for(var i=last;i<to;i++){
-            var inds=this.toIndices(i);
-            space.add(inds,blob);
+        var anyperiod=false;
+        for(var i=0;i<this.ncv;i++){
+            if(periods[i]){
+                anyperiod=true;break;
+            }
+        }
+        if(anyperiod){
+            for(var i=last;i<to;i++){
+                var inds=this.toIndices(i);
+                var divis=space.add(inds,blob);
+                if(this.ncv===1){
+                    var ind1=inds[0];
+                    if(divis[0]){space.add([ind1-1],blob);}
+                    if(divis[1]){space.add([ind1+1],blob);}
+                }else if(this.ncv===2){
+                    var ind1=inds[0];
+                    var ind2=inds[1];
+                    if(divis[0]){space.add([ind1+1,ind2],blob);}
+                    if(divis[1]){space.add([ind1,ind2+1],blob);}
+                    if(divis[2]){space.add([ind1-1,ind2],blob);}
+                    if(divis[3]){space.add([ind1,ind2-1],blob);}
+                    if(divis[0]&&divis[2]){space.add([ind1+1,ind2+1],blob);}
+                    if(divis[0]&&divis[3]){space.add([ind1+1,ind2-1],blob);}
+                    if(divis[1]&&divis[2]){space.add([ind1-1,ind2+1],blob);}
+                    if(divis[1]&&divis[3]){space.add([ind1-1,ind2-1],blob);}
+                }else if(this.ncv===3){
+                    manage.console.warning("Sum_hills: Add3 not implemented");
+                }else{
+                    
+                }
+            }
+        }else{
+            for(var i=last;i<to;i++){
+                var inds=this.toIndices(i);
+                space.add(inds,blob);
+            }
         }
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;
         
+    },
+    isPeriodic:function(){
+        var ret=[];
+        for(var i=0;i<this.ncv;i++){
+            ret.push(this.params.cvs[i].periodic);
+        }
+        return ret;
     },
     locate:function(rat){
         if(rat<0){return 0;}
