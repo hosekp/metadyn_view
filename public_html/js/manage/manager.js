@@ -24,6 +24,7 @@ $.extend(manage.manager,{
             this.initSpace();
         }
         var lrat=this.lastSpace.ratio;
+        if(rat===0){rat=-1;}
         if(rat<lrat){
             this.reset();
             lrat=-1;

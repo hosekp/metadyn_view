@@ -4,7 +4,10 @@ $.extend(view.axi,{
     tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa"},
     div:{},
     template:"",
-    menuwidth:40,
+    xwidth:40,
+    ywidth:50,
+    zwidth:55,
+    zheight:40,
     needRedraw:true,
     init:function(){
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
@@ -36,15 +39,16 @@ $.extend(view.axi,{
         this.arrange();
     },
     arrange:function(){
-        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:this.menuwidth+"px"}).css({height:"-="+this.menuwidth+"px"});
-        this.div.$select.css({top:"100%",left:"0px",height:this.menuwidth+"px",width:this.menuwidth+"px"}).css({top:"-="+this.menuwidth+"px"});
-        this.div.$cancont.css({top:"5px",left:(this.menuwidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.menuwidth+10)+"px",width:"-="+(2*this.menuwidth+10)+"px"});
-        this.div.$x.css({top:"100%",left:this.menuwidth+"px",height:this.menuwidth+"px",width:"100%"}).css({top:"-="+this.menuwidth+"px",width:"-="+(2*this.menuwidth)+"px"});
-        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:this.menuwidth+"px"}).css({left:"-="+this.menuwidth+"px"});
-        this.div.$z_up.css({top:"0px",width:this.menuwidth+"px",height:this.menuwidth+"px"});
-        this.div.$z.css({top:this.menuwidth+"px",width:this.menuwidth+"px",height:"100%"}).css({height:"-="+(3*this.menuwidth)+"px"});
-        this.div.$z_down.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(2*this.menuwidth)+"px"});
-        this.div.$z_auto.css({top:"100%",width:this.menuwidth+"px",height:this.menuwidth+"px"}).css({top:"-="+(this.menuwidth)+"px"});
+        
+        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
+        this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
+        this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+this.zwidth+10)+"px"});
+        this.div.$x.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+this.zwidth)+"px"});
+        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:this.zwidth+"px"}).css({left:"-="+this.zwidth+"px"});
+        this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:this.zheight+"px"});
+        this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"}).css({height:"-="+(3*this.zheight)+"px"});
+        this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(2*this.zheight)+"px"});
+        this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
         draw.gl.resize();
         this.needRedraw=true;
         //manage.console.debug("Axis resized");
@@ -103,6 +107,7 @@ $.extend(view.axi,{
         ctx.fillText(text,5,height/2-15);
         
         // Z-AXI
+        var margin=7;
         var can=this.div.$z;
         var width=can.width();
         var height=can.height();
@@ -111,17 +116,17 @@ $.extend(view.axi,{
         ctx.strokeStyle="black";
         var barwid=15;
         ctx.beginPath();
-        ctx.moveTo(1,5);
-        ctx.lineTo(1,height-5);
-        ctx.lineTo(barwid,height-5);
-        ctx.lineTo(barwid,5);
-        ctx.lineTo(1,5);
-        var bar=this.bar.get(height-10);
-        ctx.putImageData(bar,1,5);
+        ctx.moveTo(1,margin);
+        ctx.lineTo(1,height-margin);
+        ctx.lineTo(barwid,height-margin);
+        ctx.lineTo(barwid,margin);
+        ctx.lineTo(1,margin);
+        var bar=this.bar.get(height-2*margin);
+        ctx.putImageData(bar,1,margin);
         var max=compute.axi.zmax;
         var range=this.natureRange(0,max,10,false);
         for(var i=0;i<range.length;i++){
-            var pos=5+(1-range[i]/max)*(height-10);
+            var pos=margin+(1-range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
             ctx.fillText(range[i].toPrecision(2),barwid+7,pos+5);

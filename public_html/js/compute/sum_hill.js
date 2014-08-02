@@ -180,10 +180,12 @@ $.extend(compute.sum_hill,{
                 anyperiod=true;break;
             }
         }
+        var inds;
+        var divis;
         if(anyperiod){
             for(var i=last;i<to;i++){
-                var inds=this.toIndices(i);
-                var divis=space.add(inds,blob);
+                inds=this.toIndices(i);
+                divis=space.add(inds,blob);
                 if(this.ncv===1){
                     var ind1=inds[0];
                     if(divis[0]){space.add([ind1-1],blob);}
@@ -191,14 +193,31 @@ $.extend(compute.sum_hill,{
                 }else if(this.ncv===2){
                     var ind1=inds[0];
                     var ind2=inds[1];
-                    if(divis[0]){space.add([ind1+1,ind2],blob);}
-                    if(divis[1]){space.add([ind1,ind2+1],blob);}
-                    if(divis[2]){space.add([ind1-1,ind2],blob);}
-                    if(divis[3]){space.add([ind1,ind2-1],blob);}
-                    if(divis[0]&&divis[2]){space.add([ind1+1,ind2+1],blob);}
-                    if(divis[0]&&divis[3]){space.add([ind1+1,ind2-1],blob);}
-                    if(divis[1]&&divis[2]){space.add([ind1-1,ind2+1],blob);}
-                    if(divis[1]&&divis[3]){space.add([ind1-1,ind2-1],blob);}
+                    if(divis[0]){
+                        space.add([ind1+1,ind2],blob);
+                        if(divis[2]){
+                            space.add([ind1,ind2+1],blob);
+                            space.add([ind1+1,ind2+1],blob);
+                        }else
+                        if(divis[3]){
+                            space.add([ind1,ind2-1],blob);
+                            space.add([ind1+1,ind2-1],blob);
+                        }
+                    }else
+                    if(divis[1]){
+                        space.add([ind1-1,ind2],blob);
+                        if(divis[2]){
+                            space.add([ind1,ind2+1],blob);
+                            space.add([ind1-1,ind2+1],blob);
+                        }else
+                        if(divis[3]){
+                            space.add([ind1,ind2-1],blob);
+                            space.add([ind1-1,ind2-1],blob);
+                        }
+                    }else{
+                        if(divis[2]){space.add([ind1,ind2+1],blob);}else
+                        if(divis[3]){space.add([ind1,ind2-1],blob);}
+                    }
                 }else if(this.ncv===3){
                     manage.console.warning("Sum_hills: Add3 not implemented");
                 }else{
@@ -249,5 +268,4 @@ $.extend(compute.sum_hill,{
         
     },
     haveData:function(){return this.loaded;}
-    
 });
