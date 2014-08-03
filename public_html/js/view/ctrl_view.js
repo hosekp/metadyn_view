@@ -146,6 +146,7 @@ $.extend(view.ctrl,{
             view.axi.needArrange=true;
             view.ctrl.slide.render();
             control.measure.needRecompute=true;
+            control.control.needRedraw=true;
             this.resizing=false;
         }
     },
