@@ -58,6 +58,7 @@ $.extend(manage.manager,{
         //this.reset();
         this.lastSpace=null;
         this.lastDrawable=null;
+        this.lastTransformed=null;
         manage.storage.reset();
         control.control.needRedraw=true;
     },

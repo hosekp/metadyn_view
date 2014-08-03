@@ -36,8 +36,14 @@ $.extend(control.measure,{
         var trans=manage.manager.getTransformed();
         if(trans===null){return 0;}
         var resol=control.settings.resol.get();
-        var x=Math.floor(pos.x*resol);
-        var y=Math.floor(pos.y*resol);
+        var ncv=control.settings.ncv.get();
+        var x,y=0;
+        if(ncv===2){
+            x=Math.floor(pos.x*resol);
+            y=Math.floor(pos.y*resol);
+        }else if(ncv===1){
+            x=Math.floor(pos.x*resol);
+        }
         return trans[x+y*resol];
         
     }

@@ -7,7 +7,7 @@ $.extend(compute.sum_hill,{
     artime:null,
     ncv:1,
     nbody:0,
-    msi:2.3,  // const - multiple of sigma   2=95%
+    msi:2.8,  // const - multiple of sigma   2=95%
     blobs:{},
     params:null,
     loaded:false,
@@ -234,7 +234,6 @@ $.extend(compute.sum_hill,{
         space.ratio=torat;
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;
-        
     },
     isPeriodic:function(){
         var ret=[];
