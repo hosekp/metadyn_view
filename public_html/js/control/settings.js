@@ -10,6 +10,8 @@ $.extend(control.settings,{
         this.loop=this.create(true);
         
         this.height=this.create(1);
+        this.ncv=this.create(0);
+        this.loglvl=this.create(4);
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(true);
@@ -32,6 +34,9 @@ $.extend(control.settings,{
                 control.measure.unbind();
             }
         };
+        this.ncv.call=function(){
+            view.axi.needArrange=true;
+        };
         this.readHash();
     },
     readHash:function(){
@@ -53,7 +58,8 @@ $.extend(control.settings,{
             if(hash["spd"]){this.speed.set(parseFloat(hash["spd"]));}
             //if(hash["mes"]){this.measure.set(hash["mes"]==="true");}
             if(hash["res"]){this.resol.set(parseFloat(hash["res"]));}
-            if(hash["lop"]){this.loop.set(hash["rpt"]==="true");}
+            if(hash["lop"]){this.loop.set(hash["lop"]==="true");}
+            if(hash["log"]){this.loglvl.set(parseInt(hash["log"]));}
             this.hashRequested=true;
         }
     },
@@ -68,6 +74,7 @@ $.extend(control.settings,{
         if(!this.speed.isdef()){ret+="&spd="+this.speed.value;}
         if(!this.resol.isdef()){ret+="&res="+this.resol.value;}
         if(!this.loop.isdef()){ret+="&lop="+this.loop.value;}
+        if(!this.loglvl.isdef()){ret+="&log="+this.loglvl.value;}
         if(!this.height.isdef()){ret+="&hei="+this.height.value;}
         if(!this.axi_x.isdef()){ret+="&axx="+this.axi_x.value;}
         if(!this.axi_y.isdef()){ret+="&axy="+this.axi_y.value;}

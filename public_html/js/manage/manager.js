@@ -18,8 +18,11 @@ $.extend(manage.manager,{
         return true;
     },
     draw:function(rat){
-        if(!draw.gl.inited){return false;}
+        //if(!draw.gl.inited){return false;}
         if(!compute.sum_hill.haveData()){return false;}
+        if(!draw.drawer.isInited()){
+            return false;
+        }
         if(this.lastSpace===null){
             this.initSpace();
         }
@@ -43,13 +46,13 @@ $.extend(manage.manager,{
             compute.axi.transform(this.lastSpace,this.lastDrawable);
             this.lastTransformed=null;
         }
-        draw.gl.draw(this.lastDrawable);
+        draw.drawer.draw(this.lastDrawable);
         return true;
     },
     initSpace:function(){
         //var resol=control.settings.resol.get();
         this.lastSpace=compute.sum_hill.createSpace();
-        this.lastDrawable=new Uint8Array(this.lastSpace.nwhole);
+        this.lastDrawable=compute.axi.getDrawable(this.lastSpace.nwhole);
     },
     setResol:function(){
         //this.reset();
@@ -61,7 +64,9 @@ $.extend(manage.manager,{
     reset:function(){
         manage.console.debug("Counter: "+this.counter);
         this.counter=0;
-        this.lastSpace.reset();
+        if(this.lastSpace){
+            this.lastSpace.reset();
+        }
         control.control.needRedraw=true;
     },
     purge:function(){
@@ -78,10 +83,17 @@ $.extend(manage.manager,{
     getTransformed:function(){
         if(this.lastTransformed===null){
             if(this.lastSpace!==null){
-                this.lastTransformed=compute.axi.transform(this.lastSpace,null);
+                this.lastTransformed=compute.axi.transform(this.lastSpace,null,true);
             }
         }
         return this.lastTransformed;
+    },
+    dataLoaded:function(){
+        this.lastSpace=null;
+        this.lastDrawable=null;
+        control.settings.ncv.set(compute.sum_hill.ncv);
+        this.reset();
+        draw.drawer.switchTo();
     }
     
 });

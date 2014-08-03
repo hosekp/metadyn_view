@@ -143,7 +143,7 @@ $.extend(view.ctrl,{
             this.width=parseInt(wid);
             $("#cont").css({width:wid});
             $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
-            view.axi.arrange();
+            view.axi.needArrange=true;
             view.ctrl.slide.render();
             control.measure.needRecompute=true;
             this.resizing=false;

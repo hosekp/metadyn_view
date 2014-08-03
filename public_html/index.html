@@ -27,6 +27,8 @@ and open the template in the editor.
         <script type="text/javascript" src="js/control/control.js"></script>
         <script type="text/javascript" src="js/control/measure.js"></script>
         <script type="text/javascript" src="js/draw/webgl.js"></script>
+        <script type="text/javascript" src="js/draw/liner.js"></script>
+        <script type="text/javascript" src="js/draw/drawer.js"></script>
     </head>
     <body>
         <!--<script id="ctrl_template" type="text/html" src="templates/ctrl.html"></script>-->
@@ -48,13 +50,14 @@ and open the template in the editor.
         </div>
         <script type="text/javascript">
             $(function(){
-                manage.console.loglevel=4;
+                //manage.console.loglevel=4;
                 control.settings.init();
                 view.ctrl.init();
                 view.axi.init();
-                draw.gl.init();
+                //draw.drawer.init();
                 control.control.init();
                 control.measure.init();
+                //draw.gl.init();
                 //view.ctrl.renderProgress(1);
                 //Mustache.parse(template);
                 //compute.reader.initEvents();

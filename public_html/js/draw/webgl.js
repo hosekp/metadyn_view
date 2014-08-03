@@ -1,17 +1,17 @@
 if(typeof draw==="undefined"){draw={};}
 if(typeof draw.gl==="undefined"){draw.gl={};}
 $.extend(draw.gl,{
-    $can:null,
-    $can_cont:null,
     g1:null,
     vertex:null,
     fragment:null,
-    program:null,
     inited:false,
+    program:null,
     init:function(){
+        //if(this.inited){return true;}
         if(!this.initGL()){return false;}
         this.getShader("2d-vertex.shd","vertex");
         this.getShader("2d-fragment.shd","fragment");
+        return false;
         //if(!this.initShaders()){return false;}
         //this.initBuffers();
         //this.initParam();
@@ -19,34 +19,18 @@ $.extend(draw.gl,{
         //var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
         //gl.uniform2f(resolutionLocation, main.width, main.height);
     },
-    resize:function(){
-        var gl=this.g1;
-        var width=this.$can_cont.width();
-        var height=this.$can_cont.height();
-        this.$can.width(width);
-        this.$can.height(height);
-        this.$can.attr({width:width,height:height});
-//        this.$can[0].width=width;
-//        this.$can[0].height=height;
-        //var resol=control.settings.resol.get();
-//        this.g1.viewportWidth = resol;
-//        this.g1.viewportHeight = resol;
-        gl.viewport(0, 0, width, height);
-        
+    isInited:function(){
+        return this.inited;
     },
-    appendCans:function(){
-        this.$can_cont.append(this.$can);
+    resize:function(width,height){
+        if(this.g1){
+            this.g1.viewport(0, 0, width, height);
+        }
     },
     initGL:function(){
-        this.$can_cont=$("#canvas_cont");
-        //manage.console.debug("GL: #canvas_cont id = "+this.$can_cont.attr("id"));
-        //var cantext='<canvas id="main_can"></canvas>';
-        //this.$can_cont.html(cantext);
-        //this.$can=this.$can_cont.children();
-        this.$can=$("<canvas>").attr({id:"main_can"});
-        this.appendCans();
+        var $can=draw.drawer.getCan();
         try {
-            var gl = this.$can[0].getContext("webgl") || this.$can[0].getContext("experimental-webgl");
+            var gl = $can[0].getContext("webgl") || $can[0].getContext("experimental-webgl");
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch(e) {manage.console.error(e);return false;}
         if (!gl) {
@@ -112,7 +96,7 @@ $.extend(draw.gl,{
         this.inited=true;
     },
     draw:function(array){
-        //if(!gl){this.init();}
+        //if(!this.inited){this.init();}
         var gl=this.g1;
         //manage.console.debug("drawing");
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);

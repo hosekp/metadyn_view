@@ -3,7 +3,7 @@ if(typeof manage.console==="undefined"){manage.console={};}
 $.extend(manage.console,{
     $console:null,
     constext:[],
-    loglevel:2,
+    //loglevel:2,
     /* 0= nic
      * 1= pouze errory
      * 2= i warningy
@@ -14,7 +14,7 @@ $.extend(manage.console,{
         this.$console=$("#cons");
     },
     addText:function(string,loglvl){
-        if(this.loglevel<loglvl){return;}
+        if(control.settings.loglvl.get()<loglvl){return;}
         if(this.$console===null){this.init();}
         var txt=this.constext;
         var colors={1:"red",2:"orange",3:"black",4:"blue"};

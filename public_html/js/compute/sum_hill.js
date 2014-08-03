@@ -42,6 +42,7 @@ $.extend(compute.sum_hill,{
         }
         this.setRealLimits();
         this.loaded=true;
+        manage.manager.dataLoaded();
         //this.blob=this.createBlob();
         manage.console.log("Sum_hills: loaded");
     },
