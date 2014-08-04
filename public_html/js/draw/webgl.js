@@ -41,7 +41,7 @@ $.extend(draw.gl,{
         //this.resize();
         return true;
     },
-    initShaders:function(){
+    initProgram:function(){
         var gl=this.g1;
         var progr = gl.createProgram();
         this.program=progr;
@@ -123,10 +123,10 @@ $.extend(draw.gl,{
     },
     getShader:function(id,typ) {
         $.get("shaders/"+id,$.proxy(function(str){
-            this.parseShader(str,typ);
+            this.initShader(str,typ);
         },this),"text");
     },
-    parseShader:function(str,typ){
+    initShader:function(str,typ){
         var gl=this.g1;
         if(typ==="vertex"){
             var shader=gl.createShader(gl.VERTEX_SHADER); 
@@ -146,7 +146,7 @@ $.extend(draw.gl,{
             this.fragment=shader;
         }else{return null;}
         if(this.vertex && this.fragment){
-            this.initShaders();
+            this.initProgram();
         }
     }
 });

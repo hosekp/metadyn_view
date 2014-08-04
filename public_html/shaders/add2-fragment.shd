@@ -1,0 +1,60 @@
+#ifdef GL_ES
+precision highp float;
+#endif
+varying vec2 vTextureCoord;
+
+uniform sampler2D src;
+uniform sampler2D rand;
+uniform float randomOffset;
+uniform float canvasWidth;
+uniform float canvasHeight;
+
+void round(inout vec3 orig){
+    orig.x=sign(orig.x)*floor(abs(orig.x)+0.5);
+    orig.y=sign(orig.y)*floor(abs(orig.y)+0.5);
+    orig.z=sign(orig.z)*floor(abs(orig.z)+0.5);
+}
+float unPackValue(in vec3 bytes){
+    bytes = bytes * vec3(255.0, 255.0, 255.0);
+    round(bytes);
+    return (bytes.x * 65536.0)  + (bytes.y * 256.0) + bytes.z;
+}
+vec3 packValue(in float value){
+    vec3 ret = vec3(0.0, 0.0, 0.0);
+    int totalBytes = 3;
+    float radixMax = 0.0;
+    int place = 0;
+    for(int i = 3; i > 0; --i){
+        radixMax = pow(256.0, float(i - 1));
+        place = (3 - i);
+        if(value >= radixMax){
+            if (place == 2)
+                ret[2] = floor(value / radixMax);
+            else if (place == 1)\
+                ret[1] = floor(value / radixMax);
+            else if (place == 0)\
+                ret[0] = floor(value / radixMax);
+            value = mod(value, radixMax);
+        }
+    }
+    return (ret   / vec3(255.0, 255.0, 255.0));
+}
+void main(void){
+    float pixelWidth =  1.0 / canvasWidth;
+    float pixelHeight =  1.0 / canvasHeight;
+
+    vec3 outputVec = vec3(0.0, 0.0, 0.0);
+
+    float resultValue = 0.0;
+    for(float i = 0.0; i < 2000.00; ++i){
+        if(!(i < float(canvasWidth)))
+            break;
+    	float valueOne = 0.0;
+    	valueOne = unPackValue(texture2D(src, vec2( (i * pixelWidth), vTextureCoord.t)).xyz);
+    	float valueTwo = 0.0;
+    	valueTwo = unPackValue(texture2D(rand, vec2(vTextureCoord.s, (i * pixelHeight))).xyz);
+	resultValue += valueOne *  valueTwo;
+    }
+    outputVec.xyz = packValue(resultValue);
+    gl_FragColor = vec4(outputVec,  1.0);
+}
