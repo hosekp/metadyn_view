@@ -1,0 +1,125 @@
+#ifdef GL_ES
+precision highp float;
+precision highp int;
+#endif
+varying vec2 vTextureCoord;
+
+uniform sampler2D src;
+uniform sampler2D rand;
+uniform float randomOffset;
+uniform float canvasWidth;
+uniform float canvasHeight;
+
+void round(inout vec4 orig){
+    orig.x=sign(orig.x)*floor(abs(orig.x)+0.5);
+    orig.y=sign(orig.y)*floor(abs(orig.y)+0.5);
+    orig.z=sign(orig.z)*floor(abs(orig.z)+0.5);
+    orig.w=sign(orig.w)*floor(abs(orig.w)+0.5);
+}
+float unPackValue(in vec4 bytes){
+    bytes = bytes * vec4(255.0, 255.0, 255.0, 255.0);
+    round(bytes);
+    //const vec4 bitShifts = vec4(256.0 * 256.0 * 256.0,256.0 * 256.0,256.0,1);
+    const vec3 bitShifts = vec3(256.0 * 256.0,256.0,1.0);
+    return dot(bytes.xyz,bitShifts)/pow(10.0,bytes.w-127.0);
+}
+int getDecim(in float value){
+    const float limit=256.0*65536.0;
+    //return 0;
+    for(int d=0;d<120;d++){
+        if(value>limit){return d-1;}
+        value*=10.0;
+    }
+    return 0;
+}
+vec4 packValue(in float value){
+    vec4 ret = vec4(0.0, 0.0, 0.0, 0.0);
+    int dec=getDecim(value);
+    float intval=value*pow(10.0,float(dec));
+    ret[0]=floor(intval/65536.0);
+    intval-=ret[0]*65536.0;
+    ret[1]=floor(intval/256.0);
+    intval-=ret[1]*256.0;
+    ret[2]=floor(intval);
+    ret[3]=float(dec+127);
+    return (ret   / vec4(255.0, 255.0, 255.0,255.0));
+}
+/*vec4 packValue(in float value){
+    vec4 ret = vec4(0.0, 0.0, 0.0, 0.0);
+    
+    float radixMax = 0.0;
+    int place = 0;
+    for(int i = 3; i > 0; --i){
+        radixMax = pow(256.0, float(i - 1));
+        place = (3 - i);
+        if(value >= radixMax){
+            if (place == 3){
+                ret[3] = floor(value / radixMax);}
+            else if (place == 2){
+                ret[2] = floor(value / radixMax);}
+            else if (place == 1){
+                ret[1] = floor(value / radixMax);}
+            else if (place == 0){
+                ret[0] = floor(value / radixMax);}
+            value = mod(value, radixMax);
+        }
+    }
+    return (ret   / vec4(255.0, 255.0, 255.0,255.0));
+}*/
+/*
+float unPackValue(in vec4 bytes){
+    bytes = bytes * vec4(255.0, 255.0, 255.0, 255.0);
+    round(bytes);
+    return ((bytes.x * 65536.0)  + (bytes.y * 256.0) + bytes.z)/pow(10.0,bytes.a-127.0);
+}
+vec4 packValue(in float value){
+    vec4 ret = vec4(0.0, 0.0, 0.0, 0.0);
+    int dec=getDecim(value);
+    int intval=value*pow(10,dec);
+    ret[0]=floor(intval/65536);
+    intval-=ret[0]*65536;
+    ret[1]=floor(intval/256);
+    intval-=ret[1]*256;
+    ret[2]=floor(intval);
+    ret[3]=dec+127;
+    return (ret   / vec4(255.0, 255.0, 255.0,255.0));
+}*/
+void main(void){
+    vec4 outputVec = vec4(0.0, 0.0, 0.0, 1.0);
+    float valueOne = 0.0;
+    valueOne = unPackValue(texture2D(src, vTextureCoord).xyzw);
+    float valueTwo = 0.0;
+    valueTwo = unPackValue(texture2D(rand, vTextureCoord).xyzw);
+    float multied = valueOne*valueTwo;
+    outputVec.xyzw = packValue(multied);
+    gl_FragColor = outputVec;
+    //gl_FragColor = texture2D(src, vTextureCoord);
+    //if(texture2D(rand, vTextureCoord)[2]>0.51){
+    //    gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    //}
+    //gl_FragColor = vec4(vTextureCoord.s,vTextureCoord.t,1.0-vTextureCoord.s*vTextureCoord.t,  1.0);
+    //if(abs(vTextureCoord.s-0.5)<0.05||abs(vTextureCoord.t-0.5)<0.05){
+    //    gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    //}else{
+    //    gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    //}
+}
+/*void maing(void){
+    float pixelWidth =  1.0 / canvasWidth;
+    float pixelHeight =  1.0 / canvasHeight;
+
+    vec3 outputVec = vec3(0.0, 0.0, 0.0);
+
+    float resultValue = 0.0;
+    for(float i = 0.0; i < 2000.00; ++i){
+        if(!(i < float(canvasWidth)))
+            break;
+    	float valueOne = 0.0;
+    	valueOne = unPackValue(texture2D(src, vec2( (i * pixelWidth), vTextureCoord.t)).xyz);
+    	float valueTwo = 0.0;
+    	valueTwo = unPackValue(texture2D(rand, vec2(vTextureCoord.s, (i * pixelHeight))).xyz);
+	resultValue += valueOne *  valueTwo;
+    }
+    outputVec.xyz = packValue(resultValue);
+    gl_FragColor = vec4(outputVec,  1.0);
+}*/

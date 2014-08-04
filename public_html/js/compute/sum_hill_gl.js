@@ -1,10 +1,10 @@
 if (typeof compute === "undefined") {
     compute = {};
 }
-if (typeof compute.sum_hill === "undefined") {
-    compute.sum_hill = {};
+if (typeof compute.sum_hill_gl === "undefined") {
+    compute.sum_hill_gl = {};
 }
-$.extend(compute.sum_hill, {
+$.extend(compute.sum_hill_gl, {
     msi: 2.8, // const - multiple of sigma   2=95%
     blobs: {},
     inited: false,
@@ -20,9 +20,9 @@ $.extend(compute.sum_hill, {
         this.inited = false;
     },
     initGL: function() {
-        var $can = $("<canvas>");
+        var can = $("<canvas>");
         try {
-            var gl = $can[0].getContext("webgl") || $can[0].getContext("experimental-webgl");
+            var gl = can[0].getContext("webgl",{premultipliedAlpha:false}) || can[0].getContext("experimental-webgl",{premultipliedAlpha:false});
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch (e) {
             manage.console.error(e);
@@ -34,6 +34,7 @@ $.extend(compute.sum_hill, {
         }
         //gl.clearColor(0.0, 0.0, 0.0, 1.0);
         this.g1 = gl;
+        this.$can=can;
         //this.resize();
         return true;
     },
@@ -197,30 +198,19 @@ $.extend(compute.sum_hill, {
         this.coordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
         //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0,  1.0, -1.0,  1.0, 1.0, -1.0, 1.0,  1.0]), gl.STATIC_DRAW);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
         this.texCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
         //gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1.0,-1.0,1.0,-1.0,-1.0,1.0,-1.0,1.0,1.0,-1.0,1.0,1.0]),gl.STATIC_DRAW);
-        this.initTextures();
-    },
-    initTextures: function() {
-        var gl = this.g1;
-        //var textureSizeLocation = gl.getUniformLocation(this.program, "u_textureSize");
-        //gl.uniform2f(textureSizeLocation, main.width, main.height);
-        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        var texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        //this.initTextures();
         manage.console.log("WebGL loaded");
         this.inited = true;
+        this.test();
     },
     calculateFrame: function(framebuffer, textureOne, textureTwo, canvasWidth, canvasHeight) {
         var gl = this.g1;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
         gl.vertexAttribPointer(this.program.positionLocation, 2, gl.FLOAT, false, 0, 0);
@@ -250,7 +240,7 @@ $.extend(compute.sum_hill, {
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     },
-    createtexture:function(width, height, srcarr, bytesPerValue) {
+    createTexture:function(width, height, srcarr, bytesPerValue) {
         var packValue = function(value, bytesPerValue) {
             var bytes = []
             var radixMax = 0.0;
@@ -271,75 +261,43 @@ $.extend(compute.sum_hill, {
             bytes.push(255);
             return bytes;
         };
+        var pack = function(val) {
+            var intval=val*(1024*16);
+            var bytes = [0,0,0,0];
+            for(var i=0;i<4;i++){
+                bytes[3-i]=Math.floor(intval%256);
+                intval/=256;
+            }
+            return bytes;
+        };
+
         var array=new Uint8Array(width*height*4);
         for(var i=0;i<height;i++){
             //var row = elements[i];
             var rowOffset = (i * width);
             for(var j=0;j<width;j++){
                 var offset = rowOffset + j;
-                var packed=packValue(srcarr[offset],bytesPerValue);
+                var packed=pack(srcarr[offset],bytesPerValue);
                 for(var k=0;k<4;k++){
                     array[4*offset+k]=packed[k];
                 }
             }
         }
-        return this.createTextureFromCanvas(array);
+        return this.createTextureFromCanvas(array,width,height);
     },
-    /*createTexture: function(canvasWidth, canvasHeight, elements, bytesPerValue) {
-        var packValue = function(value, bytesPerValue) {
-            var bytes = []
-            var radixMax = 0.0;
-            var place = 0;
-            for (var i = bytesPerValue; i > 0; --i) {
-                radixMax = Math.pow(256.0, i - 1);
-                place = (bytesPerValue - i);
-                if (value >= radixMax) {
-                    bytes[place] = Math.floor(value / radixMax);
-                    value = value % radixMax;
-                } else {
-                    bytes[place] = 0;
-                }
-            }
-            if (value > 0)
-                throw "overflow in packValue to texture"
-            //last byte, alpha value has to be 255					
-            bytes.push(255)
-            return bytes;
-        }
-        var overwrite = function(dest, offset, src) {
-            for (var i = 0; i < src.length; ++i) {
-                dest[offset + i] = src[i];
-            }
-        }
-
-        var canvas = document.createElement("canvas");
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-        var ctx = canvas.getContext("2d");
-        var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-
-        for (var i = 0; i < elements.length; ++i) {
-            var row = elements[i];
-            var rowOffset = (i * row.length * 4)
-            for (var k = 0; k < row.length; ++k) {
-                var offset = rowOffset + (k * 4);
-                overwrite(imgData.data, offset, packValue(row[k], bytesPerValue));
-            }
-        }
-        ctx.putImageData(imgData, 0, 0);
-
-        return this.createTextureFromCanvas(canvas);
-    },*/
-    createTextureFromCanvas: function(canvas) {
+    createTextureFromCanvas: function(typedArray,width,height) {
+        var gl = this.g1;
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+        //manage.console.debug("createTexture: arg is type "+(typeof typedArray));
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,width,height,0, gl.RGBA, gl.UNSIGNED_BYTE, typedArray);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
         return texture;
     },
     createFramebuffer: function(texture, width, height) {
+        var gl = this.g1;
         var globalRenderBufferId = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, globalRenderBufferId);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
@@ -357,15 +315,18 @@ $.extend(compute.sum_hill, {
         return globalFbo;
     },
     unpackTexture: function(pixels, width, height, bytesPerValue) {
-        var unpack = function(bytes) {
+        var unnpack = function(bytes) {
             var value = 0.0;
             //ignore final byte which is always 255
-            for (var i = 0; i < bytes.length - 1; ++i) {
-                value += bytes[i] * Math.pow(256, (bytes.length - 2) - i);
+            for (var i = 0; i < bytes.length; ++i) {
+                value += bytes[i] * Math.pow(256, (bytes.length - 1) - i);
             }
             return value;
         };
-
+        var unpack = function(bytes) {
+                var value = (bytes[0]*65536+bytes[1]*256+bytes[2])*256+bytes[3];
+                return value/(1024*16);
+            };
         var desarr=new Float32Array(width*height);
         for (var i = 0; i < height; i++) {
             for (var k = 0; k < width; k++) {
@@ -374,7 +335,7 @@ $.extend(compute.sum_hill, {
                 if ("length" in pixels) {
                     if (!(end <= pixels.length))
                         throw "dimensions wrong in unpackTexture";
-                    desarr[i*width+k]=unpack([pixels[begin],pixels[begin+1],pixels[begin+2]]);
+                    desarr[i*width+k]=unpack([pixels[begin],pixels[begin+1],pixels[begin+2],pixels[begin+3]]);
                 }else{
                     manage.console.error("No length");
                 }
@@ -383,22 +344,121 @@ $.extend(compute.sum_hill, {
         }
         return desarr;
     },
-    multiply:function(space1,space2){
+    add_gl:function(space1,space2,ntimes){
+        var gl = this.g1;
         if(!this.inited){return null;}
         var width=space1.dims[0];
         var height=space1.dims[1];
         this.resize(width,height);
         var resarr=new Uint8Array(4*width*height);
-        var framebuffer = this.createFramebuffer(this.createTextureFromCanvas(resarr) , width, height); 
-        var leftMatrix = this.createTexture(width, height, space1.spacearr, 3);
-        var rightMatrix = matrix.createTexture(matrix.cols(), matrix.rows(), matrix.elements, 3);
-    
-        var pixels = new Uint8Array(fbcanvas.width* fbcanvas.height * 4);
-        this.calculateFrame(framebuffer, leftMatrix, rightMatrix, fbcanvas.width, fbcanvas.height);
-        Matrix.gl.bindFramebuffer( Matrix.gl.FRAMEBUFFER, framebuffer);
-        Matrix.gl.readPixels(0, 0, fbcanvas.width, fbcanvas.height, Matrix.gl.RGBA, Matrix.gl.UNSIGNED_BYTE, pixels);
-        Matrix.gl.bindFramebuffer( Matrix.gl.FRAMEBUFFER, null);
+        var framebuffer = this.createFramebuffer(this.createTextureFromCanvas(resarr,width,height) , width, height); 
+        var leftTexture = this.createTexture(width, height, space1.spacearr, 3);
+        var rightTexture = this.createTexture(width, height, space2.spacearr, 3);
+        
+        var pixels = new Uint8Array(width* height * 4);
+        if(ntimes){
+            for(var i=0;i<ntimes-1;i++){
+                this.calculateFrame(framebuffer, leftTexture, rightTexture, width, height);
+                gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
+                gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                gl.bindFramebuffer( gl.FRAMEBUFFER, null);
+                gl.bindTexture(gl.TEXTURE_2D, leftTexture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,width,height,0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        }
 
-        elements = this.unpackTexture(pixels, fbcanvas.width, fbcanvas.height, 4);
+        return this.unpackTexture(pixels, width, height, 4);
+    },
+    test:function(){
+        var width=32*8;
+        var height=width;
+        var space1=compute.sum_hill.createSpace([width,height],2); 
+        var space2=compute.sum_hill.createSpace([width,height],2);
+        for(var i=0;i<width*height;i++){
+            //space1.spacearr[i]=Math.floor(Math.random()*255);
+            space1.spacearr[i]=100000;
+            space2.spacearr[i]=i;
+        }
+        $("#all").append(this.$can);
+        if(false){
+            this.resize(width,height);
+            var gl = this.g1;
+            
+            var resarr=new Uint8Array(4*width*height);
+            var framebuffer = this.createFramebuffer(this.createTextureFromCanvas(resarr,width,height) , width, height);
+            var pixels = new Uint8Array(width* height * 4);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+            
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
+            gl.vertexAttribPointer(this.program.positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+            gl.vertexAttribPointer(this.program.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.activeTexture(gl.TEXTURE0);
+            var texture1=this.createTexture(width,height,space1.spacearr,3);
+            var texture2=this.createTexture(width,height,space2.spacearr,3);
+            //var texture=this.createTexture(2,2,new Uint32Array([0,254,50000,10000000]),3);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.uniform1i(this.program.srcUniformLoc, 0);
+            gl.uniform1f(this.program.randomUniform, 1);
+
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.uniform1i(this.program.randLoc, 1);
+
+            gl.uniform1f(this.program.canvasWidthLoc, width);
+            gl.uniform1f(this.program.canvasHeightLoc, height);
+
+            //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, BUFFERS.cubeVertexIndexBuffer);
+            //gl.drawElements(gl.TRIANGLES, BUFFERS.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            gl.bindFramebuffer( gl.FRAMEBUFFER, framebuffer);
+            gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            gl.bindFramebuffer( gl.FRAMEBUFFER, null);
+            result=this.unpackTexture(pixels, width, height, 4);
+            //result=pixels;
+        }
+        if(false){
+            var unpack = function(bytes) {
+                var value = (bytes[0]*65536+bytes[1]*256+bytes[2])/Math.pow(10,bytes[3]-127);
+                return value;
+            };
+            var pack = function(value) {
+                var dec=getDecim(value);
+                var bytes = [0,0,0,0];
+                var intval=Math.floor(value*Math.pow(10,dec));
+                bytes[0]=Math.floor(intval/65536);
+                intval-=bytes[0]*65536;
+                bytes[1]=Math.floor(intval/256);
+                intval-=bytes[1]*256;
+                bytes[2]=Math.floor(intval);
+                bytes[3]=dec+127;
+                return bytes;
+            };
+            var getDecim=function(value){
+                var limit=256.0*65536.0;
+                //return 0;
+                for(var d=0;d<120;d++){
+                    if(value>limit){return d-1;}
+                    value*=10.0;
+                }
+                return 0;
+            };
+            var vals=[255,1256,12589,352658,17171717,12.125,0.0002,0.00000001];
+            for(var i=0;i<vals.length;i++){
+                var val=vals[i];
+                var packed=pack(val);
+                manage.console.debug(val+" = "+unpack(packed)+" ["+packed+"]");
+            }
+        }
+        var but=$("<button>")
+        .click(function(){
+            result=compute.sum_hill_gl.add_gl(space1,space2,1000);
+            manage.console.debug("Test was done");
+        })
+        .html("Test");
+        $("#all").append(but);
     }
 });

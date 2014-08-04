@@ -86,10 +86,11 @@ $.extend(compute.sum_hill,{
             this.diffs.push(params.cvs[i].max-params.cvs[i].min);
         }
     },
-    createSpace:function(resol){
+    createSpace:function(resol,ncv){
+        if(!ncv){ncv=this.ncv;}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var space=$.extend({},compute.sum_hill.tspace);
-        space.init(this.multibin(resol),this.ncv);
+        space.init(this.multibin(resol,ncv),ncv);
         return space;
     },
     createBlob:function(resol){
@@ -108,16 +109,16 @@ $.extend(compute.sum_hill,{
         space.blob(sigmas1);
         return space;
     },
-    multibin:function(nbins){
+    multibin:function(nbins,ncv){
         if(nbins.length){
-            if(nbins.length===this.ncv){
+            if(nbins.length===ncv){
                 return nbins;
             }else{
                 manage.console.error("Error: Tspace: wrong length of nbins");
             }
         }else{
             var bins=[];
-            for(var i=0;i<this.ncv;i++){
+            for(var i=0;i<ncv;i++){
                 bins.push(nbins);
             }
             return bins;

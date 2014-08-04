@@ -29,6 +29,7 @@ and open the template in the editor.
         <script type="text/javascript" src="js/draw/webgl.js"></script>
         <script type="text/javascript" src="js/draw/liner.js"></script>
         <script type="text/javascript" src="js/draw/drawer.js"></script>
+        <script type="text/javascript" src="js/compute/sum_hill_gl.js"></script>
     </head>
     <body>
         <!--<script id="ctrl_template" type="text/html" src="templates/ctrl.html"></script>-->
@@ -57,6 +58,10 @@ and open the template in the editor.
                 //draw.drawer.init();
                 control.control.init();
                 control.measure.init();
+                compute.reader.init();
+                
+                
+                compute.sum_hill_gl.init();
                 //draw.gl.init();
                 //view.ctrl.renderProgress(1);
                 //Mustache.parse(template);
@@ -67,7 +72,6 @@ and open the template in the editor.
 
 
 
-                compute.reader.init();
                 //$("#file").trigger("change");
                 //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
                 /*var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
