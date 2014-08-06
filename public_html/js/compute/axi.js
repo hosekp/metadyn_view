@@ -4,9 +4,42 @@ $.extend(compute.axi,{
     zmax:0,
     firstcycle:true,
     transform:function(space,nar){
-        var array=space.spacearr;
+        var array=space.getArr();
         var zm=this.zmax;
         var len=array.length;
+        if(space.ncv===2){
+            if(space.sum()===0){
+                manage.console.debug("Axi: Nothing to transform");
+                return nar;
+            }else{
+                //manage.console.debug("Axi: Suma je "+space.sum());
+            }
+            zm*=16384;
+            //var i32=new Uint32Array(array.buffer);
+            var i32=space.getArr(32);
+            if(this.firstcycle&&control.settings.axi_auto.get()){
+                for (var i=0;i<len;i++){
+                    if(i32[i]>zm){
+                        this.setZmax(i32[i]/16384.0);
+                        zm=i32[i];
+                    }
+                }
+            }
+            //manage.console.debug("Axi: zmax set to "+zm);
+            if(!nar){
+                nar=new Float32Array(len);
+                for (var i=0;i<len;i++){
+                    nar[i]=i32[i]/16384.0;
+                }
+            }
+            var del=255/zm;
+            for (var i=0;i<len;i++){
+                nar[i]=i32[i]*del;
+                //nar[i]=255;
+            }
+            
+            return;
+        }
         if(this.firstcycle&&control.settings.axi_auto.get()){
             for (var i=0;i<len;i++){
                 if(array[i]>zm){

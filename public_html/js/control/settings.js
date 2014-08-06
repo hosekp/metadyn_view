@@ -6,7 +6,7 @@ $.extend(control.settings,{
         this.play=this.create(false);
         this.measure=this.create(false);
         this.speed=this.create(0.3);
-        this.resol=this.create(100);
+        this.resol=this.create(128);
         this.loop=this.create(true);
         
         this.height=this.create(1);

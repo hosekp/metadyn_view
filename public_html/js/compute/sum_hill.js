@@ -89,7 +89,7 @@ $.extend(compute.sum_hill,{
     createSpace:function(resol,ncv){
         if(!ncv){ncv=this.ncv;}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var space=$.extend({},compute.sum_hill.tspace);
+        var space=$.extend({},compute.tspace[ncv]);
         space.init(this.multibin(resol,ncv),ncv);
         return space;
     },
@@ -104,7 +104,7 @@ $.extend(compute.sum_hill,{
             sigmas1.push(sigmas[i]*cvstep);
             sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
         }
-        var space=this.createSpace(sigmas8);
+        var space=this.createSpace(resol);
         //space.all(1);
         space.blob(sigmas1);
         return space;
@@ -160,10 +160,6 @@ $.extend(compute.sum_hill,{
             inds[i]=((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);
         }
         return inds;
-    },
-    singleadd:function(space,blob,pos){
-        var inds=this.toIndices(pos);
-        return space.add(inds,blob);
     },
     add:function(space,torat){
         var resol=control.settings.resol.get();
@@ -226,6 +222,8 @@ $.extend(compute.sum_hill,{
                     
                 }
             }
+            space.compute(blob);
+            //$("#all").append(space.print());
         }else{
             for(var i=last;i<to;i++){
                 var inds=this.toIndices(i);
@@ -251,15 +249,6 @@ $.extend(compute.sum_hill,{
         var lower=0;
         //manage.console.debug("Locate from "+t0+" to "+t1+" through "+tr);
         var higher=this.nbody;
-        /*var exp=this.nbody*rat-1;
-        var lexp=Math.max(exp-5,lower);
-        var hexp=Math.min(exp+5,higher);
-        if(tr>=this.artime[lexp]){
-            lower=lexp;
-        }
-        if(tr<this.artime[hexp]){
-            higher=hexp;
-        }*/
         while (lower+1!==higher){
             //manage.console.debug("Locate from "+lower+" to "+higher);
             var middle=Math.floor((lower+higher)/2);

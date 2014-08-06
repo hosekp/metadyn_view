@@ -9,7 +9,7 @@ $.extend(view.ctrl,{
     width:600,
     inited:false,
     resizing:false,  // event 
-    temp:{resizepos:false,resoldata:[100,200,300,400],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
+    temp:{resizepos:false,resoldata:[16,64,128,256,512],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
     tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
     //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
     init:function(){

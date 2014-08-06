@@ -32,15 +32,20 @@ $.extend(manage.manager,{
             this.reset();
             lrat=-1;
         }
+        var storaging=false;
         //var nar=this.lastSpace;
         if(rat!==lrat){
-            var isload=manage.storage.load(this.lastSpace,rat);
+            if(storaging){
+                var isload=manage.storage.load(this.lastSpace,rat);
+            }
             /*if(isload){
                 manage.console.log("Is loaded at "+this.lastSpace.ratio);
             }*/
             //manage.console.debug("Manager: summing "+this.lastSpace.ratio+" to "+rat);
             compute.sum_hill.add(this.lastSpace,rat);
-            manage.storage.save(this.lastSpace);
+            if(storaging){
+                manage.storage.save(this.lastSpace);
+            }
             //manage.console.debug("Add from "+this.lastRat+" to "+rat);
             this.counter++;
             compute.axi.transform(this.lastSpace,this.lastDrawable);

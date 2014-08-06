@@ -1,9 +1,7 @@
 if(typeof compute==="undefined"){compute={};}
-if(typeof compute.sum_hill==="undefined"){compute.sum_hill={};}
-compute.sum_hill.tspace={
+if(typeof compute.tspace==="undefined"){compute.tspace={lastid:0};}
+compute.tspace[0]={
     id:0,
-    lastid:0,
-    spacearr:null,
     dims:null,
     coefs:null,
     ncv:0,
@@ -11,7 +9,7 @@ compute.sum_hill.tspace={
     res:1,
     nwhole:0,
     ratio:-1,
-    init:function(nbins,ncv){
+    init:function(nbins){
         this.id=this.lastid++;
         this.ncv=ncv;
         this.nbins=nbins;
@@ -24,11 +22,12 @@ compute.sum_hill.tspace={
             nwh*=nbins[i];
         }
         this.nwhole=nwh;
-        this.spacearr=new Float32Array(nwh);
         if(ncv===1){
+            this.spacearr=new Float32Array(nwh);
             this.plane=this.plane1;
             this.add=this.add1;
         }else if(ncv===2){
+            this.packedarr=new Uint8Array(nwh*4);
             this.plane=this.plane2;
             this.add=this.add2;
         }else if(ncv===3){
@@ -43,18 +42,27 @@ compute.sum_hill.tspace={
         this.id=this.lastid++;
         //space.init(this.nbins,this.ncv);
         space.spacearr=this.copyFloat32Array(this.spacearr);
+        space.packedarr=this.copyUint8Array(this.packedarr);
         space.coefs=this.copyInt32Array(this.coefs);
         space.dims=this.copyInt32Array(this.dims);
         //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
     },
     copyFloat32Array:function(array){
+        if(!array){return null;}
         var nar=new Float32Array(array.length);
         nar.set(array);
         return nar;
     },
     copyInt32Array:function(array){
+        if(!array){return null;}
         var nar=new Int32Array(array.length);
+        nar.set(array);
+        return nar;
+    },
+    copyUint8Array:function(array){
+        if(!array){return null;}
+        var nar=new Uint8Array(array.length);
         nar.set(array);
         return nar;
     },
@@ -68,15 +76,23 @@ compute.sum_hill.tspace={
     set:function(space){
         if(this.ncv!==space.ncv){manage.console.error("Storage: Incompatible arrays");return;}
         if(this.nwhole!==space.nwhole){manage.console.error("Storage: Incompatible arrays");return;}
-        this.spacearr.set(space.spacearr);
+        if(this.spacearr){
+            this.spacearr.set(space.spacearr);
+        }else{
+            this.packedarr.set(space.packedarr);
+        }
         this.ratio=space.ratio;
-        if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
+        //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
     },
     reset:function(){
         this.ratio=-1;
-        this.spacearr=new Float32Array(this.nwhole);
+        if(this.spacearr){
+            this.spacearr=new Float32Array(this.nwhole);
+        }else{
+            this.packedarr=new Uint8Array(this.nwhole*4);
+        }
     },
-    all:function(value,typ){
+    /*all:function(value,typ){
         var len=this.nwhole;
         if(typ==="add"){
             for(var i=0;i<len;i++){
@@ -92,7 +108,7 @@ compute.sum_hill.tspace={
                 this.spacearr[i]=value;
             }
         }
-    },
+    },*/
     plane1:function(value,axi,axival,typ){
         if(typ==="add"){
             this.spacearr[this.coefs[axi]*axival]+=value;
@@ -267,7 +283,7 @@ compute.sum_hill.tspace={
             this.spacearr[i]=Math.exp(-this.spacearr[i]/2);
         }
     },
-    print:function(){
+    /*print:function(){
         var canvas=$("<canvas>").attr({width:this.dims[0],height:this.dims[1]});
         var len=this.nwhole;
         var data=new Uint8ClampedArray(len*4);
@@ -285,6 +301,14 @@ compute.sum_hill.tspace={
         imageData.data.set(data);
         ctx.putImageData(imageData,0,0);
         return canvas;
+    },*/
+    getArr:function(){
+        return this.spacearr;
+    }
+};
+compute.tspace[3]={
+    init:function(){
+        manage.console.error("Error: More than 2 CVs is not implemented");
     }
 };
 
