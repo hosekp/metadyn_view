@@ -51,7 +51,7 @@ $.extend(manage.manager,{
             compute.axi.transform(this.lastSpace,this.lastDrawable);
             this.lastTransformed=null;
         }
-        draw.drawer.draw(this.lastDrawable);
+        draw.drawer.draw(this.lastDrawable,compute.axi.zmax);
         return true;
     },
     initSpace:function(){

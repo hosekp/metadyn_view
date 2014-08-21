@@ -10,15 +10,22 @@ $.extend(compute.axi,{
         init:function(){this.lasttime=window.performance.now();},
         time:function(ind){
             var now=window.performance.now();
-            this.vals[ind]+=now-this.lasttime;
-            this.nvals[ind]++;
+            //this.vals[ind]+=now-this.lasttime;
+            //this.nvals[ind]++;
+            this.vals[ind]=now-this.lasttime;
             this.lasttime=now;
         },
         print:function(){
-            manage.console.debug("\
+            /*manage.console.debug("\
 1: "+(this.vals[1]/this.nvals[1])+"\n\
 2: "+(this.vals[2]/this.nvals[2])+"\n\
 3: "+(this.vals[3]/this.nvals[3])+"\
+");
+        }*/
+            manage.console.debug("\
+1: "+(this.vals[1].toFixed(2))+"\n\
+2: "+(this.vals[2].toFixed(2))+"\n\
+3: "+(this.vals[3].toFixed(2))+"\
 ");
         }
     },
@@ -55,11 +62,13 @@ $.extend(compute.axi,{
                     nar[i]=i32[i]/16384.0;
                 }
             }
-            var del=255/zm;
+            var i8=space.getArr();
+            /*var del=255/zm;
             for (var i=0;i<len;i++){
                 nar[i]=i32[i]*del;
                 //nar[i]=255;
-            }
+            }*/
+            nar.set(i8);
             this.profiler.time(3);
             //this.profiler.print();
             
@@ -103,7 +112,7 @@ $.extend(compute.axi,{
     getDrawable:function(len){
         var ncv=control.settings.ncv.get();
         if(ncv>1){
-            return new Uint8Array(len);
+            return new Uint8Array(len*4);
         }else{
             return new Float32Array(len);
         }

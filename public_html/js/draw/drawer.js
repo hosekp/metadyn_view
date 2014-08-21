@@ -61,12 +61,12 @@ $.extend(draw.drawer,{
         draw.gl.resize(width,height);
         
     },
-    draw:function(drawable){
+    draw:function(drawable,zmax){
         var ncv=control.settings.ncv.get();
         if(ncv>1){
-            draw.gl.draw(drawable);
+            draw.gl.draw(drawable,zmax*64);
         }else{
-            draw.liner.draw(drawable);
+            draw.liner.draw(drawable,zmax);
         }
     },
     reset:function(){

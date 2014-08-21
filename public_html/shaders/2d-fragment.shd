@@ -3,6 +3,7 @@ uniform sampler2D u_image;
 //uniform vec2 u_sigmas;
 //uniform vec3 u_data;
 //uniform vec2 u_textureSize;
+uniform float u_zmax;
 varying vec2 v_texCoord;
 vec4 colorScale(float d){
     //d=1.0-d;
@@ -22,9 +23,17 @@ vec4 colorScale(float d){
         1
     );
 }
+float unpack(vec4 rgba){
+    float d = rgba.a;
+    d=256.0*d+rgba.b;
+    d=256.0*d+rgba.g;
+    d=256.0*d+rgba.r;
+    //return u_zmax;
+    return d;
+}
 void main() {
     //vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-    gl_FragColor = colorScale(texture2D(u_image,v_texCoord)[3]);
+    gl_FragColor = colorScale(unpack(texture2D(u_image,v_texCoord))/u_zmax);
     //gl_FragColor = texture2D(u_image,v_texCoord);
     //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
 }

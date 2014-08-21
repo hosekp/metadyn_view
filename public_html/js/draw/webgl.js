@@ -30,7 +30,7 @@ $.extend(draw.gl,{
     initGL:function(){
         var $can=draw.drawer.getCan();
         try {
-            var gl = $can[0].getContext("webgl") || $can[0].getContext("experimental-webgl");
+            var gl = $can[0].getContext("webgl",{premultipliedAlpha:false}) || $can[0].getContext("experimental-webgl",{premultipliedAlpha:false});
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch(e) {manage.console.error(e);return false;}
         if (!gl) {
@@ -65,6 +65,8 @@ $.extend(draw.gl,{
 
         progr.texCoordLocation=gl.getAttribLocation(progr,"a_texCoord");
         gl.enableVertexAttribArray(progr.texCoordLocation);
+        
+        progr.zmaxLoc = gl.getUniformLocation(progr, "u_zmax");
 
         //program.texCoordLocation=texCoordLocation;
 
@@ -95,7 +97,7 @@ $.extend(draw.gl,{
         manage.console.log("WebGL loaded");
         this.inited=true;
     },
-    draw:function(array){
+    draw:function(array,zmax){
         //if(!this.inited){this.init();}
         var gl=this.g1;
         //manage.console.debug("drawing");
@@ -103,6 +105,7 @@ $.extend(draw.gl,{
         gl.vertexAttribPointer(this.program.positionLocation,2,gl.FLOAT,false,0,0);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
+        gl.uniform1f(this.program.zmaxLoc,zmax);
         /*var arrBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,arrBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,graf.arrbuf,gl.STATIC_DRAW);
@@ -111,11 +114,12 @@ $.extend(draw.gl,{
         //main.cons(graf.bytearr.length);
         var resol=control.settings.resol.get();
         
-        if(resol*resol!==array.length){
+        if(resol*resol*4!==array.length){
             manage.console.error("Error: Wrong length of texture array");
         }
         
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,resol,resol,0,gl.RGBA,gl.UNSIGNED_BYTE,array);
+        //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //array=new Uint8Array([0,80,160,240]);
         //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,2,2,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //texImage2D (ulong target, long level, ulong intformat, ulong width, ulong height, long border, ulong format, ulong type, Object data )
