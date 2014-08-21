@@ -56,7 +56,6 @@ $.extend(control.control,{
             if(nratio>1){
                 if(control.settings.loop.get()){
                     nratio=this.reset();
-                    compute.axi.firstloop=false;
                 }else{
                     control.settings.play.set(false);
                     this.set(1);

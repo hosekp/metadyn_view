@@ -177,5 +177,12 @@ compute.tspace[2]={
             s+=this.i8arr[i];
         }
         return s;
+    },
+    isEmpty:function(){
+        var len=this.nwhole;
+        for(var i=0;i<len;i++){
+            if(this.i32arr!==0){return false;}
+        }
+        return true; 
     }
 };

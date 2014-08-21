@@ -262,6 +262,13 @@ compute.tspace[0]={
         }
         return this; 
     },
+    isEmpty:function(){
+        var len=this.nwhole;
+        for(var i=0;i<len;i++){
+            if(this.spacearr[i]!==0){return false;}
+        }
+        return true; 
+    },
     restaxi:function(axi){
         var raxi=[];
         for(var i=0;i<this.ncv;i++){

@@ -2,13 +2,33 @@ if(typeof compute==="undefined"){compute={};}
 if(typeof compute.axi==="undefined"){compute.axi={};}
 $.extend(compute.axi,{
     zmax:0,
-    firstcycle:true,
+    lastRatio:-1,
+    profiler:{
+        vals:[0,0,0,0],
+        nvals:[0,0,0,0],
+        lasttime:null,
+        init:function(){this.lasttime=window.performance.now();},
+        time:function(ind){
+            var now=window.performance.now();
+            this.vals[ind]+=now-this.lasttime;
+            this.nvals[ind]++;
+            this.lasttime=now;
+        },
+        print:function(){
+            manage.console.debug("\
+1: "+(this.vals[1]/this.nvals[1])+"\n\
+2: "+(this.vals[2]/this.nvals[2])+"\n\
+3: "+(this.vals[3]/this.nvals[3])+"\
+");
+        }
+    },
     transform:function(space,nar){
         var array=space.getArr();
         var zm=this.zmax;
         var len=array.length;
+        this.profiler.init();
         if(space.ncv===2){
-            if(space.sum()===0){
+            if(space.isEmpty()){
                 manage.console.debug("Axi: Nothing to transform");
                 return nar;
             }else{
@@ -17,15 +37,18 @@ $.extend(compute.axi,{
             zm*=16384;
             //var i32=new Uint32Array(array.buffer);
             var i32=space.getArr(32);
-            if(this.firstcycle&&control.settings.axi_auto.get()){
+            this.profiler.time(1);
+            if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
                 for (var i=0;i<len;i++){
                     if(i32[i]>zm){
                         this.setZmax(i32[i]/16384.0);
                         zm=i32[i];
                     }
                 }
+                this.lastRatio=space.ratio;
             }
             //manage.console.debug("Axi: zmax set to "+zm);
+            this.profiler.time(2);
             if(!nar){
                 nar=new Float32Array(len);
                 for (var i=0;i<len;i++){
@@ -37,6 +60,8 @@ $.extend(compute.axi,{
                 nar[i]=i32[i]*del;
                 //nar[i]=255;
             }
+            this.profiler.time(3);
+            //this.profiler.print();
             
             return;
         }
@@ -106,7 +131,7 @@ $.extend(compute.axi,{
     },
     reset:function(){
         this.zmax=0;
-        this.firstcycle=true;
+        this.lastRatio=-1;
     }/*,
     setAxis:function(ncv){
         if(ncv===1){
