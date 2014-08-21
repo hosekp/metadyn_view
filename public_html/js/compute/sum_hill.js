@@ -74,6 +74,7 @@ $.extend(compute.sum_hill,{
         this.artime=null;
         this.blobs={};
         this.loaded=false;
+        compute.parser.mintime=null;
     },
     setRealLimits:function(){
         var params=this.params;

@@ -1,6 +1,7 @@
 if(typeof compute==="undefined"){compute={};}
 if(typeof compute.parser==="undefined"){compute.parser={};}
 $.extend(compute.parser,{
+    mintime:null,
     parse:function(toparse){
         if (typeof String.prototype.startsWith !== 'function') {
             String.prototype.startsWith = function(str) {
@@ -36,6 +37,7 @@ $.extend(compute.parser,{
         var line;
         line=header[0].match(/[^ ]+/g);
         params.timepos=0;
+        params.clockpos=0;
         var cvs=[];
         var p=3;
         while(!line[p].startsWith("sigma")){
@@ -137,7 +139,10 @@ $.extend(compute.parser,{
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
             time[len]=parseFloat(line[timepos]);
-            clock[len]=parseInt(line[clockpos]);
+            if(this.mintime===null){
+                this.mintime=line[clockpos];
+            }
+            clock[len]=parseFloat(line[clockpos]-this.mintime);
             hei[len]=parseFloat(line[heipos]);
             for(var j=0;j<ncv;j++){
                 var pcv=pcvs[j];
