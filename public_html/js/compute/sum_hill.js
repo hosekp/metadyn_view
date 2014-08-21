@@ -229,6 +229,7 @@ $.extend(compute.sum_hill,{
                 var inds=this.toIndices(i);
                 space.add(inds,blob);
             }
+            space.compute(blob);
         }
         space.ratio=torat;
         //manage.console.debug("Added "+(to-last)+" frames");

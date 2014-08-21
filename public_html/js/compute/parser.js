@@ -168,7 +168,11 @@ $.extend(compute.parser,{
         if(sorting){
             var sorter=$.extend({},this.TAsorter);
             //var sorted=sorter.sort(time);
-            var sorted=sorter.sort(clock);
+            if(isNaN(clock[0])){
+                var sorted=sorter.sort(time);
+            }else{
+                var sorted=sorter.sort(clock);
+            }
             for(var i=0;i<ncv;i++){
                 cvs[i]=sorter.rearrange(cvs[i],sorted);
                 sigma[i]=sorter.rearrange(sigma[i],sorted);

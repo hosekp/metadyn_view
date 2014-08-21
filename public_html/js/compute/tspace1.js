@@ -80,5 +80,6 @@ compute.tspace[1]={
     },
     getArr:function(){
         return this.spacearr;
-    }
+    },
+    compute:function(){}
 };
