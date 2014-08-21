@@ -127,6 +127,7 @@ compute.tspace[2]={
         return bytes;
     },*/
     compute:function(space){
+        if(this.comp===null){return;}
         compute.gl_summer.preadd(this,space);
         var inds=this.comp.inds;
         for(var i=0;i<this.comp.counter;i++){
