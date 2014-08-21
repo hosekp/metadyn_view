@@ -99,7 +99,7 @@ $.extend(view.axi,{
             var pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(range[i].toPrecision(2),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],2),pos-10,20);
         }
         ctx.stroke();
         var text=compute.axi.getName(true);
@@ -123,7 +123,7 @@ $.extend(view.axi,{
             var pos=height-5-(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(range[i].toPrecision(2),width-30,pos+5);
+            ctx.fillText(this.toPrecision(range[i],2),width-30,pos+5);
         }
         ctx.stroke();
         var text="kJ/mol";
@@ -148,7 +148,7 @@ $.extend(view.axi,{
             var pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(range[i].toPrecision(2),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],2),pos-10,20);
         }
         ctx.stroke();
         var text=compute.axi.getName(true);
@@ -172,7 +172,7 @@ $.extend(view.axi,{
             var pos=5+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(range[i].toPrecision(2),width-30,pos+5);
+            ctx.fillText(this.toPrecision(range[i],2),width-30,pos+5);
         }
         ctx.stroke();
         var text=compute.axi.getName(false);
@@ -201,7 +201,7 @@ $.extend(view.axi,{
             var pos=margin+(1-range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
-            ctx.fillText(range[i].toPrecision(2),barwid+7,pos+5);
+            ctx.fillText(this.toPrecision(range[i],2),barwid+7,pos+5);
         }
         ctx.stroke();
         
@@ -263,6 +263,13 @@ $.extend(view.axi,{
             r+=step;
         }
         return arr;
+    },
+    toPrecision:function(val,dig){
+        if(val===0){return val;}
+        if(Math.abs(val)>9999||Math.abs(val)<0.0001*Math.pow(10,dig)){
+            return val.toPrecision(dig);
+        }
+        return val;
     }
 });
 view.axi.bar={
