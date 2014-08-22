@@ -74,7 +74,7 @@ $.extend(compute.axi,{
             
             return;
         }
-        if(this.firstcycle&&control.settings.axi_auto.get()){
+        if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
             for (var i=0;i<len;i++){
                 if(array[i]>zm){
                     this.setZmax(array[i]);

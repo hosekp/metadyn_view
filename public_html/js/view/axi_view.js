@@ -130,8 +130,11 @@ $.extend(view.axi,{
             ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);
         }
         ctx.stroke();
+        ctx.save();
+        ctx.rotate(3*Math.PI/2);
         var text="kJ/mol";
-        ctx.fillText(text,5,height/2-15);
+        ctx.fillText(text,-height/2-15,10);
+        ctx.restore();
     },
     drawAxes2:function(){
         // X-AXI
@@ -184,7 +187,11 @@ $.extend(view.axi,{
         }
         ctx.stroke();
         var text=compute.axi.getName(false);
-        ctx.fillText(text,5,height/2-15);
+        //ctx.fillText(text,5,height/2-15);
+        ctx.save();
+        ctx.rotate(3*Math.PI/2);
+        ctx.fillText(text,-height/2-15,10);
+        ctx.restore();
         
         // Z-AXI
         var margin=7;
@@ -214,6 +221,11 @@ $.extend(view.axi,{
             ctx.fillText(this.toPrecision(range[i],dec),barwid+7,pos+5);
         }
         ctx.stroke();
+        ctx.save();
+        ctx.rotate(3*Math.PI/2);
+        var text="kJ/mol";
+        ctx.fillText(text,-height/2-15,width-5);
+        ctx.restore();
         
         this.needRedraw=false;
     },
@@ -280,7 +292,7 @@ $.extend(view.axi,{
         return arr;
     },
     getDec:function(step){
-        if(step>=100||step<0.001){return -1;}
+        if(step>=1000||step<0.001){return -1;}
         var dec=0;
         while(step*Math.pow(10,dec)<1){
             dec++;
