@@ -4,18 +4,41 @@ precision highp int;
 #endif
 varying vec2 vTextureCoord;
 
-uniform sampler2D src;
-uniform sampler2D rand;
-uniform float randomOffset;
+uniform sampler2D mainTex;
+uniform sampler2D blobTex;
+uniform bvec2 periods;
 uniform vec2 pos;
 
 void main(void){
     vec2 blobpos = vTextureCoord-pos+vec2(0.5,0.5);
-    if(blobpos.x<0.0||blobpos.x>1.0||blobpos.y<0.0||blobpos.y>1.0){
-        gl_FragColor=texture2D(src, vTextureCoord);
-        return;
+    gl_FragColor=texture2D(mainTex, vTextureCoord);
+    if(blobpos.x<0.0){
+        if(periods.x){
+            blobpos.x+=1.0;
+        }else{
+            return;
+        }
+    }else if(blobpos.x>1.0){
+        if(periods.x){
+            blobpos.x-=1.0;
+        }else{
+            return;
+        }
     }
-    vec4 outputVec = texture2D(src, vTextureCoord)+texture2D(rand, blobpos);
+    if(blobpos.y<0.0){
+        if(periods.y){
+            blobpos.y+=1.0;
+        }else{
+            return;
+        }
+    }else if(blobpos.y>1.0){
+        if(periods.y){
+            blobpos.y-=1.0;
+        }else{
+            return;
+        }
+    }
+    vec4 outputVec = texture2D(mainTex, vTextureCoord)+texture2D(blobTex, blobpos);
     for(int i=0;i<4;i++){
         if(outputVec[i]>1.0){
             outputVec[i]-=1.0+1.0/256.0;

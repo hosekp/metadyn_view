@@ -189,49 +189,18 @@ $.extend(compute.sum_hill,{
                     var ind1=inds[0];
                     if(divis[0]){space.add([ind1-1],blob);}
                     if(divis[1]){space.add([ind1+1],blob);}
-                }else if(this.ncv===2){
-                    var ind1=inds[0];
-                    var ind2=inds[1];
-                    if(divis[0]){
-                        space.add([ind1+1,ind2],blob);
-                        if(divis[2]){
-                            space.add([ind1,ind2+1],blob);
-                            space.add([ind1+1,ind2+1],blob);
-                        }else
-                        if(divis[3]){
-                            space.add([ind1,ind2-1],blob);
-                            space.add([ind1+1,ind2-1],blob);
-                        }
-                    }else
-                    if(divis[1]){
-                        space.add([ind1-1,ind2],blob);
-                        if(divis[2]){
-                            space.add([ind1,ind2+1],blob);
-                            space.add([ind1-1,ind2+1],blob);
-                        }else
-                        if(divis[3]){
-                            space.add([ind1,ind2-1],blob);
-                            space.add([ind1-1,ind2-1],blob);
-                        }
-                    }else{
-                        if(divis[2]){space.add([ind1,ind2+1],blob);}else
-                        if(divis[3]){space.add([ind1,ind2-1],blob);}
-                    }
                 }else if(this.ncv===3){
                     manage.console.warning("Sum_hills: Add3 not implemented");
                 }else{
-                    
                 }
             }
-            space.compute(blob);
-            //$("#all").append(space.print());
         }else{
             for(var i=last;i<to;i++){
                 var inds=this.toIndices(i);
                 space.add(inds,blob);
             }
-            space.compute(blob);
         }
+        space.compute(blob,periods);
         space.ratio=torat;
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;

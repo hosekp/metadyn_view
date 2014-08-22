@@ -6,6 +6,7 @@ if (typeof compute.gl_summer === "undefined") {
 }
 $.extend(compute.gl_summer, {
     inited: false,
+    periods:[false,false],
     last:{
         width:-1,
         height:-1,
@@ -111,9 +112,9 @@ $.extend(compute.gl_summer, {
         progr.texCoordLocation = gl.getAttribLocation(progr, "a_texCoord");
         gl.enableVertexAttribArray(progr.texCoordLocation);
 
-        progr.srcUniformLoc = gl.getUniformLocation(progr, "src");
-        progr.randomUniformLoc = gl.getUniformLocation(progr, "randomOffset");
-        progr.randLoc = gl.getUniformLocation(progr, "rand");
+        progr.mainTexLoc = gl.getUniformLocation(progr, "mainTex");
+        progr.blobTexLoc = gl.getUniformLocation(progr, "blobTex");
+        progr.periodsLoc = gl.getUniformLocation(progr, "periods");
         //progr.canvasWidthLoc = gl.getUniformLocation(progr, "canvasWidth");
         //progr.canvasHeightLoc = gl.getUniformLocation(progr, "canvasHeight");
         progr.posLoc = gl.getUniformLocation(progr,"pos");
@@ -262,9 +263,10 @@ $.extend(compute.gl_summer, {
         }
         return desarr;
     },*/
-    preadd:function(space1,space2){
+    preadd:function(space1,space2,periods){
         var gl = this.g1;
         if(!this.inited){return false;}
+        this.periods=periods;
         var width=space1.dims[0];
         var height=space1.dims[1];
         if(width!==this.last.width||height!==this.last.height){
@@ -333,7 +335,7 @@ $.extend(compute.gl_summer, {
         gl.bindFramebuffer( gl.FRAMEBUFFER, null);
         
     },
-    calculateFrame: function(framebuffer, textureOne, textureTwo,pos) {
+    calculateFrame: function(framebuffer, textureOne, textureTwo,pos,periods) {
         var gl = this.g1;
         gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
@@ -345,15 +347,16 @@ $.extend(compute.gl_summer, {
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, textureOne);
-        gl.uniform1i(this.program.srcUniformLoc, 0);
+        gl.uniform1i(this.program.mainTexLoc, 0);
         //gl.uniform1f(this.program.randomUniform, 1);
 
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, textureTwo);
-        gl.uniform1i(this.program.randLoc, 1);
+        gl.uniform1i(this.program.blobTexLoc, 1);
         
         //manage.console.debug(pos);
         gl.uniform2f(this.program.posLoc,pos[0],pos[1]);
+        gl.uniform2f(this.program.periodsLoc,this.periods[0],this.periods[1]);
         //gl.uniform1f(this.program.canvasWidthLoc, canvasWidth);
         //gl.uniform1f(this.program.canvasHeightLoc, canvasHeight);
 
