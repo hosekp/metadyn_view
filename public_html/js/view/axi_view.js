@@ -94,12 +94,14 @@ $.extend(view.axi,{
         var min=compute.axi.getMin(true);
         var max=compute.axi.getMax(true);
         var diff=max-min;
-        var range=this.natureRange(min,max,10,false);
+        var limits=this.natureRange(min,max,10,false);
+        var range=this.drange(limits);
+        var dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
             var pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(this.toPrecision(range[i],2),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],dec),pos-10,20);
         }
         ctx.stroke();
         var text=compute.axi.getName(true);
@@ -118,12 +120,14 @@ $.extend(view.axi,{
         var min=0;
         var max=compute.axi.zmax;
         var diff=max-min;
-        var range=this.natureRange(min,max,10,false);
+        var limits=this.natureRange(min,max,10,false);
+        var range=this.drange(limits);
+        var dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
             var pos=height-5-(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(this.toPrecision(range[i],2),width-30,pos+5);
+            ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);
         }
         ctx.stroke();
         var text="kJ/mol";
@@ -143,12 +147,14 @@ $.extend(view.axi,{
         var min=compute.axi.getMin(true);
         var max=compute.axi.getMax(true);
         var diff=max-min;
-        var range=this.natureRange(min,max,10,false);
+        var limits=this.natureRange(min,max,10,false);
+        var range=this.drange(limits);
+        var dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
             var pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(this.toPrecision(range[i],2),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],dec),pos-10,20);
         }
         ctx.stroke();
         var text=compute.axi.getName(true);
@@ -167,12 +173,14 @@ $.extend(view.axi,{
         var min=compute.axi.getMin(false);
         var max=compute.axi.getMax(false);
         var diff=max-min;
-        var range=this.natureRange(min,max,10,false);
+        limits=this.natureRange(min,max,10,false);
+        range=this.drange(limits);
+        dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
             var pos=5+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(this.toPrecision(range[i],2),width-30,pos+5);
+            ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);
         }
         ctx.stroke();
         var text=compute.axi.getName(false);
@@ -196,12 +204,14 @@ $.extend(view.axi,{
         var bar=this.bar.get(height-2*margin);
         ctx.putImageData(bar,1,margin);
         var max=compute.axi.zmax;
-        var range=this.natureRange(0,max,10,false);
+        limits=this.natureRange(min,max,10,false);
+        range=this.drange(limits);
+        dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
             var pos=margin+(1-range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
-            ctx.fillText(this.toPrecision(range[i],2),barwid+7,pos+5);
+            ctx.fillText(this.toPrecision(range[i],dec),barwid+7,pos+5);
         }
         ctx.stroke();
         
@@ -253,9 +263,14 @@ $.extend(view.axi,{
             start=Math.ceil(start/step)*step;
             end=Math.floor(end/step)*step;
         }
-        return this.drange(start,end,step);
+        return [start,end,step];
     },
     drange:function(start,end,step){
+        if($.isArray(start)){
+            end=start[1];
+            step=start[2];
+            start=start[0];
+        }
         var r=start;
         var arr=[];
         while(r<=end+step/2){
@@ -264,12 +279,19 @@ $.extend(view.axi,{
         }
         return arr;
     },
-    toPrecision:function(val,dig){
-        if(val===0){return val;}
-        if(Math.abs(val)>9999||Math.abs(val)<0.0001*Math.pow(10,dig)){
-            return val.toPrecision(dig);
+    getDec:function(step){
+        if(step>=100||step<0.001){return -1;}
+        var dec=0;
+        while(step*Math.pow(10,dec)<1){
+            dec++;
         }
-        return val;
+        return dec;
+    },
+    toPrecision:function(val,dec){
+        if(dec===-1){
+            return val.toPrecision(2);
+        }
+        return val.toFixed(dec);
     }
 });
 view.axi.bar={
