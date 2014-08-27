@@ -4,18 +4,12 @@ uniform sampler2D u_image;
 //uniform vec3 u_data;
 //uniform vec2 u_textureSize;
 uniform float u_zmax;
+uniform float u_step;
 varying vec2 v_texCoord;
+
 vec4 colorScale(float d){
-    //d=1.0-d;
-    /*if(d<0.5){
-        if(d<0.25){return vec4(0,4.0*d,1,1);}else{return vec4(0,1,2.0-d*4.0,1);}
-    }else{
-        if(d<0.75){return vec4(d*4.0-2.0,1,0,1);}else{return vec4(1,4.0-d*4.0,0,1);}
-    }*/
-    //d=d/255.0;
     float sigma=1000.0/255.0;
     float hei = 380.0/255.0;
-    //return vec4(max(1.0-(0.9-d)*(0.9-d)*sigma,0.0),max(1.0-(0.5-d)*(0.5-d)*sigma,0.0),max(1.0-(0.1-d)*(0.1-d)*sigma,0.0),1);
     return vec4(
         min(max(hei-abs(d-0.23)*sigma,0.0),1.0),
         min(max(hei-abs(d-0.49)*sigma,0.0),1.0),
@@ -31,9 +25,87 @@ float unpack(vec4 rgba){
     //return u_zmax;
     return d;
 }
+vec4 pack(float d){
+    vec4 rgba=vec4(0.0,0.0,0.0,0.0);
+    rgba.r=mod(d,1.0);
+    d=(d-rgba.r)/256.0;
+    rgba.g=mod(d,1.0);
+    d=(d-rgba.g)/256.0;
+    rgba.b=mod(d,1.0);
+    d=(d-rgba.b)/256.0;
+    rgba.a=d;
+    return rgba;
+}
+int compare(vec4 v1,vec4 v2){
+    float d=0.0;
+    const float margin=1.0/256.0;
+    if(v1.w<v2.w-margin){return 1;}
+    if(v1.w>v2.w+margin){return -1;}
+    if(v1.w!=v2.w){d=256.0*(v1.w-v2.w);}
+    if(d+v1.z<v2.z-margin){return 1;}
+    if(d+v1.z>v2.z+margin){return -1;}
+    if(v1.z!=v2.z){d=256.0*(v1.z-v2.z);}
+    if(d+v1.y<v2.y-margin){return 1;}
+    if(d+v1.y>v2.y+margin){return -1;}
+    if(v1.y!=v2.y){d=256.0*(v1.y-v2.y);}
+    if(d+v1.x<v2.x-margin){return 1;}
+    if(d+v1.x>v2.x+margin){return -1;}
+    return 0;
+}
+bool contour(vec4 pcenter){
+    const float margin=0.003;
+    //const float step=3.0*64.0;
+    float center=unpack(pcenter);
+    if(center<u_step/2.0){
+        return false;
+    }
+    //vec4 pstep=pack(u_step);
+    //vec4 pstep2=pack(u_step/2.0);
+    //vec4 nstep=vec4(pstep2);
+    float unstep=u_step/2.0;
+    for (int i=0;i<20;i++){
+        //if(compare(nstep,pcenter)<0){break;}
+        //nstep=add(nstep,pstep);
+        if(unstep>center){break;}
+        unstep+=u_step;
+    }
+    unstep-=u_step/2.0;
+    vec4 nstep=pack(unstep);
+    //nstep=pack(step*floor(unpack(pcenter)/step+0.5));
+    //vec4 up,down,left,right;
+    vec4 up = texture2D(u_image,v_texCoord+vec2(0,-margin));
+    vec4 down = texture2D(u_image,v_texCoord+vec2(0,margin));
+    vec4 left = texture2D(u_image,v_texCoord+vec2(-margin,0));
+    vec4 right = texture2D(u_image,v_texCoord+vec2(margin,0));
+    if(compare(up,nstep)*compare(down,nstep)<0||compare(left,nstep)*compare(right,nstep)<0){
+        //float uup=unpack(up);
+        //float udown=unpack(down);
+        //float uleft=unpack(left);
+        //float uright=unpack(right);
+        vec2 ratio = vec2(unpack(up)-unpack(down),unpack(left)-unpack(right));
+        ratio=abs((center-unstep)/ratio);
+        float len=2.0*ratio.x*ratio.y/length(ratio);
+        float alpha = clamp(2.0-2.0*len,0.0,1.0);
+        gl_FragColor=mix(gl_FragColor,vec4(0.0,0.0,0.0,1.0),alpha);
+        //gl_FragColor=vec4(clamp(len/0.1,0.0,1.0),0.0,0.0,1.0);
+        //gl_FragColor=vec4(0.0,0.0,0.0,alpha);
+        return true;
+    }
+    return false;
+}
 void main() {
     //vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-    gl_FragColor = colorScale(unpack(texture2D(u_image,v_texCoord))/u_zmax);
+    vec4 center=texture2D(u_image,v_texCoord);
+    float d=unpack(center);
+    //gl_FragColor=vec4(pack(d).xyz,1.0);
+    //d=unpack(pack(d));
+    vec4 outVec;
+    gl_FragColor=colorScale(d/u_zmax);
+    contour(center);
+    /*if(gl_FragColor.w==0.0){
+        gl_FragColor=colorScale(d/u_zmax);
+    }*/
     //gl_FragColor = texture2D(u_image,v_texCoord);
-    //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    //outVec = vec4(1.0,0.0,0.0,1.0);
+    //gl_FragColor = outVec;
 }

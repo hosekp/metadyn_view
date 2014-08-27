@@ -211,7 +211,7 @@ $.extend(view.axi,{
         var bar=this.bar.get(height-2*margin);
         ctx.putImageData(bar,1,margin);
         var max=compute.axi.zmax;
-        limits=this.natureRange(min,max,10,false);
+        limits=this.natureRange(0,max,10,false);
         range=this.drange(limits);
         dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){

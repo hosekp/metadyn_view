@@ -67,6 +67,7 @@ $.extend(draw.gl,{
         gl.enableVertexAttribArray(progr.texCoordLocation);
         
         progr.zmaxLoc = gl.getUniformLocation(progr, "u_zmax");
+        progr.stepLoc = gl.getUniformLocation(progr, "u_step");
 
         //program.texCoordLocation=texCoordLocation;
 
@@ -100,12 +101,15 @@ $.extend(draw.gl,{
     draw:function(array,zmax){
         //if(!this.inited){this.init();}
         var gl=this.g1;
+        var nat=view.axi.natureRange(0,zmax/64,7,false);
+        //manage.console.debug("step="+nat[2]);
         //manage.console.debug("drawing");
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
         gl.vertexAttribPointer(this.program.positionLocation,2,gl.FLOAT,false,0,0);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
         gl.uniform1f(this.program.zmaxLoc,zmax);
+        gl.uniform1f(this.program.stepLoc,nat[2]*64);
         /*var arrBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,arrBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,graf.arrbuf,gl.STATIC_DRAW);
