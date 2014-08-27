@@ -31,7 +31,7 @@ $.extend(compute.axi,{
     },
     transform:function(space,nar){
         var array=space.getArr();
-        var zm=this.zmax;
+        //var zm=this.zmax;
         var len=array.length;
         this.profiler.init();
         if(space.ncv===2){
@@ -41,16 +41,14 @@ $.extend(compute.axi,{
             }else{
                 //manage.console.debug("Axi: Suma je "+space.sum());
             }
-            zm*=16384;
+            //zm*=16384;
             //var i32=new Uint32Array(array.buffer);
             var i32=space.getArr(32);
             this.profiler.time(1);
             if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
-                for (var i=0;i<len;i++){
-                    if(i32[i]>zm){
-                        this.setZmax(i32[i]/16384.0);
-                        zm=i32[i];
-                    }
+                var max=Math.max.apply(null,i32);
+                if(max>this.zmax*16384){
+                    this.setZmax(max/16384.0);
                 }
                 this.lastRatio=space.ratio;
             }
