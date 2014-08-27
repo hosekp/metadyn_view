@@ -31,7 +31,7 @@ $.extend(compute.axi,{
     },
     transform:function(space,nar){
         var array=space.getArr();
-        //var zm=this.zmax;
+        var zm=this.zmax;
         var len=array.length;
         this.profiler.init();
         if(space.ncv===2){
