@@ -12,6 +12,7 @@ and open the template in the editor.
         <link href="style/style.css" rel="stylesheet" type="text/css" media="screen" />
         <script type="text/javascript" src="js/libs/mustache.js/mustache.js"></script>
         <script type="text/javascript" src="js/libs/jquery/jquery.js"></script>
+        <script type="text/javascript" src="js/libs/jquery/watermark.js"></script>
         <script type="text/javascript" src="js/libs/stats.js/Stats.js"></script>
         <script type="text/javascript" src="js/compute/reader.js"></script>
         <script type="text/javascript" src="js/compute/parser.js"></script>
@@ -20,6 +21,7 @@ and open the template in the editor.
         <script type="text/javascript" src="js/compute/tspace1.js"></script>
         <script type="text/javascript" src="js/compute/tspace2.js"></script>
         <script type="text/javascript" src="js/compute/axi.js"></script>
+        <script type="text/javascript" src="js/compute/gl_summer.js"></script>
         <script type="text/javascript" src="js/manage/console.js"></script>
         <script type="text/javascript" src="js/manage/manager.js"></script>
         <script type="text/javascript" src="js/manage/storage.js"></script>
@@ -28,10 +30,10 @@ and open the template in the editor.
         <script type="text/javascript" src="js/control/settings.js"></script>
         <script type="text/javascript" src="js/control/control.js"></script>
         <script type="text/javascript" src="js/control/measure.js"></script>
+        <script type="text/javascript" src="js/control/feedback.js"></script>
         <script type="text/javascript" src="js/draw/webgl.js"></script>
         <script type="text/javascript" src="js/draw/liner.js"></script>
         <script type="text/javascript" src="js/draw/drawer.js"></script>
-        <script type="text/javascript" src="js/compute/gl_summer.js"></script>
     </head>
     <body>
         <!--<script id="ctrl_template" type="text/html" src="templates/ctrl.html"></script>-->
@@ -50,6 +52,7 @@ and open the template in the editor.
             </div>
             <div style="width:100%;height:1px;"></div>
             <div id="cons"></div>
+            <div id="feed_cont"></div>
         </div>
         <script type="text/javascript">
             $(function(){
@@ -64,6 +67,7 @@ and open the template in the editor.
                 
                 
                 compute.gl_summer.init();
+                control.feedback.init();
                 //draw.gl.init();
                 //view.ctrl.renderProgress(1);
                 //Mustache.parse(template);

@@ -182,3 +182,20 @@
 .example{
     float:right;
 }
+#feed_cont{
+    width:400px;
+    border: 1px solid black;
+    float:left;
+}
+.feed_note{
+    width:100%;
+}
+.feed_note_author{
+    font-size: 18px;
+}
+.feed_input{
+    width:80%;
+}
+#feed_text{
+    height:100px;
+}

@@ -139,7 +139,7 @@ $.extend(compute.gl_summer, {
         this.rightTexture=this.createTexture();
         this.frameTexture=this.createTexture();
         this.frameTexture2=this.createTexture();
-        this.test();
+        //this.test();
         manage.console.log("WebGL loaded");
         this.inited = true;
         
