@@ -22,7 +22,6 @@ float unpack(vec4 rgba){
     d=256.0*d+rgba.b;
     d=256.0*d+rgba.g;
     d=256.0*d+rgba.r;
-    //return u_zmax;
     return d;
 }
 vec4 pack(float d){
@@ -102,9 +101,6 @@ void main() {
     vec4 outVec;
     gl_FragColor=colorScale(d/u_zmax);
     contour(center);
-    /*if(gl_FragColor.w==0.0){
-        gl_FragColor=colorScale(d/u_zmax);
-    }*/
     //gl_FragColor = texture2D(u_image,v_texCoord);
     //outVec = vec4(1.0,0.0,0.0,1.0);
     //gl_FragColor = outVec;

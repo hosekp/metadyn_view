@@ -95,7 +95,7 @@ $.extend(compute.gl_summer, {
         gl.attachShader(progr, this.fragment);
         gl.linkProgram(progr);
         if (!gl.getProgramParameter(progr, gl.LINK_STATUS)) {
-            manage.console.error("Unable to initialize the shader program.");
+            manage.console.error("Linker: "+gl.getProgramInfoLog(progr));
             return false;
         }
         gl.useProgram(progr);
@@ -130,6 +130,7 @@ $.extend(compute.gl_summer, {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
         //gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1.0,-1.0,1.0,-1.0,-1.0,1.0,-1.0,1.0,1.0,-1.0,1.0,1.0]),gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
         this.initTextures();
         //this.test();
     },
