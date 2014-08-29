@@ -199,3 +199,6 @@
 #feed_text{
     height:100px;
 }
+.feed_note_longtext{
+    display: none;
+}

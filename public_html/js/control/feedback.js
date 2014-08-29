@@ -5,7 +5,13 @@ $.extend(control.feedback,{
         this.cont=$("#feed_cont");
         this.template='\
         {{#notes}}\n\
-            <div id="feed_notes_{{id}}" class="feed_note"><span class="feed_note_author" style="color:{{color}}">{{author}}:</span>{{text}}</div>\
+            <div id="feed_notes_{{id}}" class="feed_note">\n\
+                <span class="feed_note_author" style="color:{{color}}">{{author}}:</span>\n\
+                {{#long}}\n\
+                    <span class="feed_note_short">{{short}}...</span>\n\
+                {{/long}}\n\
+                <span class="feed_note_{{long}}text">{{text}}</span>\n\
+            </div>\
         {{/notes}}\n\
         ';
         var endtempl='\
@@ -19,7 +25,9 @@ $.extend(control.feedback,{
         this.input_author=$("#feed_author");
         this.input_text=$("#feed_text");
         this.input_send=$("#feed_send").on("click",$.proxy(this.send,this));
-        this.notecont=$('#feed_note_cont');
+        this.notecont=$('#feed_note_cont').on("click",".feed_note",function(){
+            $(this).children(".feed_note_longtext, .feed_note_short").toggle();
+        });
         this.render([]);
         this.watermark();
         this.getData();
@@ -64,6 +72,7 @@ $.extend(control.feedback,{
         for(var i=0;i<data.length;i++){
             data[i].color=this.getColor(data[i].author);
             data[i].id=i;
+            if(data[i].short){data[i].long="long";}else{}
         }
         return {notes:data};
     },
