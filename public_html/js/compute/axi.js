@@ -29,7 +29,7 @@ $.extend(compute.axi,{
 ");
         }
     },
-    transform:function(space,nar){
+    transform:function(space,nar,type){
         var array=space.getArr();
         var zm=this.zmax;
         var len=array.length;
@@ -54,23 +54,19 @@ $.extend(compute.axi,{
             }
             //manage.console.debug("Axi: zmax set to "+zm);
             this.profiler.time(2);
-            if(!nar){
+            if(!nar&&type==="float32"){
                 nar=new Float32Array(len);
                 for (var i=0;i<len;i++){
                     nar[i]=i32[i]/16384.0;
                 }
+            }else{
+                var i8=space.getArr();
+                nar.set(i8);
             }
-            var i8=space.getArr();
-            /*var del=255/zm;
-            for (var i=0;i<len;i++){
-                nar[i]=i32[i]*del;
-                //nar[i]=255;
-            }*/
-            nar.set(i8);
             this.profiler.time(3);
             //this.profiler.print();
             
-            return;
+            return nar;
         }
         if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
             for (var i=0;i<len;i++){

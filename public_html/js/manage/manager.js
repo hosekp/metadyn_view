@@ -89,7 +89,7 @@ $.extend(manage.manager,{
     getTransformed:function(){
         if(this.lastTransformed===null){
             if(this.lastSpace!==null){
-                this.lastTransformed=compute.axi.transform(this.lastSpace,null,true);
+                this.lastTransformed=compute.axi.transform(this.lastSpace,null,"float32");
             }
         }
         return this.lastTransformed;
