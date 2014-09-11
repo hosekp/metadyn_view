@@ -219,6 +219,7 @@ view.ctrl.slide={
         .on("mousedown","#slider",$.proxy(function(event){
             this.eventpos=event.pageX-$("#slider").position().left;
             control.settings.play.set(false);
+            event.preventDefault();
             //view.ctrl.render();
             $("body").on("mousemove",$.proxy(function(event){
                 //manage.console.debug("mouse.which="+event.which);

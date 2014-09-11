@@ -31,13 +31,13 @@ $.extend(control.settings,{
         };
         this.loop.call=function(){
         };
-        this.measure.call=function(){
+        /*this.measure.call=function(){
             if(control.settings.measure.value){
                 control.measure.bind();
             }else{
                 control.measure.unbind();
             }
-        };
+        };*/
         this.ncv.call=function(){
             view.axi.needArrange=true;
         };
