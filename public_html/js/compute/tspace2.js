@@ -9,7 +9,7 @@ compute.tspace[2]={
     nbins:0,
     res:1,
     nwhole:0,
-    ratio:-1,
+    ratio:0,
     comp:null,
     init:function(nbins){
         var ncv=this.ncv;

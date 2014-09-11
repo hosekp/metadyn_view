@@ -213,7 +213,7 @@ $.extend(compute.sum_hill,{
         return ret;
     },
     locate:function(rat){
-        if(rat<0){return 0;}
+        if(rat<=0){return 0;}
         var t0=this.artime[0];
         var t1=this.artime[this.nbody-1];
         var tr=t0+rat*(t1-t0);

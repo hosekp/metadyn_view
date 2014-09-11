@@ -5,6 +5,7 @@ $.extend(manage.manager,{
     lastDrawable:null,
     counter:0,
     lastTransformed:null,
+    onesecratio:0,
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
         var resol=control.settings.resol.get();
@@ -27,10 +28,10 @@ $.extend(manage.manager,{
             this.initSpace();
         }
         var lrat=this.lastSpace.ratio;
-        if(rat===0){rat=-1;}
+        //if(rat===0){rat=-1;}
         if(rat<lrat){
             this.reset();
-            lrat=-1;
+            lrat=0;
         }
         var storaging=false;
         //var nar=this.lastSpace;
@@ -42,6 +43,14 @@ $.extend(manage.manager,{
                 manage.console.log("Is loaded at "+this.lastSpace.ratio);
             }*/
             //manage.console.debug("Manager: summing "+this.lastSpace.ratio+" to "+rat);
+            if(this.onesecratio===0){
+                this.onesecratio=this.estimate1sec();
+            }
+            if(lrat>=0&&rat>=0&&rat>lrat+this.onesecratio){
+                rat=lrat+this.onesecratio;
+                manage.console.debug("Manager: ratio reduced to "+rat);
+            }
+            //manage.console.debug("Manager: summing "+this.lastSpace.ratio+" to "+rat);
             compute.sum_hill.add(this.lastSpace,rat);
             if(storaging){
                 manage.storage.save(this.lastSpace);
@@ -52,7 +61,7 @@ $.extend(manage.manager,{
             this.lastTransformed=null;
         }
         draw.drawer.draw(this.lastDrawable,compute.axi.zmax);
-        return true;
+        return rat;
     },
     initSpace:function(){
         //var resol=control.settings.resol.get();
@@ -66,6 +75,7 @@ $.extend(manage.manager,{
         this.lastTransformed=null;
         manage.storage.reset();
         control.control.needRedraw=true;
+        this.onesecratio=0;
     },
     reset:function(){
         manage.console.debug("Counter: "+this.counter);
@@ -100,6 +110,14 @@ $.extend(manage.manager,{
         control.settings.ncv.set(compute.sum_hill.ncv);
         this.reset();
         draw.drawer.switchTo();
+    },
+    estimate1sec:function(){
+        var nbody=compute.sum_hill.nbody;
+        var resol=control.settings.resol.get();
+        return 1000/nbody*256*256/resol/resol;
+    },
+    refine1sec:function(ratio,time){
+        this.onesecratio=(this.onesecratio+(ratio*1000/time))/2;
     }
     
 });

@@ -8,7 +8,7 @@ compute.tspace[1]={
     nbins:0,
     res:1,
     nwhole:0,
-    ratio:-1,
+    ratio:0,
     init:function(nbins){
         this.id=compute.tspace.lastid++;
         this.nbins=nbins;

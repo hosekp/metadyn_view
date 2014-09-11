@@ -1,7 +1,8 @@
 if(typeof control==="undefined"){control={};}
 if(typeof control.control==="undefined"){control.control={};}
 $.extend(control.control,{
-    ratio:0,
+    actratio:0,
+    wantedratio:0,
     stats:null,
     needRedraw:true,
     running:false,
@@ -15,7 +16,7 @@ $.extend(control.control,{
         this.cycle(this.lasttime);
     },
     start:function(){
-        if(this.ratio===1){this.reset();}
+        if(this.wantedratio>=1){this.reset();}
         this.running=true;
         this.lasttime=window.performance.now();
     },
@@ -52,16 +53,16 @@ $.extend(control.control,{
     cycle:function(stamp){
         if(this.running){
             var dt = stamp - this.lasttime;
-            var nratio=this.ratio+dt*control.settings.speed.get()/10000;
+            var nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
             if(nratio>1){
                 if(control.settings.loop.get()){
                     nratio=this.reset();
                 }else{
                     control.settings.play.set(false);
-                    this.set(1);
+                    this.setWanted(1);
                 }
             }else{
-                this.set(nratio);
+                this.setWanted(nratio);
             }
         }
         this.stats.begin();
@@ -69,7 +70,8 @@ $.extend(control.control,{
         view.ctrl.redraw();
         view.ctrl.resize();
         view.axi.drawAxes();
-        this.draw();
+        var rat=this.draw();
+        this.set(rat);
         this.stats.end();
         //var now = window.performance.now();
         //var newtime=this.time+dt*control.settings.speed.get()/1000;
@@ -102,22 +104,40 @@ $.extend(control.control,{
     },
     draw:function(){
         if(this.needRedraw){
-            this.needRedraw=!manage.manager.draw(this.ratio);
+            var rat=manage.manager.draw(this.wantedratio);
+            if(rat===false){
+                this.needRedraw=true;
+                return false;
+            }else{
+                this.needRedraw=(rat!==this.wantedratio);
+                return rat;
+            }
         }
+        return false;
         //manage.console.debug("drawing "+this.ratio);
     },
     stop:function(){
         this.running=false;
     },
     reset:function(){
-        this.set(0);
+        //this.set(0);
+        this.setWanted(0);
         //manage.console.debug("reseted");
         return 0;
     },
     set:function(rat){
-        if(this.ratio===rat){return;}
-        this.ratio=rat;
+        if(rat===false){return;}
+        if(this.actratio===rat){return;}
+        this.actratio=rat;
         view.ctrl.slide.byratio(rat);
         this.needRedraw=true;
+        //manage.console.debug("Control: Actual set to "+rat);
+    },
+    setWanted:function(rat){
+        if(this.wantedratio===rat){return;}
+        this.wantedratio=rat;
+        //view.ctrl.slide.byratio(rat);
+        this.needRedraw=true;
+        //manage.console.debug("Control: Wanted set to "+rat);
     }
 });

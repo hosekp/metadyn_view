@@ -238,7 +238,7 @@ view.ctrl.slide={
         $("body").off("mouseup");
         $("body").off("mouseout");
         this.eventpos=false;
-        control.control.set(this.ratio);
+        control.control.setWanted(this.ratio);
         
     },
     move:function(lft){

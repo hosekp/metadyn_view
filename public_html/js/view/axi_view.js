@@ -37,7 +37,7 @@ $.extend(view.axi,{
         this.div.$z_down=$("#axi_z_down");
         this.div.$x.before(this.div.$cancont);
         //if(this.div.$cancont.children().length <= 0){manage.console.warning("Canvas not appended");}
-        if(this.div.$cancont.children().length <= 0){draw.drawer.appendCans();}
+        //if(this.div.$cancont.children().length <= 0){draw.drawer.appendCans();}
         this.rendered=true;
     },
     arrange:function(zaxi){

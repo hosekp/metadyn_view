@@ -20,7 +20,7 @@ $.extend(draw.drawer,{
     },
     appendCans:function(){
         if(!this.$can_cont){return;}
-        this.$can_cont.empty().append(this.$can);
+        this.$can_cont.append(this.$can);
         this.resize();
     },
     switchTo:function(){
@@ -68,6 +68,7 @@ $.extend(draw.drawer,{
         }else{
             draw.liner.draw(drawable,zmax);
         }
+        //manage.console.debug("Drawer: draw");
     },
     reset:function(){
         draw.drawer.inited=false;

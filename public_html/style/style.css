@@ -202,3 +202,32 @@
 .feed_note_longtext{
     display: none;
 }
+#progress_cont{
+    background-color: black;
+    width:270px;
+    height:40px;
+    position:absolute;
+    /*display:none;*/
+}
+#progress_empty{
+    position: absolute;
+    width:200px;
+    height:20px;
+    left: 10px;
+    top:10px;
+    background-color: darkred;
+}
+#progress_done{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:25%;
+    height:20px;
+    background-color: red;
+}
+#progress_value{
+    position:absolute;
+    color:white;
+    top:10px;
+    left:220px;
+}
