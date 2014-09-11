@@ -2,19 +2,23 @@ if(typeof control==="undefined"){control={};}
 if(typeof control.settings==="undefined"){control.settings={};}
 $.extend(control.settings,{
     hashRequested:false,
+    shortdict:{},
     init:function(){
         this.play=this.create(false);
         this.measure=this.create(false);
-        this.speed=this.create(0.3);
-        this.resol=this.create(128);
-        this.loop=this.create(true);
+        this.speed=this.create(0.3,"spd");
+        this.resol=this.create(128,"res");
+        this.loop=this.create(true,"lop");
         
-        this.height=this.create(1);
+        this.height=this.create(1,"hei");
         this.ncv=this.create(0);
-        this.loglvl=this.create(4);
+        this.loglvl=this.create(4,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
-        this.axi_auto=this.create(true);
+        this.axi_auto=this.create(true,"axa");
+        this.zoom=this.create(1,"zom");
+        this.frameposx=this.create(1,"pox");
+        this.frameposy=this.create(1,"poy");
         this.resol.call=function(){
             manage.manager.setResol();
         };
@@ -51,15 +55,11 @@ $.extend(control.settings,{
                     hash[hsspl[0]]=hsspl[1];
                 }
             }
-            if(hash["axx"]){this.axi_x.set(parseInt(hash["axx"]));}
-            if(hash["axy"]){this.axi_y.set(parseInt(hash["axy"]));}
-            if(hash["axa"]){this.axi_auto.set(hash["axa"]==="true");}
-            if(hash["hei"]){this.height.set(parseFloat(hash["hei"]));}
-            if(hash["spd"]){this.speed.set(parseFloat(hash["spd"]));}
-            //if(hash["mes"]){this.measure.set(hash["mes"]==="true");}
-            if(hash["res"]){this.resol.set(parseFloat(hash["res"]));}
-            if(hash["lop"]){this.loop.set(hash["lop"]==="true");}
-            if(hash["log"]){this.loglvl.set(parseInt(hash["log"]));}
+            for( var key in hash){
+                if(this.shortdict[key]){
+                    this.shortdict[key].parse(hash[key]);
+                }
+            }
             this.hashRequested=true;
         }
     },
@@ -71,14 +71,15 @@ $.extend(control.settings,{
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
-        if(!this.speed.isdef()){ret+="&spd="+this.speed.value;}
-        if(!this.resol.isdef()){ret+="&res="+this.resol.value;}
-        if(!this.loop.isdef()){ret+="&lop="+this.loop.value;}
-        if(!this.loglvl.isdef()){ret+="&log="+this.loglvl.value;}
-        if(!this.height.isdef()){ret+="&hei="+this.height.value;}
-        if(!this.axi_x.isdef()){ret+="&axx="+this.axi_x.value;}
-        if(!this.axi_y.isdef()){ret+="&axy="+this.axi_y.value;}
-        if(!this.axi_auto.isdef()){ret+="&axa="+this.axi_auto.value;}
+        ret+=this.speed.printout();
+        ret+=this.resol.printout();
+        ret+=this.loop.printout();
+        ret+=this.loglvl.printout();
+        ret+=this.height.printout();
+        ret+=this.axi_auto.printout();
+        ret+=this.frameposx.printout();
+        ret+=this.frameposy.printout();
+        ret+=this.zoom.printout();
         if(ret){
             window.location.hash="#"+ret.substring(1);
         }else{
@@ -91,15 +92,19 @@ $.extend(control.settings,{
         this.hashRequested=true;
         //setTimeout($.proxy(this.newHash,this),100);
     },
-    create:function(def){
-        var s=$.extend({},this.template,{def:def});
+    create:function(def,short){
+        var s=$.extend({},this.template,{def:def,short:short});
         s.set(def);
+        if(short){
+            this.shortdict[short]=s;
+        }
         return s;
     }
 });
 control.settings.template={
     value:false,
     def:false,
+    short:"tmpl",
     set:function(val){
         this.value=val;
         if(this.call){
@@ -127,6 +132,22 @@ control.settings.template={
     },
     isdef:function(){
         return this.value===this.def;
+    },
+    parse:function(str){
+        if(str==="true" ||str==="false"){
+            this.set(str==="true");
+            return;
+        }
+        var parsed=parseFloat(str);
+        if(! isNaN(parsed)){
+            this.set(parsed);
+            return;
+        }
+        manage.console.warning("Settings: type of "+str+" is string");
+        this.set(str);
+    },
+    printout:function(){
+        if(!this.isdef()){return "&"+this.short+"="+this.value;}else{return "";}
     }
 };
             
