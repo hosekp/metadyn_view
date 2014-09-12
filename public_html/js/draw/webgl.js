@@ -77,7 +77,8 @@ $.extend(draw.gl,{
         this.coordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
         //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0,  1.0, -1.0,  1.0, 1.0, -1.0, 1.0,  1.0]), gl.STATIC_DRAW);
-        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
+        this.coordarr=new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]);
+        gl.bufferData(gl.ARRAY_BUFFER,this.coordarr, gl.STATIC_DRAW);
         this.texCoordBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,this.texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
@@ -105,6 +106,8 @@ $.extend(draw.gl,{
         //manage.console.debug("step="+nat[2]);
         //manage.console.debug("drawing");
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
+        this.updateCoord(this.coordarr);
+        gl.bufferData(gl.ARRAY_BUFFER,this.coordarr, gl.STATIC_DRAW);
         gl.vertexAttribPointer(this.program.positionLocation,2,gl.FLOAT,false,0,0);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
@@ -128,6 +131,21 @@ $.extend(draw.gl,{
         //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,2,2,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //texImage2D (ulong target, long level, ulong intformat, ulong width, ulong height, long border, ulong format, ulong type, Object data )
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+    },
+    updateCoord:function(arr){
+        var zoom=control.settings.zoom.get();
+        var xlow=0;
+        var xhigh=Math.pow(2,zoom);
+        var ylow=0;
+        var yhigh=Math.pow(2,zoom);
+        arr[0]=xlow;
+        var mustr=[xlow,ylow, xhigh,ylow, xlow,yhigh, xlow,yhigh, xhigh,ylow, xhigh,yhigh];
+        for(var i=0;i<12;i++){
+            arr[i]=mustr[i];
+        }
+        return arr;
+        //[0,0, 1,0, 0,1, 0,1, 1,0, 1,1]
+        
     },
     getShader:function(id,typ) {
         $.get("shaders/"+id,$.proxy(function(str){

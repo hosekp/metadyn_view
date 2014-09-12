@@ -43,7 +43,14 @@ $.extend(control.gestures,{
     mousewheel:function(event){
         event.preventDefault();
         var wheelup=event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
-        manage.console.debug("Wheeling: "+(wheelup?"up":"down"));
+        //manage.console.debug("Wheeling: "+(wheelup?"up":"down"));
+        var newzoom=control.settings.zoom.get();
+        if(wheelup){
+            newzoom=Math.min(newzoom+1,5);
+        }else{
+            newzoom=Math.max(newzoom-1,0);
+        }
+        control.settings.zoom.set(newzoom);
         //manage.console.debug("Wheeling: "+(event.originalEvent.wheelDelta > 0));
     }
 });

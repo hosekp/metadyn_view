@@ -16,9 +16,9 @@ $.extend(control.settings,{
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(true,"axa");
-        this.zoom=this.create(1,"zom");
-        this.frameposx=this.create(1,"pox");
-        this.frameposy=this.create(1,"poy");
+        this.zoom=this.create(0,"zom");
+        this.frameposx=this.create(0,"pox");
+        this.frameposy=this.create(0,"poy");
         this.resol.call=function(){
             manage.manager.setResol();
         };
@@ -38,6 +38,15 @@ $.extend(control.settings,{
                 control.measure.unbind();
             }
         };*/
+        this.zoom.call=function(){
+            control.control.needRedraw=true;
+        };
+        this.pox.call=function(){
+            control.control.needRedraw=true;
+        };
+        this.poy.call=function(){
+            control.control.needRedraw=true;
+        };
         this.ncv.call=function(){
             view.axi.needArrange=true;
         };
