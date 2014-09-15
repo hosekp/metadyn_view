@@ -3,6 +3,7 @@ if(typeof compute.axi==="undefined"){compute.axi={};}
 $.extend(compute.axi,{
     zmax:0,
     lastRatio:-1,
+    temp:{},
     profiler:{
         vals:[0,0,0,0],
         nvals:[0,0,0,0],
@@ -46,7 +47,24 @@ $.extend(compute.axi,{
             var i32=space.getArr(32);
             this.profiler.time(1);
             if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
-                var max=Math.max.apply(null,i32);
+                if(i32.length<124000){
+                    var max=Math.max.apply(null,i32);
+                }else{
+                    var maxs=[];
+                    if(this.temp.buffer!==i32.buffer){
+                        this.temp.maxs=[];
+                    }
+                    for(var i=0;i<i32.length/124000;i++){
+                        if(this.temp.maxs.length>i){
+                            var subarr=this.temp.maxs[i];
+                        }else{
+                            subarr=i32.subarray(i*124000,(i+1)*124000);
+                            this.temp.maxs.push(subarr);
+                        }
+                        maxs.push(Math.max.apply(null,subarr));
+                    }
+                    var max=Math.max.apply(null,maxs);
+                }
                 if(max>this.zmax*16384){
                     this.setZmax(max/16384.0);
                 }
@@ -64,7 +82,7 @@ $.extend(compute.axi,{
                 nar.set(i8);
             }
             this.profiler.time(3);
-            //this.profiler.print();
+            this.profiler.print();
             
             return nar;
         }

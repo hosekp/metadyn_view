@@ -16,54 +16,25 @@ $.extend(control.control,{
         this.cycle(this.lasttime);
     },
     start:function(){
-        if(this.wantedratio>=1){this.reset();}
+        if(this.actratio>=1){this.reset();}
         this.running=true;
         this.lasttime=window.performance.now();
     },
-    /*cycle:function(stamp){
-        var cont=control.control;
-        if(cont.running){
-            var dt = stamp - cont.lasttime;
-            var nratio=cont.ratio+dt*control.settings.speed.get()/10000;
-            if(nratio>1){
-                if(control.settings.loop.get()){
-                    nratio=cont.reset();
-                    compute.axi.firstloop=false;
-                }else{
-                    control.settings.play.set(false);
-                    cont.set(1);
-                }
-            }else{
-                cont.set(nratio);
-            }
-        }
-        cont.stats.begin();
-        control.settings.newHash();
-        view.ctrl.redraw();
-        view.ctrl.resize();
-        view.axi.drawAxes();
-        cont.draw();
-        cont.stats.end();
-        //var now = window.performance.now();
-        //var newtime=this.time+dt*control.settings.speed.get()/1000;
-        //graf.draw(this.set(newtime));
-        cont.lasttime = stamp;
-        requestAnimationFrame(cont.cycle);
-    },*/
     cycle:function(stamp){
         if(this.running){
             var dt = stamp - this.lasttime;
             var nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
             if(nratio>1){
+                nratio=1;
+            }
+            if(this.actratio===1){
                 if(control.settings.loop.get()){
                     nratio=this.reset();
                 }else{
                     control.settings.play.set(false);
-                    this.setWanted(1);
                 }
-            }else{
-                this.setWanted(nratio);
             }
+            this.setWanted(nratio);
         }
         this.stats.begin();
         control.settings.newHash();
@@ -118,6 +89,7 @@ $.extend(control.control,{
     },
     stop:function(){
         this.running=false;
+        this.wantedratio=this.actratio;
     },
     reset:function(){
         //this.set(0);

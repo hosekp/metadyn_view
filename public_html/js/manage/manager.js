@@ -48,7 +48,7 @@ $.extend(manage.manager,{
             }
             if(lrat>=0&&rat>=0&&rat>lrat+this.onesecratio){
                 rat=lrat+this.onesecratio;
-                manage.console.debug("Manager: ratio reduced to "+rat);
+                //manage.console.debug("Manager: ratio reduced to "+rat);
             }
             //manage.console.debug("Manager: summing "+this.lastSpace.ratio+" to "+rat);
             compute.sum_hill.add(this.lastSpace,rat);
