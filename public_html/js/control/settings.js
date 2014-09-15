@@ -19,6 +19,7 @@ $.extend(control.settings,{
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
+        this.zoomcoef=this.create(2);
         this.resol.call=function(){
             manage.manager.setResol();
         };
@@ -41,10 +42,10 @@ $.extend(control.settings,{
         this.zoom.call=function(){
             control.control.needRedraw=true;
         };
-        this.pox.call=function(){
+        this.frameposx.call=function(){
             control.control.needRedraw=true;
         };
-        this.poy.call=function(){
+        this.frameposy.call=function(){
             control.control.needRedraw=true;
         };
         this.ncv.call=function(){

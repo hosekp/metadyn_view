@@ -134,10 +134,14 @@ $.extend(draw.gl,{
     },
     updateCoord:function(arr){
         var zoom=control.settings.zoom.get();
-        var xlow=0;
-        var xhigh=Math.pow(2,zoom);
-        var ylow=0;
-        var yhigh=Math.pow(2,zoom);
+        var posx=control.settings.frameposx.get();
+        var posy=control.settings.frameposy.get();
+        var zoomcoef=control.settings.zoomcoef.get();
+        var zoompow=Math.pow(zoomcoef,zoom);
+        var xlow=posx*zoompow;
+        var xhigh=zoompow+posx*zoompow;
+        var ylow=posy*zoompow;
+        var yhigh=zoompow+posy*zoompow;
         arr[0]=xlow;
         var mustr=[xlow,ylow, xhigh,ylow, xlow,yhigh, xlow,yhigh, xhigh,ylow, xhigh,yhigh];
         for(var i=0;i<12;i++){
