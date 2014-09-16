@@ -82,7 +82,7 @@ $.extend(compute.axi,{
                 nar.set(i8);
             }
             this.profiler.time(3);
-            this.profiler.print();
+            //this.profiler.print();
             
             return nar;
         }

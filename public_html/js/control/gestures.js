@@ -27,6 +27,7 @@ $.extend(control.gestures,{
     mousemove:function(event){
         this.recompute();
         var pos={x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height};
+        //manage.console.debug("Pos ["+pos.x+","+pos.y+"]");
         if(this.lastPos!==null){
             var newzoom=control.settings.zoom.get();
             var zoomcoef=control.settings.zoomcoef.get();
@@ -42,7 +43,7 @@ $.extend(control.gestures,{
     },
     mousedown:function(event){
         this.recompute();
-        manage.console.debug("Mousedown");
+        //manage.console.debug("Mousedown");
         event.preventDefault();
         this.lastMousepos={x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height};
         this.lastPos={x:control.settings.frameposx.get(),y:control.settings.frameposy.get()};
@@ -50,7 +51,7 @@ $.extend(control.gestures,{
     },
     mouseend:function(event){
         event.preventDefault();
-        manage.console.debug("Mouseup");
+        //manage.console.debug("Mouseup");
         this.lastMousepos=null;
         this.lastPos=null;
     },
@@ -63,7 +64,7 @@ $.extend(control.gestures,{
         var zoomcoef=control.settings.zoomcoef.get();
         var oldpow=Math.pow(zoomcoef,newzoom);
         if(wheelup){
-            newzoom=Math.min(newzoom+1,5);
+            newzoom=Math.min(newzoom+1,6);
         }else{
             newzoom=Math.max(newzoom-1,0);
         }
@@ -109,7 +110,7 @@ $.extend(control.gestures,{
         var ret={};
         ret.x=-frameposx+pos.x/zoompow;
         ret.y=-frameposy+pos.y/zoompow;
-        manage.console.debug("Coord=["+ret.x+","+ret.y+"]");
+        //manage.console.debug("Coord=["+ret.x+","+ret.y+"]");
     }
 });
 control.gestures.measure={
