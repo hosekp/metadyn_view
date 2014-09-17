@@ -20,6 +20,7 @@ $.extend(control.settings,{
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
         this.zoomcoef=this.create(1.3);
+        this.zoompow=function(){return Math.pow(this.zoomcoef.value,this.zoom.value);};
         this.resol.call=function(){
             manage.manager.setResol();
         };

@@ -68,6 +68,7 @@ $.extend(draw.gl,{
         
         progr.zmaxLoc = gl.getUniformLocation(progr, "u_zmax");
         progr.stepLoc = gl.getUniformLocation(progr, "u_step");
+        progr.cmarginLoc = gl.getUniformLocation(progr, "u_cmargin");
 
         //program.texCoordLocation=texCoordLocation;
 
@@ -113,6 +114,7 @@ $.extend(draw.gl,{
         gl.vertexAttribPointer(this.program.texCoordLocation,2,gl.FLOAT,false,0,0);
         gl.uniform1f(this.program.zmaxLoc,zmax);
         gl.uniform1f(this.program.stepLoc,nat[2]*64);
+        gl.uniform1f(this.program.cmarginLoc,0.003/control.settings.zoompow());
         /*var arrBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,arrBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,graf.arrbuf,gl.STATIC_DRAW);
