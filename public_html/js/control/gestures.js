@@ -82,9 +82,10 @@ $.extend(control.gestures,{
     },
     setFramepos:function(posx,posy,pow){
         if(!pow){
-            var newzoom=control.settings.zoom.get();
+            /*var newzoom=control.settings.zoom.get();
             var zoomcoef=control.settings.zoomcoef.get();
-            var pow=Math.pow(zoomcoef,newzoom);
+            var pow=Math.pow(zoomcoef,newzoom);*/
+            var pow = control.settings.zoompow();
         }
         posx=Math.min(posx,0);
         posx=Math.max(posx,-1+1/pow);
@@ -104,7 +105,7 @@ $.extend(control.gestures,{
         }
     },
     getCoord:function(pos){
-        var zoompow=Math.pow(2,control.settings.zoom.get());
+        var zoompow=control.settings.zoompow();
         var frameposx=control.settings.frameposx.get();
         var frameposy=control.settings.frameposy.get();
         var ret={};
