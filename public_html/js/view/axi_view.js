@@ -152,8 +152,8 @@ $.extend(view.axi,{
         var max=compute.axi.getMax(true);
         var posx=control.settings.frameposx.get();
         var diff=max-min;
-        var min=min-diff*posx;
-        var max=min-diff*(posx-1/pow);
+        max=min+diff*(-posx)+diff/pow;
+        min=min+diff*(-posx);
         diff=max-min;
         var limits=this.natureRange(min,max,10,false);
         var range=this.drange(limits);
@@ -181,6 +181,10 @@ $.extend(view.axi,{
         var min=compute.axi.getMin(false);
         var max=compute.axi.getMax(false);
         var diff=max-min;
+        var posy=control.settings.frameposy.get();
+        max=min+diff*(-posy)+diff/pow;
+        min=min+diff*(-posy);
+        diff=max-min;
         limits=this.natureRange(min,max,10,false);
         range=this.drange(limits);
         dec=this.getDec(limits[2]);

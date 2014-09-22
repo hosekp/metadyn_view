@@ -45,7 +45,7 @@ $.extend(compute.axi,{
             //zm*=16384;
             //var i32=new Uint32Array(array.buffer);
             var i32=space.getArr(32);
-            this.profiler.time(1);
+            //this.profiler.time(1);
             if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
                 if(i32.length<124000){
                     var max=Math.max.apply(null,i32);
@@ -71,7 +71,7 @@ $.extend(compute.axi,{
                 this.lastRatio=space.ratio;
             }
             //manage.console.debug("Axi: zmax set to "+zm);
-            this.profiler.time(2);
+            //this.profiler.time(2);
             if(!nar&&type==="float32"){
                 nar=new Float32Array(len);
                 for (var i=0;i<len;i++){
@@ -81,7 +81,7 @@ $.extend(compute.axi,{
                 var i8=space.getArr();
                 nar.set(i8);
             }
-            this.profiler.time(3);
+            //this.profiler.time(3);
             //this.profiler.print();
             
             return nar;

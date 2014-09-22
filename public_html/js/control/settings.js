@@ -2,6 +2,7 @@ if(typeof control==="undefined"){control={};}
 if(typeof control.settings==="undefined"){control.settings={};}
 $.extend(control.settings,{
     hashRequested:false,
+    lastHash:false,
     shortdict:{},
     init:function(){
         this.play=this.create(false);
@@ -19,7 +20,7 @@ $.extend(control.settings,{
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
-        this.zoomcoef=this.create(1.5);
+        this.zoomcoef=this.create(2);
         this.png=this.create(false);
         
         this.zoompow=function(){
@@ -87,28 +88,34 @@ $.extend(control.settings,{
         }
     },
     newHash:function(){
+        //compute.axi.profiler.init();
         if(!this.hashRequested){return;}
+        //compute.axi.profiler.time(1);
         if(view.ctrl.inited){
             view.ctrl.render();
         }
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
-        ret+=this.speed.printout();
-        ret+=this.resol.printout();
-        ret+=this.loop.printout();
-        ret+=this.loglvl.printout();
-        ret+=this.height.printout();
-        ret+=this.axi_auto.printout();
-        ret+=this.frameposx.printout();
-        ret+=this.frameposy.printout();
-        ret+=this.zoom.printout();
-        if(ret){
-            window.location.hash="#"+ret.substring(1);
-        }else{
-            window.location.hash="#";
+        ret=this.speed.printout(ret);
+        ret=this.resol.printout(ret);
+        ret=this.loop.printout(ret);
+        ret=this.loglvl.printout(ret);
+        ret=this.height.printout(ret);
+        //compute.axi.profiler.time(1);
+        ret=this.axi_auto.printout(ret);
+        ret=this.frameposx.printout(ret);
+        ret=this.frameposy.printout(ret);
+        ret=this.zoom.printout(ret);
+        //compute.axi.profiler.time(1);
+        //compute.axi.profiler.time(2);
+        if(this.lastHash!==ret){
+            this.lastHash=ret;
+            window.location.hash="#"+ret;
         }
+        //compute.axi.profiler.time(3);
         this.hashRequested=false;
+        //compute.axi.profiler.print();
     },
     requestNewHash:function(){
         if(this.hashRequested){return;}
@@ -128,11 +135,13 @@ control.settings.template={
     value:false,
     def:false,
     short:"tmpl",
+    lastprintout:"",
     set:function(val){
         this.value=val;
         if(this.call){
             this.call();
         }
+        this.lastprintout=false;
         control.settings.requestNewHash();
     },
     get:function(){
@@ -143,6 +152,7 @@ control.settings.template={
         if(this.call){
             this.call();
         }
+        this.lastprintout=false;
         control.settings.requestNewHash();
     },
     toggle:function(){
@@ -150,6 +160,7 @@ control.settings.template={
         if(this.call){
             this.call();
         }
+        this.lastprintout=false;
         control.settings.requestNewHash();
         return this.value;
     },
@@ -169,8 +180,19 @@ control.settings.template={
         manage.console.warning("Settings: type of "+str+" is string");
         this.set(str);
     },
-    printout:function(){
-        if(!this.isdef()){return "&"+this.short+"="+this.value;}else{return "";}
+    printout:function(string){
+        if(this.lastprintout===false){
+            if(!this.isdef()){this.lastprintout= /*"&"+*/this.short+"="+this.value;}else{
+                this.lastprintout="";
+                return string;
+            }
+        }
+        if(this.lastprintout===""){return string;}
+        if(string!==""){
+            return string+("&"+this.lastprintout);
+        }else{
+            return this.lastprintout;
+        }
     }
 };
             
