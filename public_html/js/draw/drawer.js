@@ -7,9 +7,14 @@ $.extend(draw.drawer,{
     drawer:null,
     init:function(){
         this.$can_cont=$("#canvas_cont");
+        var oldcan=this.$can;
         this.$can=$("<canvas>").attr({id:"main_can"});
-        this.appendCans();
-        //this.initRenderer(true);
+        if(oldcan!==null){
+            oldcan.replaceWith(this.$can);
+        }else{
+            this.$can_cont.append(this.$can);
+        }
+        this.resize();
     },
     isInited:function(){
         if(this.inited){return true;}
@@ -18,11 +23,6 @@ $.extend(draw.drawer,{
             if(ret){this.inited=true;}
             return ret;
         }
-    },
-    appendCans:function(){
-        if(!this.$can_cont){return;}
-        this.$can_cont.append(this.$can);
-        this.resize();
     },
     switchTo:function(){
         var ncv=control.settings.ncv.get();
@@ -42,6 +42,7 @@ $.extend(draw.drawer,{
             this.drawer=draw.liner;
         }
         this.active=ncv;
+        control.gestures.needRecompute=true;
     },
     getCan:function(){
         if(!this.$can){

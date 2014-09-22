@@ -5,6 +5,7 @@ uniform sampler2D u_image;
 //uniform vec2 u_textureSize;
 uniform float u_zmax;
 uniform float u_step;
+uniform float u_cmargin;
 varying vec2 v_texCoord;
 
 vec4 colorScale(float d){
@@ -52,8 +53,8 @@ int compare(vec4 v1,vec4 v2){
     return 0;
 }
 bool contour(vec4 pcenter){
-    const float margin=0.003;
-    //const float step=3.0*64.0;
+    //const float margin=0.003;
+    //float margin=u_cmargin;
     float center=unpack(pcenter);
     if(center<u_step/2.0){
         return false;
@@ -72,10 +73,10 @@ bool contour(vec4 pcenter){
     vec4 nstep=pack(unstep);
     //nstep=pack(step*floor(unpack(pcenter)/step+0.5));
     //vec4 up,down,left,right;
-    vec4 up = texture2D(u_image,v_texCoord+vec2(0,-margin));
-    vec4 down = texture2D(u_image,v_texCoord+vec2(0,margin));
-    vec4 left = texture2D(u_image,v_texCoord+vec2(-margin,0));
-    vec4 right = texture2D(u_image,v_texCoord+vec2(margin,0));
+    vec4 up = texture2D(u_image,v_texCoord+vec2(0,-u_cmargin));
+    vec4 down = texture2D(u_image,v_texCoord+vec2(0,u_cmargin));
+    vec4 left = texture2D(u_image,v_texCoord+vec2(-u_cmargin,0));
+    vec4 right = texture2D(u_image,v_texCoord+vec2(u_cmargin,0));
     if(compare(up,nstep)*compare(down,nstep)<0||compare(left,nstep)*compare(right,nstep)<0){
         //float uup=unpack(up);
         //float udown=unpack(down);

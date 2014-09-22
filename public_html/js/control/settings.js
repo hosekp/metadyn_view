@@ -19,12 +19,12 @@ $.extend(control.settings,{
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
-        this.zoomcoef=this.create(2);
+        this.zoomcoef=this.create(1.5);
         this.png=this.create(false);
         
         this.zoompow=function(){
             return Math.pow(this.zoomcoef.value,this.zoom.value);
-        }
+        };
         this.resol.call=function(){
             manage.manager.setResol();
         };
