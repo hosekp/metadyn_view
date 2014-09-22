@@ -4,6 +4,7 @@ $.extend(draw.drawer,{
     $can:null,
     active:0,
     inited:false,
+    drawer:null,
     init:function(){
         this.$can_cont=$("#canvas_cont");
         this.$can=$("<canvas>").attr({id:"main_can"});
@@ -34,9 +35,11 @@ $.extend(draw.drawer,{
         this.init();
         if(ncv>1){
             draw.gl.init();
+            this.drawer=draw.gl;
         }else{
             var ret=draw.liner.init();
             this.inited=ret;
+            this.drawer=draw.liner;
         }
         this.active=ncv;
     },
@@ -62,15 +65,19 @@ $.extend(draw.drawer,{
         
     },
     draw:function(drawable,zmax){
-        var ncv=control.settings.ncv.get();
-        if(ncv>1){
-            draw.gl.draw(drawable,zmax*64);
-        }else{
-            draw.liner.draw(drawable,zmax);
-        }
+        if(this.drawer)this.drawer.draw(drawable,zmax);
         //manage.console.debug("Drawer: draw");
     },
     reset:function(){
         draw.drawer.inited=false;
+    },
+    getImageData:function(){
+        //if(this.drawer)this.drawer.getImageData();
+        var ncv=control.settings.ncv.get();
+        if(ncv>1){
+            this.$can[0];
+        }else{
+            if(this.active===1){return;}
+        }
     }
 });

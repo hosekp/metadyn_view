@@ -82,6 +82,9 @@ $.extend(view.ctrl,{
                 control.settings[ctrl].toggle();
             }else if(ctrl==="reset"){
                 control.control.reset();
+            }else if(ctrl==="pict"){
+                view.exporter.open();
+                manage.console.debug("Exporter: open");
             }
             //this.render();
         },this))
@@ -145,7 +148,7 @@ $.extend(view.ctrl,{
             $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
             view.axi.needArrange=true;
             view.ctrl.slide.render();
-            control.measure.needRecompute=true;
+            control.gestures.needRecompute=true;
             control.control.needRedraw=true;
             this.resizing=false;
         }

@@ -137,6 +137,7 @@ $.extend(view.axi,{
         ctx.restore();
     },
     drawAxes2:function(){
+        var pow=control.settings.zoompow();
         // X-AXI
         var can=this.div.$x;
         var width=can.width();
@@ -149,7 +150,11 @@ $.extend(view.axi,{
         ctx.lineTo(width-5,1);
         var min=compute.axi.getMin(true);
         var max=compute.axi.getMax(true);
+        var posx=control.settings.frameposx.get();
         var diff=max-min;
+        var min=min-diff*posx;
+        var max=min-diff*(posx-1/pow);
+        diff=max-min;
         var limits=this.natureRange(min,max,10,false);
         var range=this.drange(limits);
         var dec=this.getDec(limits[2]);

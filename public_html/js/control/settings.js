@@ -20,6 +20,11 @@ $.extend(control.settings,{
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
         this.zoomcoef=this.create(2);
+        this.png=this.create(false);
+        
+        this.zoompow=function(){
+            return Math.pow(this.zoomcoef.value,this.zoom.value);
+        }
         this.resol.call=function(){
             manage.manager.setResol();
         };
@@ -41,15 +46,23 @@ $.extend(control.settings,{
         };*/
         this.zoom.call=function(){
             control.control.needRedraw=true;
+            view.axi.needRedraw=true;
         };
         this.frameposx.call=function(){
             control.control.needRedraw=true;
+            view.axi.needRedraw=true;
         };
         this.frameposy.call=function(){
             control.control.needRedraw=true;
+            view.axi.needRedraw=true;
         };
         this.ncv.call=function(){
             view.axi.needArrange=true;
+        };
+        this.png.call=function(){
+            if(!control.settings.play.value){
+                view.exporter.open();
+            }
         };
         this.readHash();
     },
