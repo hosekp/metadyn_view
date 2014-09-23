@@ -1,10 +1,7 @@
-if (typeof compute === "undefined") {
-    compute = {};
-}
-if (typeof compute.gl_summer === "undefined") {
-    compute.gl_summer = {};
-}
+if (typeof compute === "undefined") {compute = {};}
+if (typeof compute.gl_summer === "undefined") {compute.gl_summer = {};}
 $.extend(compute.gl_summer, {
+    initstart:false,
     inited: false,
     periods:[false,false],
     last:{

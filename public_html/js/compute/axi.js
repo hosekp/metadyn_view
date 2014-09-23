@@ -35,15 +35,12 @@ $.extend(compute.axi,{
         var zm=this.zmax;
         var len=array.length;
         this.profiler.init();
-        if(space.ncv===2){
+        var webgl=control.settings.webgl.get();
+        if(webgl&&space.ncv>1){
             if(space.isEmpty()){
                 manage.console.debug("Axi: Nothing to transform");
                 return nar;
-            }else{
-                //manage.console.debug("Axi: Suma je "+space.sum());
             }
-            //zm*=16384;
-            //var i32=new Uint32Array(array.buffer);
             var i32=space.getArr(32);
             //this.profiler.time(1);
             if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
@@ -87,38 +84,23 @@ $.extend(compute.axi,{
             return nar;
         }
         if(this.lastRatio<space.ratio&&control.settings.axi_auto.get()){
-            for (var i=0;i<len;i++){
-                if(array[i]>zm){
-                    this.setZmax(array[i]);
-                    zm=array[i];
-                }
+            var max=Math.max.apply(null,array);
+            if(max>this.zmax){
+                this.setZmax(max);
             }
+            this.lastRatio=space.ratio;
         }
-        if(space.ncv===2){
-            if(!nar){
-                nar=new Float32Array(len);
-                for (var i=0;i<len;i++){
-                    nar[i]=array[i];
-                }
-            }else{
-                for (var i=0;i<len;i++){
-                    nar[i]=array[i]/zm*255;
-                }
-            }
-        }else if(space.ncv===1){
-            if(!nar){
-                nar=new Float32Array(len);
-                for (var i=0;i<len;i++){
-                    nar[i]=array[i];
-                }
-            }else{
-                for (var i=0;i<len;i++){
-                    nar[i]=array[i]/zm;
-                }
+        if(!nar){
+            nar=new Float32Array(len);
+            for (var i=0;i<len;i++){
+                nar[i]=array[i];
             }
         }else{
-            manage.console.error("Axi: Only 1D and 2D spectra implemented");
+            for (var i=0;i<len;i++){
+                nar[i]=array[i]/max;
+            }
         }
+        //manage.console.error("Only 1D and 2D axi transform implemented");
         return nar;
     },
     getDrawable:function(len){

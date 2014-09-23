@@ -13,6 +13,7 @@ $.extend(control.settings,{
         
         this.height=this.create(1,"hei");
         this.ncv=this.create(0);
+        this.webgl=this.create(true);
         this.loglvl=this.create(4,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);

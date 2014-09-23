@@ -73,7 +73,7 @@ $.extend(view.axi,{
         }
         var ncv=control.settings.ncv.get();
         if(ncv===0){
-            
+            manage.console.warning("Axi_view: ncv not set");
         }else if(ncv===1){
             this.drawAxes1();
         }else{

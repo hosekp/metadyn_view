@@ -37,8 +37,8 @@ compute.tspace[2]={
         return space;
     },
     set:function(space){
-        if(this.ncv!==space.ncv){manage.console.error("Storage: Incompatible arrays");return;}
-        if(this.nwhole!==space.nwhole){manage.console.error("Storage: Incompatible arrays");return;}
+        if(this.ncv!==space.ncv){manage.console.error("Space2: Incompatible arrays");return;}
+        if(this.nwhole!==space.nwhole){manage.console.error("Space2: Incompatible arrays");return;}
         this.i8arr.set(space.i8arr);
         this.ratio=space.ratio;
         //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}

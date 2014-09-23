@@ -2,7 +2,7 @@ if(typeof draw==="undefined"){draw={};}
 if(typeof draw.drawer==="undefined"){draw.drawer={};}
 $.extend(draw.drawer,{
     $can:null,
-    active:0,
+    engine:null,
     inited:false,
     drawer:null,
     init:function(){
@@ -18,30 +18,24 @@ $.extend(draw.drawer,{
     },
     isInited:function(){
         if(this.inited){return true;}
-        if(this.active>1){
-            var ret=draw.gl.isInited();
-            if(ret){this.inited=true;}
-            return ret;
+        if(this.drawer){
+            this.inited=this.drawer.isInited();
         }
+        return this.inited;
     },
-    switchTo:function(){
-        var ncv=control.settings.ncv.get();
-        if(ncv>1){
-            if(this.active>1){return;}
-        }else{
-            if(this.active===1){return;}
+    switchTo:function(eng){
+        if(!eng){
+            var ncv=control.settings.ncv.get();
+            var webgl=control.settings.webgl.get();
+            if(ncv===1){eng="liner";}else
+            if(webgl){eng="gl";}else{eng="raster";}
         }
+        if(eng===this.engine){return;}
         this.inited=false;
         this.init();
-        if(ncv>1){
-            draw.gl.init();
-            this.drawer=draw.gl;
-        }else{
-            var ret=draw.liner.init();
-            this.inited=ret;
-            this.drawer=draw.liner;
-        }
-        this.active=ncv;
+        this.drawer=draw[eng];
+        this.drawer.init();
+        this.engine=eng;
         control.gestures.needRecompute=true;
     },
     getCan:function(){
@@ -71,7 +65,7 @@ $.extend(draw.drawer,{
     },
     reset:function(){
         draw.drawer.inited=false;
-    },
+    }/*,
     getImageData:function(){
         //if(this.drawer)this.drawer.getImageData();
         var ncv=control.settings.ncv.get();
@@ -80,5 +74,5 @@ $.extend(draw.drawer,{
         }else{
             if(this.active===1){return;}
         }
-    }
+    }*/
 });

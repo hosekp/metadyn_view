@@ -5,10 +5,13 @@ $.extend(draw.liner,{
         this.$can=draw.drawer.getCan();
         this.ctx=this.$can[0].getContext("2d");
         if(this.ctx){
-            return true;
+            this.inited=true;
         }else{
-            return false;
+            this.inited=false;
         }
+    },
+    isInited:function(){
+        return this.inited;
     },
     draw:function(drawable){
         /*if(!this.inited){
@@ -25,7 +28,7 @@ $.extend(draw.liner,{
         var resol=control.settings.resol.get();
         var step=width/resol;
         for(var i=0;i<resol;i++){
-            ctx.lineTo(i*step,height-drawable[i]*height);
+            ctx.lineTo(i*step,height-drawable[i]*(height-5));
         }
         ctx.closePath();
         ctx.stroke();

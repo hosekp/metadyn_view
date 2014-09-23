@@ -3,6 +3,7 @@ if(typeof compute.sum_hill==="undefined"){compute.sum_hill={};}
 $.extend(compute.sum_hill,{
     arhei:null,
     arcvs:null,
+    norcvs:null,
     arsigma:null,
     artime:null,
     ncv:1,
@@ -11,7 +12,7 @@ $.extend(compute.sum_hill,{
     blobs:{},
     params:null,
     loaded:false,
-    load:function(arrs,params){
+    load:function(arrs,params){   // data
         if(this.arhei===null){
             this.arhei=arrs["height"];
             this.arcvs=arrs["cvs"];
@@ -46,7 +47,7 @@ $.extend(compute.sum_hill,{
         //this.blob=this.createBlob();
         manage.console.log("Sum_hills: loaded");
     },
-    join:function(TA1,TA2){
+    join:function(TA1,TA2){    // data
         var lenTA1=TA1.length;
         var lenTA2=TA2.length;
         var nar=new Float32Array(lenTA1+lenTA2);
@@ -59,7 +60,7 @@ $.extend(compute.sum_hill,{
         }
         return nar;
     },
-    joinParams:function(par1,par2){
+    joinParams:function(par1,par2){    // data
         for(var i=0;i<this.ncv;i++){
             par1.cvs[i].min=Math.min(par1.cvs[i].min,par2.cvs[i].min);
             par1.cvs[i].max=Math.max(par1.cvs[i].max,par2.cvs[i].max);
@@ -67,7 +68,7 @@ $.extend(compute.sum_hill,{
         }
         return par1;
     },
-    purge:function(){
+    purge:function(){    // data
         this.arhei=null;
         this.arcvs=null;
         this.arsigma=null;
@@ -76,7 +77,7 @@ $.extend(compute.sum_hill,{
         this.loaded=false;
         compute.parser.mintime=null;
     },
-    setRealLimits:function(){
+    setRealLimits:function(){   // data
         var params=this.params;
         this.mins=[];
         this.maxs=[];
@@ -86,15 +87,29 @@ $.extend(compute.sum_hill,{
             this.maxs.push(params.cvs[i].max);
             this.diffs.push(params.cvs[i].max-params.cvs[i].min);
         }
+        this.normalize();
     },
-    createSpace:function(resol,ncv){
+    normalize:function(){   // data
+        this.norcvs=[];
+        for(var i=0;i<this.ncv;i++){
+            var norcv=new Float32Array(this.nbody);
+            var arcv=this.arcvs[i];
+            var min=this.mins[i];
+            var diff=this.diffs[i];
+            for(var j=0;j<this.nbody;j++){
+                norcv[j]=(arcv[j]-min)/diff;
+            }
+            this.norcvs.push(norcv);
+        }
+    },
+    createSpace:function(resol,ncv){   // spacer
         if(!ncv){ncv=this.ncv;}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var space=$.extend({},compute.tspace[ncv]);
         space.init(this.multibin(resol,ncv),ncv);
         return space;
     },
-    createBlob:function(resol){
+    createBlob:function(resol){   // spacer
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var sigmas=this.checkSigmaConst();
         //var sigmas=[0.3,0.3,0.3];
@@ -110,7 +125,7 @@ $.extend(compute.sum_hill,{
         space.blob(sigmas1);
         return space;
     },
-    multibin:function(nbins,ncv){
+    multibin:function(nbins,ncv){   // spacer
         if(nbins.length){
             if(nbins.length===ncv){
                 return nbins;
@@ -125,7 +140,7 @@ $.extend(compute.sum_hill,{
             return bins;
         }
     },
-    checkSigmaConst:function(){
+    checkSigmaConst:function(){   // data
         var sigmas=[];
         var valid=true;
         for(var i=0;i<this.ncv;i++){
@@ -151,18 +166,17 @@ $.extend(compute.sum_hill,{
         }
         return inds;
     },*/
-    toIndices:function(line){
+    toIndices:function(line){   // sum
         if(!this.tempind){
             this.tempind = new Float32Array(this.ncv);
         }
         var inds=this.tempind;
-        //var inds=[];
         for(var i=0;i<this.ncv;i++){
-            inds[i]=((this.arcvs[i][line]-this.mins[i])/this.diffs[i]);
+            inds[i]=this.norcvs[i][line];
         }
         return inds;
     },
-    add:function(space,torat){
+    add:function(space,torat){    // sum
         var resol=control.settings.resol.get();
         if(!this.blobs[resol]){
             this.blobs[resol]=this.createBlob(resol);
@@ -205,14 +219,14 @@ $.extend(compute.sum_hill,{
         //manage.console.debug("Added "+(to-last)+" frames");
         return space;
     },
-    isPeriodic:function(){
+    isPeriodic:function(){   // data
         var ret=[];
         for(var i=0;i<this.ncv;i++){
             ret.push(this.params.cvs[i].periodic);
         }
         return ret;
     },
-    locate:function(rat){
+    locate:function(rat){    // data
         if(rat<=0){return 0;}
         var t0=this.artime[0];
         var t1=this.artime[this.nbody-1];
@@ -228,5 +242,5 @@ $.extend(compute.sum_hill,{
         return higher;
         
     },
-    haveData:function(){return this.loaded;}
+    haveData:function(){return this.loaded;}   // data
 });
