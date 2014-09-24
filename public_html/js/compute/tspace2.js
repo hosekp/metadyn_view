@@ -1,6 +1,7 @@
 if(typeof compute==="undefined"){compute={};}
-if(typeof compute.tspace==="undefined"){compute.tspace={};}
-compute.tspace[2]={
+if(typeof compute.tspacer==="undefined"){compute.tspacer={};}
+if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
+compute.tspacer.tspace["gl2"]={
     i8arr:null,
     i32arr:null,
     dims:[0,0],
@@ -13,7 +14,6 @@ compute.tspace[2]={
     comp:null,
     init:function(nbins){
         var ncv=this.ncv;
-        this.id=compute.tspace.lastid++;
         this.nbins=nbins;
         var nwh=1;
         for(var i=0;i<ncv;i++){
@@ -185,5 +185,8 @@ compute.tspace[2]={
             if(this.i32arr!==0){return false;}
         }
         return true; 
+    },
+    getDrawable:function(){
+        return new Int8Array(this.nwhole*4);
     }
 };

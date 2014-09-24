@@ -11,6 +11,9 @@ $.extend(compute.gl_summer, {
     },
     g1: null,
     init: function() {
+        if(this.initstart){return;}
+        this.initstart=true;
+        this.inited = false;
         var ret = this.initGL();
         if (!ret) {
             return false;
@@ -18,7 +21,6 @@ $.extend(compute.gl_summer, {
         this.getShader("add2-vertex.shd", "vertex");
         this.getShader("add2-fragment.shd", "fragment");
 
-        this.inited = false;
     },
     initGL: function() {
         var can = $("<canvas>");
@@ -26,11 +28,11 @@ $.extend(compute.gl_summer, {
             var gl = can[0].getContext("webgl",{premultipliedAlpha:false}) || can[0].getContext("experimental-webgl",{premultipliedAlpha:false});
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch (e) {
-            manage.console.error(e);
+            this.loadFailed(e);
             return false;
         }
         if (!gl) {
-            manage.console.error("Could not initialise WebGL, sorry :-( ");
+            this.loadFailed("Could not initialise WebGL, sorry :-( ");
             return false;
         }
         //gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -69,7 +71,7 @@ $.extend(compute.gl_summer, {
         gl.shaderSource(shader, str);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            manage.console.error(gl.getShaderInfoLog(shader));
+            this.loadFailed(gl.getShaderInfoLog(shader));
             return null;
         }
         //manage.console.debug(typ+"Shader parsed and compiled");
@@ -92,7 +94,7 @@ $.extend(compute.gl_summer, {
         gl.attachShader(progr, this.fragment);
         gl.linkProgram(progr);
         if (!gl.getProgramParameter(progr, gl.LINK_STATUS)) {
-            manage.console.error("Linker: "+gl.getProgramInfoLog(progr));
+            this.loadFailed("Linker: "+gl.getProgramInfoLog(progr));
             return false;
         }
         gl.useProgram(progr);
@@ -140,6 +142,10 @@ $.extend(compute.gl_summer, {
         manage.console.log("WebGL loaded");
         this.inited = true;
         
+    },
+    loadFailed:function(error){
+        manage.console.warning(error);
+        control.settings.webgl.set(false);
     },
     /*createTexture:function(width, height, srcarr, bytesPerValue) {
         var packValue = function(value, bytesPerValue) {

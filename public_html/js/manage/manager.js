@@ -77,6 +77,7 @@ $.extend(manage.manager,{
         control.control.needRedraw=true;
         this.onesecratio=0;
     },
+    resetSpace:
     reset:function(){
         manage.console.debug("Counter: "+this.counter);
         this.counter=0;

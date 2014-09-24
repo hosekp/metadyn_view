@@ -2,10 +2,18 @@ if(typeof compute==="undefined"){compute={};}
 if(typeof compute.tspacer==="undefined"){compute.tspacer={};}
 $.extend(compute.tspacer,{
     lastId:0,
+    tspace:null,
     createSpace:function(resol,ncv){   // spacer
         if(!ncv){ncv=this.ncv;}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var space=$.extend({},this.tspace[ncv]);
+        var webgl=control.settings.webgl.get();
+        if(ncv>2&&webgl){
+            compute.gl_summer.init();
+            var space=$.extend({},this.tspace["gl"+ncv]);
+        }else{
+            var space=$.extend({},this.tspace[ncv]);
+        }
+        $.extend(space,{id:this.lastId++});
         space.init(this.multibin(resol,ncv));
         return space;
     },
@@ -26,8 +34,8 @@ $.extend(compute.tspacer,{
         return space;
     },
 });
-if(typeof compute.tspace==="undefined"){compute.tspace={};}
-compute.tspace[0]={
+if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
+compute.tspacer.tspace[2]={
     id:0,
     dims:null,
     coefs:null,

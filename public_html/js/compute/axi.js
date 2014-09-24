@@ -103,14 +103,13 @@ $.extend(compute.axi,{
         //manage.console.error("Only 1D and 2D axi transform implemented");
         return nar;
     },
-    getDrawable:function(len){
-        var ncv=control.settings.ncv.get();
-        if(ncv>1){
+    /*getDrawable:function(space){
+        if(webgl){
             return new Uint8Array(len*4);
         }else{
             return new Float32Array(len);
         }
-    },
+    },*/
     getMin:function(xaxi){
         var cv=this.getCVindex(xaxi);
         return compute.sum_hill.mins[cv];

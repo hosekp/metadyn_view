@@ -10,7 +10,6 @@ compute.tspace[1]={
     nwhole:0,
     ratio:0,
     init:function(nbins){
-        this.id=compute.tspace.lastid++;
         this.nbins=nbins;
         var nwh=1;
         this.coef=1;
@@ -81,5 +80,8 @@ compute.tspace[1]={
     getArr:function(){
         return this.spacearr;
     },
-    compute:function(){}
+    compute:function(){},
+    getDrawable:function(){
+        return new Float32Array(this.nwhole);
+    }
 };
