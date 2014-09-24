@@ -102,7 +102,7 @@ $.extend(compute.sum_hill,{
             this.norcvs.push(norcv);
         }
     },
-    createSpace:function(resol,ncv){   // spacer
+    /*createSpace:function(resol,ncv){   // spacer
         if(!ncv){ncv=this.ncv;}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var space=$.extend({},compute.tspace[ncv]);
@@ -124,7 +124,7 @@ $.extend(compute.sum_hill,{
         //space.all(1);
         space.blob(sigmas1);
         return space;
-    },
+    },*/
     multibin:function(nbins,ncv){   // spacer
         if(nbins.length){
             if(nbins.length===ncv){

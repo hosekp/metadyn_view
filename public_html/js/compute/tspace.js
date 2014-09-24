@@ -1,5 +1,32 @@
 if(typeof compute==="undefined"){compute={};}
-if(typeof compute.tspace==="undefined"){compute.tspace={lastid:0};}
+if(typeof compute.tspacer==="undefined"){compute.tspacer={};}
+$.extend(compute.tspacer,{
+    lastId:0,
+    createSpace:function(resol,ncv){   // spacer
+        if(!ncv){ncv=this.ncv;}
+        if(typeof resol==="undefined"){resol=control.settings.resol.get();}
+        var space=$.extend({},this.tspace[ncv]);
+        space.init(this.multibin(resol,ncv));
+        return space;
+    },
+    createBlob:function(resol){   // spacer
+        if(typeof resol==="undefined"){resol=control.settings.resol.get();}
+        var sigmas=this.checkSigmaConst();
+        //var sigmas=[0.3,0.3,0.3];
+        var sigmas8=[];
+        var sigmas1=[];
+        for(var i=0;i<this.ncv;i++){
+            var cvstep=resol/this.diffs[i];
+            sigmas1.push(sigmas[i]*cvstep);
+            sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
+        }
+        var space=this.createSpace(resol);
+        //space.all(1);
+        space.blob(sigmas1);
+        return space;
+    },
+});
+if(typeof compute.tspace==="undefined"){compute.tspace={};}
 compute.tspace[0]={
     id:0,
     dims:null,

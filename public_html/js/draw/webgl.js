@@ -34,9 +34,9 @@ $.extend(draw.gl,{
             var gl = $can[0].getContext("webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB}) 
                   || $can[0].getContext("experimental-webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB});
             //gl = getWebGLContext(main.div.canvas[0]);
-        } catch(e) {manage.console.error(e);return false;}
+        } catch(e) {this.loadFailed(e);return false;}
         if (!gl) {
-            manage.console.error("Could not initialise WebGL, sorry :-( ");
+            this.loadFailed("Could not initialise WebGL, sorry :-( ");
             return false;}
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         this.g1=gl;
@@ -51,7 +51,7 @@ $.extend(draw.gl,{
         gl.attachShader(progr,this.fragment);
         gl.linkProgram(progr);
         if (!gl.getProgramParameter(progr, gl.LINK_STATUS)) {
-            manage.console.error("Unable to initialize the shader program.");
+            this.loadFailed("Unable to initialize the shader program.");
             return false;
         }
         this.initParam();
@@ -170,7 +170,7 @@ $.extend(draw.gl,{
         gl.shaderSource(shader, str);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            manage.console.error(gl.getShaderInfoLog(shader));
+            this.loadFailed(gl.getShaderInfoLog(shader));
             return null;
         }
         //manage.console.debug(typ+"Shader parsed and compiled");
@@ -182,5 +182,10 @@ $.extend(draw.gl,{
         if(this.vertex && this.fragment){
             this.initProgram();
         }
+    },
+    loadFailed:function(error){
+        manage.console.warning(error);
+        control.settings.webgl.set(false);
+        draw.drawer.switchTo("raster");
     }
 });
