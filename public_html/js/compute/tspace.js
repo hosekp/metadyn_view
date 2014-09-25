@@ -2,13 +2,14 @@ if(typeof compute==="undefined"){compute={};}
 if(typeof compute.tspacer==="undefined"){compute.tspacer={};}
 $.extend(compute.tspacer,{
     lastId:0,
-    tspace:null,
+    msi:2.8,  // const - multiple of sigma   2=95%
+    //tspace:null,
     createSpace:function(resol,ncv){   // spacer
-        if(!ncv){ncv=this.ncv;}
+        if(!ncv){ncv=control.settings.ncv.get();}
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var webgl=control.settings.webgl.get();
-        if(ncv>2&&webgl){
-            compute.gl_summer.init();
+        if(ncv>1&&webgl){
+            if(!compute.gl_summer.init()){return null;};
             var space=$.extend({},this.tspace["gl"+ncv]);
         }else{
             var space=$.extend({},this.tspace[ncv]);
@@ -19,12 +20,13 @@ $.extend(compute.tspacer,{
     },
     createBlob:function(resol){   // spacer
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var sigmas=this.checkSigmaConst();
+        var sigmas=compute.sum_hill.checkSigmaConst();
         //var sigmas=[0.3,0.3,0.3];
         var sigmas8=[];
         var sigmas1=[];
-        for(var i=0;i<this.ncv;i++){
-            var cvstep=resol/this.diffs[i];
+        var ncv=control.settings.resol.get();
+        for(var i=0;i<ncv;i++){
+            var cvstep=resol/compute.sum_hill.diffs[i];
             sigmas1.push(sigmas[i]*cvstep);
             sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
         }
@@ -32,6 +34,21 @@ $.extend(compute.tspacer,{
         //space.all(1);
         space.blob(sigmas1);
         return space;
+    },
+    multibin:function(nbins,ncv){   // spacer
+        if(nbins.length){
+            if(nbins.length===ncv){
+                return nbins;
+            }else{
+                manage.console.error("Error: Tspace: wrong length of nbins");
+            }
+        }else{
+            var bins=[];
+            for(var i=0;i<ncv;i++){
+                bins.push(nbins);
+            }
+            return bins;
+        }
     },
 });
 if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
@@ -348,7 +365,7 @@ compute.tspacer.tspace[2]={
         return this.spacearr;
     }
 };
-compute.tspace[3]={
+compute.tspacer.tspace[3]={
     init:function(){
         manage.console.error("Error: More than 2 CVs is not implemented");
     }

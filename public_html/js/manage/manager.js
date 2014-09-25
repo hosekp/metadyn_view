@@ -21,11 +21,13 @@ $.extend(manage.manager,{
     draw:function(rat){
         //if(!draw.gl.inited){return false;}
         if(!compute.sum_hill.haveData()){return false;}
-        if(!draw.drawer.isInited()){
-            return false;
-        }
+        var ret;
+        ret=draw.drawer.isInited();
         if(this.lastSpace===null){
-            this.initSpace();
+            ret=this.initSpace()&&ret;
+        }
+        if(!ret){
+            return false;
         }
         var lrat=this.lastSpace.ratio;
         //if(rat===0){rat=-1;}
@@ -65,8 +67,10 @@ $.extend(manage.manager,{
     },
     initSpace:function(){
         //var resol=control.settings.resol.get();
-        this.lastSpace=compute.sum_hill.createSpace();
-        this.lastDrawable=compute.axi.getDrawable(this.lastSpace.nwhole);
+        this.lastSpace=compute.tspacer.createSpace();
+        if(!this.lastSpace){return false;}
+        this.lastDrawable=this.lastSpace.getDrawable();
+        return true;
     },
     setResol:function(){
         //this.reset();
@@ -77,7 +81,6 @@ $.extend(manage.manager,{
         control.control.needRedraw=true;
         this.onesecratio=0;
     },
-    resetSpace:
     reset:function(){
         manage.console.debug("Counter: "+this.counter);
         this.counter=0;

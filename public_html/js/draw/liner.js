@@ -1,6 +1,7 @@
 if(typeof draw==="undefined"){draw={};}
 if(typeof draw.liner==="undefined"){draw.liner={};}
 $.extend(draw.liner,{
+    engine:"liner",
     init:function(){
         this.$can=draw.drawer.getCan();
         this.ctx=this.$can[0].getContext("2d");

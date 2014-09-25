@@ -1,6 +1,7 @@
 if(typeof compute==="undefined"){compute={};}
 if(typeof compute.tspace==="undefined"){compute.tspace={};}
-compute.tspace[1]={
+if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
+compute.tspacer.tspace[1]={
     spacearr:null,
     dim:0,
     coef:0,

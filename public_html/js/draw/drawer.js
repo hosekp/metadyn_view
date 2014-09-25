@@ -4,24 +4,25 @@ $.extend(draw.drawer,{
     $can:null,
     engine:null,
     inited:false,
-    drawer:null,
-    init:function(){
+    appendCanvas:function(){
         this.$can_cont=$("#canvas_cont");
-        var oldcan=this.$can;
-        this.$can=$("<canvas>").attr({id:"main_can"});
+        var oldcan=this.getCan();
+        if(this.getCan())
+        var $can=$("<canvas>").attr({id:"main_can"});
         if(oldcan!==null){
-            oldcan.replaceWith(this.$can);
+            oldcan.replaceWith($can);
         }else{
-            this.$can_cont.append(this.$can);
+            this.$can_cont.append($can);
         }
+        //this.engine.$can=$can;
         this.resize();
     },
     isInited:function(){
-        if(this.inited){return true;}
-        if(this.drawer){
-            this.inited=this.drawer.isInited();
+        //if(this.inited){return true;}
+        if(this.engine){
+            return this.engine.isInited();
         }
-        return this.inited;
+        return false;
     },
     switchTo:function(eng){
         if(!eng){
@@ -30,33 +31,38 @@ $.extend(draw.drawer,{
             if(ncv===1){eng="liner";}else
             if(webgl){eng="gl";}else{eng="raster";}
         }
-        if(eng===this.engine){return;}
-        this.inited=false;
-        this.init();
-        this.drawer=draw[eng];
-        this.drawer.init();
-        this.engine=eng;
+        if(this.engine&&eng===this.engine.engine){return;}
+        this.engine=draw[eng];
+        if(this.engine&&this.engine.)
+        this.engine.init();
         control.gestures.needRecompute=true;
     },
-    getCan:function(){
+    /*getCan:function(){
         if(!this.$can){
             this.init();
         }
         return this.$can;
+    },*/
+    getCan:function(){
+        if(!this.engine){return null;}
+        return this.engine.$can;
     },
     resize:function(){
         if(!this.$can_cont){return;}
+        if(!this.engine){return;}
+        var $can=this.getCan();
+        if(!$can){return;}
         var width=this.$can_cont.width();
         var height=this.$can_cont.height();
-        this.$can.width(width);
-        this.$can.height(height);
-        this.$can.attr({width:width,height:height});
+        $can.width(width);
+        $can.height(height);
+        $can.attr({width:width,height:height});
 //        this.$can[0].width=width;
 //        this.$can[0].height=height;
         //var resol=control.settings.resol.get();
 //        this.g1.viewportWidth = resol;
 //        this.g1.viewportHeight = resol;
-        draw.gl.resize(width,height);
+        if(this.engine.resize){this.engine.resize(width,height);}
         
     },
     draw:function(drawable,zmax){
@@ -64,7 +70,7 @@ $.extend(draw.drawer,{
         //manage.console.debug("Drawer: draw");
     },
     reset:function(){
-        draw.drawer.inited=false;
+        draw.engine.inited=false;
     }/*,
     getImageData:function(){
         //if(this.drawer)this.drawer.getImageData();

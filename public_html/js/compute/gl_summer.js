@@ -11,7 +11,8 @@ $.extend(compute.gl_summer, {
     },
     g1: null,
     init: function() {
-        if(this.initstart){return;}
+        if(this.inited){return true;}
+        if(this.initstart){return false;}
         this.initstart=true;
         this.inited = false;
         var ret = this.initGL();
@@ -20,7 +21,7 @@ $.extend(compute.gl_summer, {
         }
         this.getShader("add2-vertex.shd", "vertex");
         this.getShader("add2-fragment.shd", "fragment");
-
+        return false;
     },
     initGL: function() {
         var can = $("<canvas>");

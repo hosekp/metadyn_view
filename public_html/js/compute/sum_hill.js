@@ -8,7 +8,6 @@ $.extend(compute.sum_hill,{
     artime:null,
     ncv:1,
     nbody:0,
-    msi:2.8,  // const - multiple of sigma   2=95%
     blobs:{},
     params:null,
     loaded:false,
@@ -125,21 +124,6 @@ $.extend(compute.sum_hill,{
         space.blob(sigmas1);
         return space;
     },*/
-    multibin:function(nbins,ncv){   // spacer
-        if(nbins.length){
-            if(nbins.length===ncv){
-                return nbins;
-            }else{
-                manage.console.error("Error: Tspace: wrong length of nbins");
-            }
-        }else{
-            var bins=[];
-            for(var i=0;i<ncv;i++){
-                bins.push(nbins);
-            }
-            return bins;
-        }
-    },
     checkSigmaConst:function(){   // data
         var sigmas=[];
         var valid=true;
@@ -179,7 +163,7 @@ $.extend(compute.sum_hill,{
     add:function(space,torat){    // sum
         var resol=control.settings.resol.get();
         if(!this.blobs[resol]){
-            this.blobs[resol]=this.createBlob(resol);
+            this.blobs[resol]=compute.tspacer.createBlob(resol);
         }
         var blob=this.blobs[resol];
         var ncv=this.ncv;

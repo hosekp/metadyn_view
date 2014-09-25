@@ -187,6 +187,6 @@ compute.tspacer.tspace["gl2"]={
         return true; 
     },
     getDrawable:function(){
-        return new Int8Array(this.nwhole*4);
+        return new Uint8Array(this.nwhole*4);
     }
 };

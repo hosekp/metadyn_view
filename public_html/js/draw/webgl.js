@@ -5,9 +5,11 @@ $.extend(draw.gl,{
     vertex:null,
     fragment:null,
     inited:false,
+    engine:"gl",
+    $can:null,
     program:null,
     init:function(){
-        //if(this.inited){return true;}
+        if(this.inited){return true;}
         if(!this.initGL()){return false;}
         this.getShader("2d-vertex.shd","vertex");
         this.getShader("2d-fragment.shd","fragment");
