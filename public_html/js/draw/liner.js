@@ -1,9 +1,11 @@
 if(typeof draw==="undefined"){draw={};}
 if(typeof draw.liner==="undefined"){draw.liner={};}
 $.extend(draw.liner,{
+    $can:null,
     engine:"liner",
     init:function(){
-        this.$can=draw.drawer.getCan();
+        var can=$("<canvas>").attr({id:"main_can_liner"});
+        this.$can=can;
         this.ctx=this.$can[0].getContext("2d");
         if(this.ctx){
             this.inited=true;

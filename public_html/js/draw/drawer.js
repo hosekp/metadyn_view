@@ -5,15 +5,16 @@ $.extend(draw.drawer,{
     engine:null,
     inited:false,
     appendCanvas:function(){
+        var newcan=this.getCan();
+        var oldcan=this.$can;
+        if(newcan===oldcan){return;}
         this.$can_cont=$("#canvas_cont");
-        var oldcan=this.getCan();
-        if(this.getCan())
-        var $can=$("<canvas>").attr({id:"main_can"});
         if(oldcan!==null){
-            oldcan.replaceWith($can);
+            oldcan.replaceWith(newcan);
         }else{
-            this.$can_cont.append($can);
+            this.$can_cont.append(newcan);
         }
+        this.$can=newcan;
         //this.engine.$can=$can;
         this.resize();
     },
@@ -33,8 +34,10 @@ $.extend(draw.drawer,{
         }
         if(this.engine&&eng===this.engine.engine){return;}
         this.engine=draw[eng];
-        if(this.engine&&this.engine.)
-        this.engine.init();
+        if(!this.getCan()){
+            this.engine.init();
+        }
+        this.appendCanvas();
         control.gestures.needRecompute=true;
     },
     /*getCan:function(){
@@ -66,14 +69,14 @@ $.extend(draw.drawer,{
         
     },
     draw:function(drawable,zmax){
-        if(this.drawer)this.drawer.draw(drawable,zmax);
+        if(this.engine)this.engine.draw(drawable,zmax);
         //manage.console.debug("Drawer: draw");
     },
     reset:function(){
         draw.engine.inited=false;
     }/*,
     getImageData:function(){
-        //if(this.drawer)this.drawer.getImageData();
+        //if(this.engine)this.engine.getImageData();
         var ncv=control.settings.ncv.get();
         if(ncv>1){
             this.$can[0];

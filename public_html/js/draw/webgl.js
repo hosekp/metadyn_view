@@ -30,11 +30,13 @@ $.extend(draw.gl,{
         }
     },
     initGL:function(){
-        var $can=draw.drawer.getCan();
+        var can=$("<canvas>").attr({id:"main_can_gl"});
+        this.$can=can;
+        //draw.drawer.appendCanvas();
         try {
             var PDB=true;
-            var gl = $can[0].getContext("webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB}) 
-                  || $can[0].getContext("experimental-webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB});
+            var gl = can[0].getContext("webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB}) 
+                  || can[0].getContext("experimental-webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB});
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch(e) {this.loadFailed(e);return false;}
         if (!gl) {
