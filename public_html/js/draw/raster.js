@@ -6,7 +6,7 @@ $.extend(draw.raster,{
     $can:null,
     init:function(){
         if(!this.$can){
-            this.$can=$("<canvas>").attr({id:"main_can_raster"});
+            this.$can=$("<canvas>").attr({id:"main_can_raster"}).addClass("main_can");
         }
         this.ctx=this.$can[0].getContext("2d");
         this.inited=true;

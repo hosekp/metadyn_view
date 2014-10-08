@@ -42,7 +42,7 @@ $.extend(view.exporter,{
         var ctx=this.ctx;
         var $axi_y=$("#axi_y");
         var $axi_x=$("#axi_x");
-        var $main_can=$("#main_can");
+        var $main_can=$(".main_can");
         var ncv=control.settings.ncv.get();
         ctx.drawImage($axi_y[0],0,0);
         ctx.drawImage($axi_x[0],$axi_y.width(),$axi_y.height());

@@ -4,7 +4,7 @@ $.extend(draw.liner,{
     $can:null,
     engine:"liner",
     init:function(){
-        var can=$("<canvas>").attr({id:"main_can_liner"});
+        var can=$("<canvas>").attr({id:"main_can_liner"}).addClass("main_can");
         this.$can=can;
         this.ctx=this.$can[0].getContext("2d");
         if(this.ctx){

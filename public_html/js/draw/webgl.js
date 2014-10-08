@@ -30,7 +30,7 @@ $.extend(draw.gl,{
         }
     },
     initGL:function(){
-        var can=$("<canvas>").attr({id:"main_can_gl"});
+        var can=$("<canvas>").attr({id:"main_can_gl"}).addClass("main_can");
         this.$can=can;
         //draw.drawer.appendCanvas();
         try {

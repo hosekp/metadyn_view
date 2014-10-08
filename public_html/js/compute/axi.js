@@ -89,6 +89,8 @@ $.extend(compute.axi,{
                 this.setZmax(max);
             }
             this.lastRatio=space.ratio;
+        }else{
+            var max=this.zmax;
         }
         if(!nar){
             nar=new Float32Array(len);
