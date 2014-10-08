@@ -20,6 +20,7 @@ $.extend(manage.manager,{
     },
     draw:function(rat){
         //if(!draw.gl.inited){return false;}
+        //manage.console.debug("Manager: drawing "+rat);
         if(!compute.sum_hill.haveData()){return false;}
         var ret;
         ret=draw.drawer.isInited();

@@ -13,7 +13,7 @@ $.extend(control.settings,{
         
         this.height=this.create(1,"hei");
         this.ncv=this.create(0);
-        this.webgl=this.create(true);
+        this.webgl=this.create(false);
         this.loglvl=this.create(4,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
@@ -27,6 +27,7 @@ $.extend(control.settings,{
         this.zoompow=function(){
             return Math.pow(this.zoomcoef.value,this.zoom.value);
         };
+        this.maxresol=function(){return 512;};
         this.resol.call=function(){
             manage.manager.setResol();
         };
