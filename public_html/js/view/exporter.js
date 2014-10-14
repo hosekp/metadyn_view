@@ -8,11 +8,11 @@ $.extend(view.exporter,{
         var template='\
 <div id="export_cont">\n\
     <canvas id="export_can" width="600px" height="400px"></canvas>\n\
-    <div id="export_help">\n\
-        <div id="export_close" onclick="view.exporter.close()">\n\
-            <img alt="Close" src="img/play.png">\n\
+    <div id="export_help_cont">\n\
+        <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
+            <img alt="Close" src="img/new/close.png">\n\
         </div>\n\
-        To get the picture, just press right mouse button over it and select Save image as.. \n\
+        <div id="export_help" class="left text">To get the picture, just press right mouse button over it and select Save image as.. </div>\n\
     </div>\n\
     <div id="export_adjust"></div>\n\
 </div>';

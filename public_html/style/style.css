@@ -210,12 +210,11 @@ body{
 .feed_note_longtext{
     display: none;
 }
-#progress_cont{
+/*#progress_cont{
     background-color: black;
     width:270px;
     height:40px;
     position:absolute;
-    /*display:none;*/
 }
 #progress_empty{
     position: absolute;
@@ -238,4 +237,7 @@ body{
     color:white;
     top:10px;
     left:220px;
+}*/
+#export_help{
+    margin-left: 10px;
 }
