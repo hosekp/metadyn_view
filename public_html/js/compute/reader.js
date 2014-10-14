@@ -53,10 +53,10 @@ compute.reader={
     },
     render:function(){
         var obj={examples:[
-            {id:"HILLS.amber03",name:"HILLS_2.0 CV2"},
-            {id:"1D_HILLS_1.3",name:"HILLS_1.3 CV1"},
+            {id:"HILLS.amber03",name:"2D HILLS v2.0"},
+            {id:"1D_HILLS_1.3",name:"1D HILLS v1.3"},
             //{id:"HILLS_2.0",name:"HILLS_2.0 krátký"},
-            {id:"HILLS_1.3",name:"HILLS_1.3 CV2"}
+            {id:"HILLS_1.3",name:"2D HILLS v1.3"}
         ]};
         var rendered=Mustache.render(this.template,obj);
         $("#file_cont").html(rendered);

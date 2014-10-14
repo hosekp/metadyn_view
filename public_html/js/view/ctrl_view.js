@@ -202,7 +202,7 @@ view.ctrl.slide={
             this.slider=$("#slider");
             this.cont=$("#slide_cont");
             this.bind();
-        },this));
+        },this),"text");
     },
     left:function(){
         return Math.round((this.ctrl.width-20)*this.ratio);
