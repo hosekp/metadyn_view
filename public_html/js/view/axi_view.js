@@ -49,18 +49,22 @@ $.extend(view.axi,{
         if(!zaxi){
             zwidth=0;
             this.div.$z_cont.hide();
+            this.div.$z_auto.css({top:"100%",width:this.ywidth+"px",height:this.zheight+"px",left:"0px"}).css({top:"-="+(this.xwidth)+"px"});
+            this.div.$select.hide();
         }else{
             this.div.$z_cont.show();
+            this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px",left:"100%"}).css({top:"-="+(this.zheight)+"px",left:"-="+this.zwidth+"px"});
+            this.div.$select.show();
         }
         this.div.$y.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
         this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
         this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+zwidth+10)+"px"});
         this.div.$x.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
-        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px"});
+        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
         this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:this.zheight+"px"});
-        this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"}).css({height:"-="+(3*this.zheight)+"px"});
-        this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(2*this.zheight)+"px"});
-        this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
+        this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"}).css({height:"-="+(2*this.zheight)+"px"});
+        this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
+        
         draw.drawer.resize();
         this.needRedraw=true;
         this.needArrange=false;
