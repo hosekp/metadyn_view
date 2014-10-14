@@ -4,11 +4,14 @@ $.extend(draw.raster,{
     inited:false,
     engine:"raster",
     $can:null,
+    $seccan:null,
     init:function(){
         if(!this.$can){
             this.$can=$("<canvas>").attr({id:"main_can_raster"}).addClass("main_can");
+            this.$seccan=$("<canvas>").attr({id:"main_seccan_raster"}).addClass("main_can");
         }
         this.ctx=this.$can[0].getContext("2d");
+        this.secctx=this.$seccan[0].getContext("2d");
         this.inited=true;
         this.cscale=new Uint32Array(1000);
         for(var i=0;i<1000;i++){
@@ -80,8 +83,23 @@ $.extend(draw.raster,{
         //this.profiler.time(2);
         this.imageData.data.set(this.work8);
         //this.profiler.time(3);
-        this.ctx.putImageData(this.imageData,0,0);
-        //manage.console.debug("Raster draw");
+        var zoompow=control.settings.zoompow();
+        if(zoompow!==1){
+            this.secctx.putImageData(this.imageData,0,0);
+            this.ctx.save();
+            var posx=control.settings.frameposx.get();
+            var posy=control.settings.frameposy.get();
+            this.ctx.scale(zoompow,zoompow);
+            this.ctx.translate(posx*this.width,posy*this.height);
+            //this.ctx.clearRect(0,0,this.width,this.height);
+            this.ctx.drawImage(this.$seccan[0],0,0);
+            //this.ctx.setTransform(zoompow,0,0,zoompow,/zoompow,/zoompow);
+            //manage.console.debug("Raster draw");
+            //this.ctx.drawImage($("#pict_ctrl img")[0],0.5*this.width-10,0.5*this.height-10);
+            this.ctx.restore();
+        }else{
+            this.ctx.putImageData(this.imageData,0,0);
+        }
         //this.profiler.time(4);
         //this.profiler.print();
     },
@@ -91,7 +109,10 @@ $.extend(draw.raster,{
         this.buffer=new ArrayBuffer(width*height*4);
         this.work8=new Uint8ClampedArray(this.buffer);
         this.work32=new Uint32Array(this.buffer);
-        this.imageData=this.ctx.getImageData(0, 0, width, height);
+        this.$seccan.width(width);
+        this.$seccan.height(height);
+        this.$seccan.attr({width:width,height:height});
+        this.imageData=this.secctx.getImageData(0, 0, width, height);
     },
     isInited:function(){
         return this.inited;

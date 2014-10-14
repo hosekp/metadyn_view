@@ -92,6 +92,8 @@ $.extend(compute.axi,{
                 }
             }
             this.lastRatio=space.ratio;
+        }else{
+            max=this.zmax;
         }
         if(webgl&&space.ncv>1){
             if(!nar&&type==="float32"){

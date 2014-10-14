@@ -82,9 +82,6 @@ $.extend(control.gestures,{
     },
     setFramepos:function(posx,posy,pow){
         if(!pow){
-            /*var newzoom=control.settings.zoom.get();
-            var zoomcoef=control.settings.zoomcoef.get();
-            var pow=Math.pow(zoomcoef,newzoom);*/
             var pow = control.settings.zoompow();
         }
         posx=Math.min(posx,0);
