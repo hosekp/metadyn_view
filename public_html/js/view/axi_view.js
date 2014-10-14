@@ -2,6 +2,7 @@ if(typeof view==="undefined"){view={};}
 if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
     tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa"},
+    autosrc:["manual","semiauto","auto"],
     div:{},
     template:"",
     xwidth:40,
@@ -25,7 +26,9 @@ $.extend(view.axi,{
         var template=this.template;
         this.div.$cancont=$("#canvas_cont");
         this.div.$main_cont=$("#main_cont");
-        var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:control.settings.axi_auto.get()?"on":""}));
+        var autoset=control.settings.axi_auto.get();
+        //var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:autoset?"on":""}));
+        var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:this.autosrc[autoset]}));
         this.div.$main_cont.html(rendered);
         this.div.$x=$("#axi_x");
         this.div.$y=$("#axi_y");
@@ -246,12 +249,14 @@ $.extend(view.axi,{
             var ctrl=event.currentTarget.getAttribute("data-ctrl");
             //alert(ctrl);
             if(ctrl==="auto"){
-                var autoset=control.settings.axi_auto.toggle();
-                if(autoset){
+                var autoset=control.settings.axi_auto.cycle(3);
+                this.div.$z_auto.children("img").attr("src","img/new/"+this.autosrc[autoset]+".png");
+
+                /*if(autoset){
                     this.div.$z_auto.addClass("on");
                 }else{
                     this.div.$z_auto.removeClass("on");
-                }
+                }*/
                 //this.div.$z_auto.children("img").attr("src","img/new/auto"+(this.autoset?"_on":"")+".png");
             }else{
             }

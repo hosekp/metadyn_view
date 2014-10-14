@@ -17,7 +17,7 @@ $.extend(control.settings,{
         this.loglvl=this.create(4,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
-        this.axi_auto=this.create(true,"axa");
+        this.axi_auto=this.create(1,"axa");
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
@@ -159,6 +159,18 @@ control.settings.template={
     },
     toggle:function(){
         this.value=!this.value;
+        if(this.call){
+            this.call();
+        }
+        this.lastprintout=false;
+        control.settings.requestNewHash();
+        return this.value;
+    },
+    cycle:function(n){
+        this.value++;
+        if(this.value===n){
+            this.value=0;
+        }
         if(this.call){
             this.call();
         }
