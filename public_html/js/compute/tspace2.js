@@ -94,19 +94,21 @@ compute.tspacer.tspace["gl2"]={
             this.comp.inds=[];
             this.comp.counter=0;
         }
-        this.comp.inds.push([inds[0],inds[1]]);
+        //inds[2]=1; //##########################
+        this.comp.inds.push(new Float32Array(inds));
+        //this.comp.inds.push(new Float32Array([0,0,1]));
         this.comp.counter++;
         //compute.gl_summer.add(this,space);
         return [inds[0]<0.5,inds[0]>0.5,inds[1]<0.5,inds[1]>0.5];
     },
-    blob:function(sigmastep){
+    blob:function(sigmastep,hei){
         //var dim20=Math.floor((this.dims[0]-1)/2);
         //var dim21=Math.floor((this.dims[1]-1)/2);
         var dim0=this.dims[0];
         var dim1=this.dims[1];
         for(var i=0;i<dim0;i++){
             for(var j=0;j<dim1;j++){
-                var val=Math.exp((-Math.pow((i-dim0/2)/sigmastep[0],2)-Math.pow((j-dim1/2)/sigmastep[1],2))/2);
+                var val=hei*Math.exp((-Math.pow((i-dim0/2)/sigmastep[0],2)-Math.pow((j-dim1/2)/sigmastep[1],2))/2);
                 //var val=1;
                 var offset=i*this.coefs[0]+j*this.coefs[1];
                 this.i32arr[offset]=val*16384;

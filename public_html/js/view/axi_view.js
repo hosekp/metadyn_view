@@ -189,7 +189,8 @@ $.extend(view.axi,{
         range=this.drange(limits);
         dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
-            var pos=5+(range[i]-min)/diff*(height-10);
+            var pos=height-5-(range[i]-min)/diff*(height-10);
+            //var pos=5+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
             ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);

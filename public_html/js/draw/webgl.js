@@ -88,7 +88,8 @@ $.extend(draw.gl,{
         gl.bufferData(gl.ARRAY_BUFFER,this.coordarr, gl.STATIC_DRAW);
         this.texCoordBuffer=gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,this.texCoordBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
+        //gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,0,1,1,0,1,1]), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,1,1,1,0,0,0,0,1,1,1,0]), gl.STATIC_DRAW);
         //gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1.0,-1.0,1.0,-1.0,-1.0,1.0,-1.0,1.0,1.0,-1.0,1.0,1.0]),gl.STATIC_DRAW);
         this.initTextures();
     },

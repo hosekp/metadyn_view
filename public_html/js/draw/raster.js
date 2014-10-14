@@ -49,7 +49,7 @@ $.extend(draw.raster,{
                 whl=(sh+1)*gh;
                 for(wh=hwh;wh<whl;wh++){
                     ih=wh/gh-sh;
-                    whxwi=wh*this.width;
+                    whxwi=(this.height-wh)*this.width;
                     inter0=(h0w0*(1-ih)+h1w0*ih)*1000;
                     //inter1=(h0w1*(1-ih)+h1w1*ih)*1000;
                     //dinter=(h0w1*(1-ih)+h1w1*ih)*1000-inter0;

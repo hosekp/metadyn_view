@@ -57,5 +57,5 @@ $.extend(view.exporter,{
         }else{
         }
         ctx.drawImage($main_can[0],$axi_y.width()+5,5);
-    },
+    }
 });

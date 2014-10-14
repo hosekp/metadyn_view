@@ -20,7 +20,7 @@ $.extend(compute.tspacer,{
         space.init(this.multibin(resol,ncv));
         return space;
     },
-    createBlob:function(resol){   // spacer
+    createBlob:function(resol,hei){   // spacer
         if(typeof resol==="undefined"){resol=control.settings.resol.get();}
         var sigmas=compute.sum_hill.checkSigmaConst();
         //var sigmas=[0.3,0.3,0.3];
@@ -36,7 +36,7 @@ $.extend(compute.tspacer,{
         }else{
             var space=this.createSpace(sigmas8);
         }
-        space.blob(sigmas1);
+        space.blob(sigmas1,hei);
         return space;
     },
     multibin:function(nbins,ncv){   // spacer
@@ -177,6 +177,7 @@ compute.tspacer.tspace[2]={
             if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;divis[i*2]=true;}
             if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];divis[i*2+1]=true;}
         }
+        var hei=inds[2];
         //var lims=this.computeLims(inds,space);
         var len0=lims[1]-lims[0];
         var len1=lims[4]-lims[3];
@@ -190,7 +191,7 @@ compute.tspacer.tspace[2]={
             bp1=bp+bcoef[1]*j;
             for(var i=0;i<len0;i++){
                 //this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)];
-                this.spacearr[tp1+tcoef[0]*i]+=space.spacearr[bp1+bcoef[0]*i];
+                this.spacearr[tp1+tcoef[0]*i]+=hei*space.spacearr[bp1+bcoef[0]*i];
             }
         }
         return divis;
@@ -217,7 +218,7 @@ compute.tspacer.tspace[2]={
         }
         return raxi;
     },
-    blob:function(sigmastep){
+    blob:function(sigmastep,hei){
         for(var c=0;c<this.ncv;c++){
             var dim2=Math.floor((this.dims[c]-1)/2);
             var sigma=sigmastep[c];
@@ -228,7 +229,7 @@ compute.tspacer.tspace[2]={
         }
         var len=this.nwhole;
         for(var i=0;i<len;i++){
-            this.spacearr[i]=Math.exp(-this.spacearr[i]/2);
+            this.spacearr[i]=hei*Math.exp(-this.spacearr[i]/2);
         }
     },
     /*print:function(){

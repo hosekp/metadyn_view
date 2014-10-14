@@ -5,10 +5,10 @@ varying vec2 v_texCoord;
 uniform sampler2D mainTex;
 uniform sampler2D blobTex;
 uniform bvec2 periods;
-uniform vec2 pos;
+uniform vec3 pos;
 
 vec4 compute(){
-    vec2 blobpos = v_texCoord-pos+vec2(0.5,0.5);
+    vec2 blobpos = v_texCoord-pos.xy+vec2(0.5,0.5);
     vec4 outputVec=texture2D(mainTex, v_texCoord);
     if(blobpos.x<0.0){
         if(periods.x){
@@ -36,21 +36,33 @@ vec4 compute(){
             return outputVec;
         }
     }
-    outputVec = texture2D(mainTex, v_texCoord)+texture2D(blobTex, blobpos);
+    if(pos.z==1.0){
+        outputVec = texture2D(mainTex, v_texCoord)+texture2D(blobTex, blobpos);
+    }else{
+        vec4 heiblob=pos.z*texture2D(blobTex, blobpos);
+        heiblob.z+=fract(heiblob.w*256.0);
+        heiblob.y+=fract(heiblob.z*256.0);
+        heiblob.x+=fract(heiblob.y*256.0);
+        outputVec = texture2D(mainTex, v_texCoord)+heiblob;
+    }
+    
     if(outputVec.x>1.0){
-        outputVec.x-=1.0+1.0/256.0;
-        outputVec.y+=1.0/256.0;
+        float d=floor(outputVec.x);
+        outputVec.x-=d*257.0/256.0;
+        outputVec.y+=d/256.0;
     }
     if(outputVec.y>1.0){
-        outputVec.y-=1.0+1.0/256.0;
-        outputVec.z+=1.0/256.0;
+        float d=floor(outputVec.y);
+        outputVec.y-=d*257.0/256.0;
+        outputVec.z+=d/256.0;
     }
     if(outputVec.z>1.0){
-        outputVec.z-=1.0+1.0/256.0;
-        outputVec.w+=1.0/256.0;
+        float d=floor(outputVec.z);
+        outputVec.z-=d*257.0/256.0;
+        outputVec.w+=d/256.0;
     }
     if(outputVec.w>1.0){
-        outputVec.w-=1.0+1.0/256.0;
+        outputVec.w=1.0;
     }
     return outputVec;
 }

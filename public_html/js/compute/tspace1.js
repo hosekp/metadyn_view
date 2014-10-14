@@ -46,6 +46,7 @@ compute.tspacer.tspace[1]={
             manage.console.error("Space.add: Variable resolution not implemented");
             return;
         }
+        var hei=inds[1];
         var divis=[false,false];
         var tdims0=this.dim;   var bdims0=space.dim;
         var tmin0=Math.floor(inds[0]*tdims0)-(bdims0)/2;
@@ -59,7 +60,7 @@ compute.tspacer.tspace[1]={
         var tcoef0=this.coef;
         var bcoef0=space.coef;
         for(var i=0;i<len;i++){
-            this.spacearr[tcoef0*(tmin0+i)]+=space.spacearr[bcoef0*(bmin0+i)];
+            this.spacearr[tcoef0*(tmin0+i)]+=hei*space.spacearr[bcoef0*(bmin0+i)];
         }
         return divis;
     },
@@ -70,12 +71,12 @@ compute.tspacer.tspace[1]={
         }
         return this; 
     },*/
-    blob:function(sigmastep){
+    blob:function(sigmastep,hei){
         var dim2=Math.floor((this.dim)/2);
         var sigma=sigmastep[0];
         for(var i=-dim2;i<dim2;i++){
             var val=Math.pow(i/sigma,2);
-            this.spacearr[i+dim2]=Math.exp(-val/2);
+            this.spacearr[i+dim2]=hei*Math.exp(-val/2);
         }
     },
     getArr:function(){

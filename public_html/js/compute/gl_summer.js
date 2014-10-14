@@ -360,7 +360,15 @@ $.extend(compute.gl_summer, {
         gl.uniform1i(this.program.blobTexLoc, 1);
         
         //manage.console.debug(pos);
-        gl.uniform2f(this.program.posLoc,pos[0],pos[1]);
+        //manage.console.error("prepos: "+gl.getError());
+        gl.uniform3fv(this.program.posLoc,pos);
+        /*var errcode=gl.getError();
+        for(var prop in gl){
+            if(gl[prop]===errcode){
+                manage.console.error("Pos: "+prop);
+                break;
+            }
+        }*/
         gl.uniform2f(this.program.periodsLoc,this.periods[0],this.periods[1]);
         //gl.uniform1f(this.program.canvasWidthLoc, canvasWidth);
         //gl.uniform1f(this.program.canvasHeightLoc, canvasHeight);

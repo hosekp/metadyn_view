@@ -74,6 +74,7 @@ $.extend(compute.sum_hill,{
         this.artime=null;
         this.blobs={};
         this.loaded=false;
+        this.tempind=null;
         compute.parser.mintime=null;
     },
     setRealLimits:function(){   // data
@@ -150,25 +151,50 @@ $.extend(compute.sum_hill,{
         }
         return inds;
     },*/
-    toIndices:function(line){   // sum
+    checkHeights:function(from,to){
+        var last=this.arhei[from];
+        for(var i=from+1;i<to;i++){
+            if(last!==this.arhei[i]){
+                return false;
+            }
+            last=this.arhei[i];
+        }
+        return last;
+        /*if(diff===0){
+            this.costthei=0;
+        }else if(diff<4){
+            this.costthei=diff;
+        }
+        */
+    },
+    toIndices:function(line,hei){   // sum
         if(!this.tempind){
-            this.tempind = new Float32Array(this.ncv);
+            this.tempind = new Float32Array(this.ncv+1);
         }
         var inds=this.tempind;
         for(var i=0;i<this.ncv;i++){
             inds[i]=this.norcvs[i][line];
         }
+        if(hei===1){
+            inds[this.ncv]=this.arhei[line];
+        }else{
+            inds[this.ncv]=1;
+        }
         return inds;
     },
     add:function(space,torat){    // sum
         var resol=control.settings.resol.get();
-        if(!this.blobs[resol]){
-            this.blobs[resol]=compute.tspacer.createBlob(resol);
-        }
-        var blob=this.blobs[resol];
         var ncv=this.ncv;
         var last=this.locate(space.ratio);
         var to=this.locate(torat);
+        var hei=this.checkHeights(last,to);
+        if(hei===false){
+            hei=1;
+        }
+        if(!this.blobs[resol+"_"+hei]){
+            this.blobs[resol+"_"+hei]=compute.tspacer.createBlob(resol,hei);
+        }
+        var blob=this.blobs[resol+"_"+hei];
         var periods=this.isPeriodic();
         //manage.console.debug("Add from "+last+" to "+to);
         var anyperiod=false;
@@ -181,12 +207,52 @@ $.extend(compute.sum_hill,{
         var divis;
         if(anyperiod){
             for(var i=last;i<to;i++){
-                inds=this.toIndices(i);
+                inds=this.toIndices(i,hei);
                 divis=space.add(inds,blob);
                 if(this.ncv===1){
                     var ind1=inds[0];
                     if(divis[0]){space.add([ind1-1],blob);}
                     if(divis[1]){space.add([ind1+1],blob);}
+                }else if(this.ncv===2){
+                    if(!control.settings.webgl.get()){
+                        if(divis[0]){
+                            inds[0]+=1;
+                            space.add(inds,blob);
+                            if(divis[2]){
+                                inds[1]+=1;
+                                space.add(inds,blob);
+                                inds[0]-=1;
+                                space.add(inds,blob);
+                            }else if(divis[3]){
+                                inds[1]-=1;
+                                space.add(inds,blob);
+                                inds[0]-=1;
+                                space.add(inds,blob);
+                            }
+                        }else if(divis[1]){
+                            inds[0]-=1;
+                            space.add(inds,blob);
+                            if(divis[2]){
+                                inds[1]+=1;
+                                space.add(inds,blob);
+                                inds[0]+=1;
+                                space.add(inds,blob);
+                            }else if(divis[3]){
+                                inds[1]-=1;
+                                space.add(inds,blob);
+                                inds[0]+=1;
+                                space.add(inds,blob);
+                            }
+                        }else{
+                            if(divis[2]){
+                                inds[1]+=1;
+                                space.add(inds,blob);
+                            }else if(divis[3]){
+                                inds[1]-=1;
+                                space.add(inds,blob);
+                            }
+                        }
+                    }
                 }else if(this.ncv===3){
                     manage.console.warning("Sum_hills: Add3 not implemented");
                 }else{
@@ -194,7 +260,7 @@ $.extend(compute.sum_hill,{
             }
         }else{
             for(var i=last;i<to;i++){
-                var inds=this.toIndices(i);
+                var inds=this.toIndices(i,hei);
                 space.add(inds,blob);
             }
         }
