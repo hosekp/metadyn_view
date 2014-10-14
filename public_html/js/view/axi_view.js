@@ -139,7 +139,7 @@ $.extend(view.axi,{
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        var text="kJ/mol";
+        var text="bias pot. [kJ/mol]";
         ctx.fillText(text,-height/2-15,10);
         ctx.restore();
     },
@@ -189,14 +189,15 @@ $.extend(view.axi,{
         var max=compute.axi.getMax(false);
         var diff=max-min;
         var posy=control.settings.frameposy.get();
-        max=min+diff*(-posy)+diff/pow;
-        min=min+diff*(-posy);
+        min=max+diff*(+posy)-diff/pow;
+        max=max+diff*(+posy);
         diff=max-min;
         limits=this.natureRange(min,max,10,false);
         range=this.drange(limits);
         dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
-            var pos=height-5-(range[i]-min)/diff*(height-10);
+            //var pos=height-5-(max-range[i])/diff*(height-10);
+            var pos=5+(max-range[i])/diff*(height-10);
             //var pos=5+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
@@ -240,7 +241,7 @@ $.extend(view.axi,{
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        var text="kJ/mol";
+        var text="bias pot. [kJ/mol]";
         ctx.fillText(text,-height/2-15,width-5);
         ctx.restore();
         

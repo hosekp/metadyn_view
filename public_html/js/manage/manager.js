@@ -79,6 +79,7 @@ $.extend(manage.manager,{
         this.lastDrawable=null;
         this.lastTransformed=null;
         manage.storage.reset();
+        compute.axi.lastRatio=-1;
         control.control.needRedraw=true;
         this.onesecratio=0;
     },
