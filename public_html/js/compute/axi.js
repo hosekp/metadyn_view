@@ -31,6 +31,39 @@ $.extend(compute.axi,{
 ");
         }
     },
+    findMaxMin:function(array,alsomin){
+        var max,min=0;
+        var len=array.length;
+        if(len<124000){
+            max=Math.max.apply(null,array);
+            if(alsomin){
+                min=Math.min.apply(null,array);
+            }
+        }else{
+            var maxs=[];
+            var mins=[];
+            if(this.temp.buffer!==array.buffer){
+                this.temp.subarrs=[];
+            }
+            for(var i=0;i<len/124000;i++){
+                if(this.temp.subarrs.length>i){
+                    var subarr=this.temp.subarrs[i];
+                }else{
+                    subarr=array.subarray(i*124000,(i+1)*124000);
+                    this.temp.subarrs.push(subarr);
+                }
+                maxs.push(Math.max.apply(null,subarr));
+                if(alsomin){
+                    mins.push(Math.min.apply(null,subarr));
+                }
+            }
+            max=Math.max.apply(null,maxs);
+            if(alsomin){
+                min=Math.min.apply(null,mins);
+            }
+        }
+        return [max,min];
+    },
     transform:function(space,nar,type){
         var max,min=0;
         this.profiler.init();
@@ -39,7 +72,6 @@ $.extend(compute.axi,{
             manage.console.debug("Axi: Nothing to transform");
             return nar;
         }
-        
         if(webgl&&space.ncv>1){
             var array=space.getArr(32);
         }else{
@@ -48,40 +80,15 @@ $.extend(compute.axi,{
         var len=array.length;
         var autoset=control.settings.axi_auto.get();
         if(this.lastRatio<space.ratio||autoset===2){
-            if(len<124000){
-                max=Math.max.apply(null,array);
-                if(autoset===2){
-                    min=Math.min.apply(null,array);
-                }
-            }else{
-                var maxs=[];
-                var mins=[];
-                if(this.temp.buffer!==array.buffer){
-                    this.temp.subarrs=[];
-                }
-                for(var i=0;i<len/124000;i++){
-                    if(this.temp.subarrs.length>i){
-                        var subarr=this.temp.subarrs[i];
-                    }else{
-                        subarr=array.subarray(i*124000,(i+1)*124000);
-                        this.temp.subarrs.push(subarr);
-                    }
-                    maxs.push(Math.max.apply(null,subarr));
-                    if(autoset===2){
-                        mins.push(Math.min.apply(null,subarr));
-                    }
-                }
-                max=Math.max.apply(null,maxs);
-                if(autoset===2){
-                    min=Math.min.apply(null,mins);
-                }
-            }
+            var limits=this.findMaxMin(array,autoset===2);
+            max=limits[0];
+            min=limits[1];
             if(webgl&&space.ncv>1){
                 if(max>this.zmax*16384){
                     this.setZmax(max/16384.0);
                 }
                 if(min!==this.zmin*16384){
-                    this.setZmax(max/16384.0);
+                    this.setZmin(min/16384.0);
                 }
             }else{
                 if(max>this.zmax){
@@ -94,6 +101,7 @@ $.extend(compute.axi,{
             this.lastRatio=space.ratio;
         }else{
             max=this.zmax;
+            min=this.zmin;
         }
         if(webgl&&space.ncv>1){
             if(!nar&&type==="float32"){
@@ -110,16 +118,16 @@ $.extend(compute.axi,{
         }else{
             if(!nar){
                 nar=new Float32Array(len);
-                for (var i=0;i<len;i++){
+                nar.set(array);
+                /*for (var i=0;i<len;i++){
                     nar[i]=array[i];
-                }
+                }*/
             }else{
                 for (var i=0;i<len;i++){
                     nar[i]=array[i]/max;
                 }
             }
         }
-        //manage.console.error("Only 1D and 2D axi transform implemented");
         return nar;
     },
     /*getDrawable:function(space){
@@ -129,21 +137,48 @@ $.extend(compute.axi,{
             return new Float32Array(len);
         }
     },*/
-    getMin:function(xaxi){
+    getLimits:function(xaxi,visible){
+        var cv=this.getCVindex(xaxi);
+        if(visible){
+            var max=compute.sum_hill.maxs[cv];
+            var min=compute.sum_hill.mins[cv];
+            var diff=max-min;
+            var pow=control.settings.zoompow();
+            if(xaxi){
+                var posx=control.settings.frameposx.get();
+                max=min+diff*(-posx)+diff/pow;
+                min=min+diff*(-posx);
+            }else{
+                var posy=control.settings.frameposy.get();
+                min=max+diff*(+posy)-diff/pow;
+                max=max+diff*(+posy);
+            }
+            return [min,max];
+        }else{
+            return [compute.sum_hill.mins[cv],compute.sum_hill.maxs[cv]];
+        }
+    },
+    /*getMin:function(xaxi){
         var cv=this.getCVindex(xaxi);
         return compute.sum_hill.mins[cv];
     },
     getMax:function(xaxi){
         var cv=this.getCVindex(xaxi);
         return compute.sum_hill.maxs[cv];
-    },
+    },*/
     getName:function(xaxi){
         var cv=this.getCVindex(xaxi);
-        return compute.sum_hill.params.cvs[cv].name;
+        if(compute.sum_hill.haveData()){
+            return compute.sum_hill.params.cvs[cv].name;
+        }else{
+            return "";
+        }
     },
     setName:function(xaxi,val){
         var cv=this.getCVindex(xaxi);
         compute.sum_hill.params.cvs[cv].name=val;
+        view.axi.needArrange=true;
+        view.axi.needRedraw=true;
     },
     getCVindex:function(xaxi){
         if(xaxi){return control.settings.axi_x.get();

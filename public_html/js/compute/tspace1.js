@@ -85,5 +85,13 @@ compute.tspacer.tspace[1]={
     compute:function(){},
     getDrawable:function(){
         return new Float32Array(this.nwhole);
+    },
+    isEmpty:function(){
+        for(var i=0;i<this.nwhole;i++){
+            if(this.spacearr[i]!==0){
+                return false;
+            }
+        }
+        return true;
     }
 };
