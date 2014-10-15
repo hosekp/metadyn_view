@@ -141,6 +141,10 @@ $.extend(compute.axi,{
         var cv=this.getCVindex(xaxi);
         return compute.sum_hill.params.cvs[cv].name;
     },
+    setName:function(xaxi,val){
+        var cv=this.getCVindex(xaxi);
+        compute.sum_hill.params.cvs[cv].name=val;
+    },
     getCVindex:function(xaxi){
         if(xaxi){return control.settings.axi_x.get();
         }else{return control.settings.axi_y.get();}

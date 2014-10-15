@@ -26,11 +26,14 @@ $.extend(compute.parser,{
         }else{
             params=this.implicitHeader(lines[0],params);
         }
-        var body=lines.slice(i);
-        var data=this.parseBody(body,params);
-        manage.console.log("parsovano");
-        compute.sum_hill.load(data,params);
-        //runit();
+        if(params.ncv>2){
+            manage.console.error("HILLS with 3 and more CVs is not implemented");
+        }else{
+            var body=lines.slice(i);
+            var data=this.parseBody(body,params);
+            manage.console.log("parsovano");
+            compute.sum_hill.load(data,params);
+        }
     },
     //parseCOLVAR:function(){},
     parseHeader:function(header,params){

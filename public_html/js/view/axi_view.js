@@ -3,6 +3,7 @@ if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
     tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa"},
     autosrc:["manual","semiauto","auto"],
+    units:1, // 1=kJ/mol,  2=kcal/mol
     div:{},
     template:"",
     xwidth:40,
@@ -48,11 +49,11 @@ $.extend(view.axi,{
         var zwidth=this.zwidth;
         if(!zaxi){
             zwidth=0;
-            this.div.$z_cont.hide();
+            this.div.$z.hide();
             this.div.$z_auto.css({top:"100%",width:this.ywidth+"px",height:this.zheight+"px",left:"0px"}).css({top:"-="+(this.xwidth)+"px"});
             this.div.$select.hide();
         }else{
-            this.div.$z_cont.show();
+            this.div.$z.show();
             this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px",left:"100%"}).css({top:"-="+(this.zheight)+"px",left:"-="+this.zwidth+"px"});
             this.div.$select.show();
         }
@@ -60,10 +61,10 @@ $.extend(view.axi,{
         this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
         this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+zwidth+10)+"px"});
         this.div.$x.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
-        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
-        this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:this.zheight+"px"});
-        this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"}).css({height:"-="+(2*this.zheight)+"px"});
-        this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
+        this.div.$z.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
+        //this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:this.zheight+"px"});
+        //this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"});
+        //this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
         
         draw.drawer.resize();
         this.needRedraw=true;
