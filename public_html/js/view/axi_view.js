@@ -1,15 +1,16 @@
 if(typeof view==="undefined"){view={};}
 if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
-    tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa"},
+    tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa",units:"Klikem se změní jednotky"},
     autosrc:["manual","semiauto","auto"],
-    units:1, // 1=kJ/mol,  2=kcal/mol
+    unitsrc:["bias pot. [kJ/mol]","bias. pot. [kcal/mol]"],
     div:{},
     template:"",
     xwidth:40,
     ywidth:50,
     zwidth:55,
     zheight:40,
+    letterwidth:4.6,
     needRedraw:true,
     needArrange:true,
     rendered:false,
@@ -31,15 +32,20 @@ $.extend(view.axi,{
         //var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:autoset?"on":""}));
         var rendered=Mustache.render(template,$.extend({},this.tips,{autoset:this.autosrc[autoset]}));
         this.div.$main_cont.html(rendered);
+        this.div.$x_cont=$("#axi_x_cont");
         this.div.$x=$("#axi_x");
+        this.div.$x_text=$("#axi_x_text");
+        this.div.$y_cont=$("#axi_y_cont");
         this.div.$y=$("#axi_y");
+        this.div.$y_text=$("#axi_y_text");
         this.div.$select=$("#axi_select");
         this.div.$z_auto=$("#axi_z_auto");
         this.div.$z_cont=$("#axi_z_cont");
         this.div.$z=$("#axi_z");
         this.div.$z_up=$("#axi_z_up");
         this.div.$z_down=$("#axi_z_down");
-        this.div.$x.before(this.div.$cancont);
+        this.div.$z_text=$("#axi_z_text");
+        this.div.$x_cont.before(this.div.$cancont);
         //if(this.div.$cancont.children().length <= 0){manage.console.warning("Canvas not appended");}
         //if(this.div.$cancont.children().length <= 0){draw.drawer.appendCans();}
         this.rendered=true;
@@ -49,22 +55,30 @@ $.extend(view.axi,{
         var zwidth=this.zwidth;
         if(!zaxi){
             zwidth=0;
-            this.div.$z.hide();
+            this.div.$z_cont.hide();
             this.div.$z_auto.css({top:"100%",width:this.ywidth+"px",height:this.zheight+"px",left:"0px"}).css({top:"-="+(this.xwidth)+"px"});
             this.div.$select.hide();
         }else{
-            this.div.$z.show();
+            this.div.$z_cont.show();
             this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px",left:"100%"}).css({top:"-="+(this.zheight)+"px",left:"-="+this.zwidth+"px"});
             this.div.$select.show();
         }
-        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
+        this.div.$y_cont.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
+        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:"100%"});
+        var yCVlen=this.letterwidth*compute.axi.getName(false).length;
+        this.div.$y_text.css({top:"50%",left:"2px",width:"12px",height:yCVlen+"px"}).css({top:"-="+(yCVlen/2)+"px"});
         this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
         this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+zwidth+10)+"px"});
-        this.div.$x.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
-        this.div.$z.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
-        //this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:this.zheight+"px"});
-        //this.div.$z.css({top:this.zheight+"px",width:this.zwidth+"px",height:"100%"});
-        //this.div.$z_down.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px"}).css({top:"-="+(this.zheight)+"px"});
+        this.div.$x_cont.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
+        this.div.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
+        var xCVlen=this.letterwidth*compute.axi.getName(true).length;
+        this.div.$x_text.css({top:(this.xwidth-14)+"px",left:"50%",height:"12px",width:xCVlen+"px"}).css({left:"-="+(xCVlen/2)+"px"});
+        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
+        this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:"50%"});
+        this.div.$z.css({top:"0px",width:this.zwidth+"px",height:"100%"});
+        this.div.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
+        var textlen=this.letterwidth*this.unitsrc[control.settings.enunit.get()].length;
+        this.div.$z_text.css({top:"50%",left:(this.zwidth-14)+"px",width:"12px",height:textlen+"px"}).css({top:"-="+(textlen/2)+"px"});
         
         draw.drawer.resize();
         this.needRedraw=true;
@@ -99,8 +113,10 @@ $.extend(view.axi,{
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
-        var min=compute.axi.getMin(true);
-        var max=compute.axi.getMax(true);
+        /*var min=compute.axi.getMin(true);
+        var max=compute.axi.getMax(true);*/
+        var limits=compute.axi.getLimits(true,false);
+        var min=limits[0];var max=limits[1];
         var diff=max-min;
         var limits=this.natureRange(min,max,10,false);
         var range=this.drange(limits);
@@ -140,12 +156,12 @@ $.extend(view.axi,{
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        var text="bias pot. [kJ/mol]";
-        ctx.fillText(text,-height/2-15,10);
+        var text=this.unitsrc[control.settings.enunit.get()];
+        //var text="bias pot. [kJ/mol]";
+        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,10);
         ctx.restore();
     },
     drawAxes2:function(){
-        var pow=control.settings.zoompow();
         // X-AXI
         var can=this.div.$x;
         var width=can.width();
@@ -156,13 +172,16 @@ $.extend(view.axi,{
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
-        var min=compute.axi.getMin(true);
+        /*var min=compute.axi.getMin(true);
         var max=compute.axi.getMax(true);
         var posx=control.settings.frameposx.get();
         var diff=max-min;
         max=min+diff*(-posx)+diff/pow;
-        min=min+diff*(-posx);
-        diff=max-min;
+        min=min+diff*(-posx);*/
+        var limits=compute.axi.getLimits(true,true);
+        var min=limits[0];
+        var max=limits[1];
+        var diff=max-min;
         var limits=this.natureRange(min,max,10,false);
         var range=this.drange(limits);
         var dec=this.getDec(limits[2]);
@@ -174,7 +193,7 @@ $.extend(view.axi,{
         }
         ctx.stroke();
         var text=compute.axi.getName(true);
-        ctx.fillText(text,width/2-10,35);
+        ctx.fillText(text,(width-text.length*this.letterwidth)/2,35);
         
         // Y-AXI
         var can=this.div.$y;
@@ -186,12 +205,15 @@ $.extend(view.axi,{
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
-        var min=compute.axi.getMin(false);
+        var limits=compute.axi.getLimits(true,true);
+        var min=limits[0];
+        var max=limits[1];
+        /*var min=compute.axi.getMin(false);
         var max=compute.axi.getMax(false);
         var diff=max-min;
         var posy=control.settings.frameposy.get();
         min=max+diff*(+posy)-diff/pow;
-        max=max+diff*(+posy);
+        max=max+diff*(+posy);*/
         diff=max-min;
         limits=this.natureRange(min,max,10,false);
         range=this.drange(limits);
@@ -209,7 +231,7 @@ $.extend(view.axi,{
         //ctx.fillText(text,5,height/2-15);
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        ctx.fillText(text,-height/2-15,10);
+        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,10);
         ctx.restore();
         
         // Z-AXI
@@ -242,8 +264,8 @@ $.extend(view.axi,{
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        var text="bias pot. [kJ/mol]";
-        ctx.fillText(text,-height/2-15,width-5);
+        var text=this.unitsrc[control.settings.enunit.get()];
+        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,width-5);
         ctx.restore();
         
         this.needRedraw=false;
@@ -264,7 +286,16 @@ $.extend(view.axi,{
                     this.div.$z_auto.removeClass("on");
                 }*/
                 //this.div.$z_auto.children("img").attr("src","img/new/auto"+(this.autoset?"_on":"")+".png");
+            }else if(ctrl==="units"){
+                control.settings.enunit.cycle(2);
+            }else if(ctrl==="x_text"){
+                var pos=$(event.currentTarget).offset();
+                this.renamer.put(pos.left,pos.top,true);
+            }else if(ctrl==="y_text"){
+                var pos=$(event.currentTarget).offset();
+                this.renamer.put(pos.left,pos.top,false);
             }else{
+            
             }
         },this));
         view.ctrl.bindTips(this.div.$main_cont,this.tips);
@@ -327,6 +358,49 @@ $.extend(view.axi,{
         return val.toFixed(dec);
     }
 });
+view.axi.renamer={
+    xaxi:0,
+    div:{},
+    inited:false,
+    init:function(){
+        var template='\n\
+<div id="axi_rnm_cont" class="axi_all">\n\
+    <input id="axi_rnm_input" />\n\
+</div>';
+        this.div.$cont=$(template);
+        this.div.$input=this.div.$cont.children("#axi_rnm_input");
+        this.div.$input.on("focusout",$.proxy(this.close,this)).on("keypress",$.proxy(function(e){
+            if(e.which === 13){
+                this.close();
+                e.preventDefault();
+                return false;
+            }
+        },this));
+        this.inited=true;
+    },
+    put:function(left,top,xaxi){
+        if(!this.inited){
+            this.init();
+        }
+        if(!compute.sum_hill.haveData()){return;}
+        var name=compute.axi.getName(xaxi);
+        this.div.$input.val(name);
+        this.xaxi=xaxi;
+        this.name=name;
+        this.div.$cont.show().css({top:top-20,left:left});
+        $("#all").append(this.div.$cont);
+        this.div.$input.focus();
+    },
+    close:function(){
+        var name=this.div.$input.val();
+        if(name&&name!==this.name){
+            compute.axi.setName(this.xaxi,name);
+        }
+        this.name=null;
+        this.div.$cont.hide();
+    }
+    
+};
 view.axi.bar={
     lastHei:null,
     lastBar:null,

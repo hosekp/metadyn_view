@@ -1,17 +1,20 @@
-<canvas id="axi_y" class="axis axi_all"></canvas>
+<div id="axi_y_cont" class="axi_all">
+    <canvas id="axi_y" class="axis axi_all"></canvas>
+    <div id="axi_y_text" data-ctrl="y_text" class="axi_all ctrl notip halfred" style="cursor:vertical-text"></div>
+</div>
 <div id="axi_select" class="axi_all abutton ctrl" data-ctrl="select">
     <img alt="{{select}}" src="img/new/measure.png" />
 </div>
-<canvas id="axi_x" class="axis axi_all"></canvas>
-<canvas id="axi_z" class="axis axi_all"></canvas>
-<!--<div id="axi_z_cont" class="axi_all">
-    <div id="axi_z_up" data-ctrl="up" class="axi_all abutton ctrl">
-        <img src="img/new/up.png" alt="{{up}}"/>
-    </div>
-    <div id="axi_z_down" data-ctrl="down" class="axi_all abutton ctrl">
-        <img src="img/new/down.png" alt="{{down}}"/>
-    </div>
-</div>-->
+<div id="axi_x_cont" class="axi_all">
+    <canvas id="axi_x" class="axis axi_all"></canvas>
+    <div id="axi_x_text" data-ctrl="x_text" class="axi_all ctrl notip halfred" style="cursor:text"></div>
+</div>
+<div id="axi_z_cont" class="axi_all" >
+    <canvas id="axi_z" class="axis axi_all"></canvas>
+    <div id="axi_z_up" data-ctrl="up" class="axi_all" style="cursor:n-resize;"></div>
+    <div id="axi_z_down" data-ctrl="down" class="axi_all" style="cursor:s-resize;"></div>
+    <div id="axi_z_text" data-ctrl="units" class="axi_all ctrl halfred" style="cursor:vertical-text"></div>
+</div>
     <div id="axi_z_auto" class="abutton ctrl axi_all" data-ctrl="auto">
         <img alt="{{auto}}" src="img/new/{{autoset}}.png" />
     </div>

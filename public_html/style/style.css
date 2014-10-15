@@ -88,6 +88,12 @@ body{
 .red{
     background-color: red;
 }
+.halfred{
+    background-color: rgba(255,0,0,0.4);
+}
+.absolute{
+    position:absolute;
+}
 #slide_cont{
     position:relative;
     width:100%;
@@ -240,4 +246,21 @@ body{
 }*/
 #export_help{
     margin-left: 10px;
+}
+.vertical{
+    /*margin-bottom:0;margin-left:0;z-index:5;*/
+    /* Safari */ -webkit-transform: rotate(-90deg); 
+    /* Firefox */ -moz-transform: rotate(-90deg);
+    -moz-transform-origin: 20px 0px;  
+    /* Internet explorer 7 */  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    /* Internet Explorer 8*/  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+    -ms-transform: rotate(0deg);
+    /* opera*/ -o-transform: rotate(-90deg);  
+    /* opera tmb*/ -o-transform-origin:150px 150px; 
+}
+#axi_rnm_input{
+/*    padding:2px;
+    background-color: black;*/
+    border: 2px solid black;
+    padding:5px;
 }

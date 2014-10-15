@@ -66,6 +66,7 @@ $.extend(draw.drawer,{
 //        this.g1.viewportWidth = resol;
 //        this.g1.viewportHeight = resol;
         if(this.engine.resize){this.engine.resize(width,height);}
+        control.control.needRedraw=true;
         
     },
     draw:function(drawable,zmax){

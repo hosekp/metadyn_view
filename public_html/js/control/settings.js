@@ -18,6 +18,7 @@ $.extend(control.settings,{
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(1,"axa");
+        this.enunit=this.create(0,"eun");  // 1=kJ/mol,  2=kcal/mol
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
@@ -25,6 +26,7 @@ $.extend(control.settings,{
         this.png=this.create(false);
         
         this.zoompow=function(){
+            if(this.zoom.value===0){return 1;}
             return Math.pow(this.zoomcoef.value,this.zoom.value);
         };
         this.maxresol=function(){return 512;};
@@ -66,6 +68,10 @@ $.extend(control.settings,{
             if(!control.settings.play.value){
                 view.exporter.open();
             }
+        };
+        this.enunit.call=function(){
+            view.axi.needArrange=true;
+            //view.axi.needRedraw=true;
         };
         this.readHash();
     },
