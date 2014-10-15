@@ -155,7 +155,7 @@ $.extend(view.ctrl,{
     },
     bindTips:function(div,tips){
         div
-        .on("mouseover","div.ctrl",$.proxy(function(event){
+        .on("mouseover","div.ctrl:not(.notip)",$.proxy(function(event){
             //var ctrl=$(event.currentTarget).attr("data-ctrl");
             var tar=event.currentTarget;
             //manage.console.debug("CTRL="+$(tar).attr("id"));
