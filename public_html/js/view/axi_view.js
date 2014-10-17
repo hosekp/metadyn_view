@@ -10,7 +10,7 @@ $.extend(view.axi,{
     ywidth:50,
     zwidth:55,
     zheight:40,
-    letterwidth:4.6,
+    letterwidth:4.7,
     needRedraw:true,
     needArrange:true,
     rendered:false,
@@ -50,7 +50,7 @@ $.extend(view.axi,{
         //if(this.div.$cancont.children().length <= 0){draw.drawer.appendCans();}
         this.rendered=true;
     },
-    arrange:function(zaxi){
+    /*arrange:function(zaxi){
         if(!this.rendered){return;}
         var zwidth=this.zwidth;
         if(!zaxi){
@@ -65,25 +65,71 @@ $.extend(view.axi,{
         }
         this.div.$y_cont.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
         this.div.$y.css({top:"0px",left:"0px",height:"100%",width:"100%"});
-        var yCVlen=this.letterwidth*compute.axi.getName(false).length;
-        this.div.$y_text.css({top:"50%",left:"2px",width:"12px",height:yCVlen+"px"}).css({top:"-="+(yCVlen/2)+"px"});
+        this.div.$y_text.css({left:"2px",width:"12px"});
         this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
         this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+zwidth+10)+"px"});
         this.div.$x_cont.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
         this.div.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
-        var xCVlen=this.letterwidth*compute.axi.getName(true).length;
-        this.div.$x_text.css({top:(this.xwidth-14)+"px",left:"50%",height:"12px",width:xCVlen+"px"}).css({left:"-="+(xCVlen/2)+"px"});
+        this.div.$x_text.css({top:(this.xwidth-14)+"px",height:"12px"});
         this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
         this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:"50%"});
         this.div.$z.css({top:"0px",width:this.zwidth+"px",height:"100%"});
         this.div.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
-        var textlen=this.letterwidth*this.unitsrc[control.settings.enunit.get()].length;
-        this.div.$z_text.css({top:"50%",left:(this.zwidth-14)+"px",width:"12px",height:textlen+"px"}).css({top:"-="+(textlen/2)+"px"});
-        
+        this.div.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
+        this.setTextFrames();
         draw.drawer.resize();
         this.needRedraw=true;
         this.needArrange=false;
         //manage.console.debug("Axis resized");
+    },*/
+    arrange:function(zaxi){
+        if(!this.rendered){return;}
+        var zwidth=this.zwidth;
+        var xwidth=this.xwidth;
+        var zheight=this.zheight;
+        var ywidth=this.ywidth;
+        if(!zaxi){
+            zwidth=0;
+            ywidth=this.zwidth;
+            this.div.$y_cont.hide();
+            this.div.$z_auto.css({top:"100%",width:ywidth+"px",height:zheight+"px",left:"0px"}).css({top:"-="+(xwidth)+"px"});
+            this.div.$select.hide();
+            this.div.$z_cont.css({top:"0px",left:"0px",height:"100%",width:zwidth+"px"}).css({height:"-="+xwidth});
+            this.div.$z_text.css({left:"2px",width:"12px"});
+        }else{
+            this.div.$y_cont.show();
+            this.div.$z_auto.css({top:"100%",width:zwidth+"px",height:zheight+"px",left:"100%"}).css({top:"-="+(zheight)+"px",left:"-="+zwidth+"px"});
+            this.div.$select.show();
+            this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+xwidth});
+            this.div.$z_text.css({left:(zwidth-14)+"px",width:"12px"});
+        }
+        this.div.$y_cont.css({top:"0px",left:"0px",height:"100%",width:ywidth+"px"}).css({height:"-="+xwidth+"px"});
+        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:"100%"});
+        this.div.$y_text.css({left:"2px",width:"12px"});
+        this.div.$select.css({top:"100%",left:"0px",height:xwidth+"px",width:ywidth+"px"}).css({top:"-="+xwidth+"px"});
+        this.div.$cancont.css({top:"5px",left:(ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(xwidth+10)+"px",width:"-="+(ywidth+zwidth+10)+"px"});
+        this.div.$x_cont.css({top:"100%",left:ywidth+"px",height:xwidth+"px",width:"100%"}).css({top:"-="+xwidth+"px",width:"-="+(ywidth+zwidth)+"px"});
+        this.div.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
+        this.div.$x_text.css({top:(xwidth-14)+"px",height:"12px"});
+        //this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
+        this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:"50%"});
+        this.div.$z.css({top:"0px",width:this.zwidth+"px",height:"100%"});
+        this.div.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
+        //this.div.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
+        this.setTextFrames();
+        draw.drawer.resize();
+        this.needRedraw=true;
+        this.needArrange=false;
+        //manage.console.debug("Axis resized");
+    },
+    setTextFrames:function(){
+        var yCVlen=this.letterwidth*compute.axi.getName(false).length;
+        this.div.$y_text.css({top:"50%",height:yCVlen+"px"}).css({top:"-="+(yCVlen/2)+"px"});
+        var xCVlen=this.letterwidth*compute.axi.getName(true).length;
+        this.div.$x_text.css({left:"50%",width:xCVlen+"px"}).css({left:"-="+(xCVlen/2)+"px"});
+        var textlen=this.letterwidth*this.unitsrc[control.settings.enunit.get()].length;
+        this.div.$z_text.css({top:"50%",height:textlen+"px"}).css({top:"-="+(textlen/2)+"px"});
+        
     },
     drawAxes:function(){
         if(this.needArrange){
@@ -132,7 +178,7 @@ $.extend(view.axi,{
         ctx.fillText(text,width/2-10,35);
         
         //Y-AXI
-        var can=this.div.$y;
+        var can=this.div.$z;
         var width=can.width();
         var height=can.height();
         can.attr({width:width,height:height});
@@ -395,6 +441,7 @@ view.axi.renamer={
         var name=this.div.$input.val();
         if(name&&name!==this.name){
             compute.axi.setName(this.xaxi,name);
+            view.axi.setTextFrames();
         }
         this.name=null;
         this.div.$cont.hide();
