@@ -27,14 +27,14 @@ $.extend(manage.manager,{
         if(this.lastSpace===null){
             ret=this.initSpace()&&ret;
         }
-        if(!ret){
+        if(typeof ret === "undefined"){
             return false;
         }
         var lrat=this.lastSpace.ratio;
         //if(rat===0){rat=-1;}
         if(rat<lrat){
             this.reset();
-            lrat=0;
+            lrat=-1;
         }
         var storaging=false;
         //var nar=this.lastSpace;

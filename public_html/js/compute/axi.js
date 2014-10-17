@@ -68,10 +68,10 @@ $.extend(compute.axi,{
         var max,min=0;
         this.profiler.init();
         var webgl=control.settings.webgl.get();
-        if(space.isEmpty()){
+        /*if(space.isEmpty()){
             manage.console.debug("Axi: Nothing to transform");
             return nar;
-        }
+        }*/
         if(webgl&&space.ncv>1){
             var array=space.getArr(32);
         }else{

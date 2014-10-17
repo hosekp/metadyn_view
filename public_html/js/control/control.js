@@ -92,7 +92,7 @@ $.extend(control.control,{
         this.wantedratio=this.actratio;
     },
     reset:function(){
-        //this.set(0);
+        this.set(0);
         this.setWanted(0);
         //manage.console.debug("reseted");
         return 0;
