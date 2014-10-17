@@ -16,7 +16,7 @@ $.extend(draw.liner,{
     isInited:function(){
         return this.inited;
     },
-    draw:function(drawable){
+    draw:function(drawable,zmax){
         /*if(!this.inited){
             this.init();
         }*/
@@ -25,13 +25,13 @@ $.extend(draw.liner,{
         var ctx=this.ctx;
         ctx.clearRect(0,0,width,height);
         ctx.beginPath();
-        ctx.moveTo(0,height-drawable[0]*height);
+        ctx.moveTo(0,height-drawable[0]*height/zmax);
         ctx.strokeStyle="black";
         ctx.fillStyle="red";
         var resol=control.settings.resol.get();
         var step=width/resol;
         for(var i=0;i<resol;i++){
-            ctx.lineTo(i*step,height-drawable[i]*(height-5));
+            ctx.lineTo(i*step,height-drawable[i]*(height-5)/zmax);
         }
         ctx.closePath();
         ctx.stroke();

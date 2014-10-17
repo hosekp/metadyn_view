@@ -32,7 +32,8 @@ $.extend(draw.raster,{
             }
             zmax=(resol-1)*2;
         }
-        zmax=1;
+        //manage.console.debug("zmax="+zmax);
+        if(!zmax){zmax=1;}
         var resol1=resol-1;
         var gw=this.width/resol1;
         var gh=this.height/resol1;

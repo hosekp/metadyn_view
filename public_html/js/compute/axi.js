@@ -116,17 +116,13 @@ $.extend(compute.axi,{
             //this.profiler.time(3);
             //this.profiler.print();
         }else{
+            /*nar=new Float32Array(len);
+            nar.set(array);*/
+            //manage.console.debug("axi_zmax="+max);
             if(!nar){
                 nar=new Float32Array(len);
-                nar.set(array);
-                /*for (var i=0;i<len;i++){
-                    nar[i]=array[i];
-                }*/
-            }else{
-                for (var i=0;i<len;i++){
-                    nar[i]=array[i]/max;
-                }
             }
+            nar.set(array);
         }
         return nar;
     },
@@ -167,6 +163,9 @@ $.extend(compute.axi,{
         return compute.sum_hill.maxs[cv];
     },*/
     getName:function(xaxi){
+        if(control.settings.ncv.get()===1&&!xaxi){
+            return "";
+        }
         var cv=this.getCVindex(xaxi);
         if(compute.sum_hill.haveData()){
             return compute.sum_hill.params.cvs[cv].name;
@@ -177,7 +176,7 @@ $.extend(compute.axi,{
     setName:function(xaxi,val){
         var cv=this.getCVindex(xaxi);
         compute.sum_hill.params.cvs[cv].name=val;
-        view.axi.needArrange=true;
+        //view.axi.needArrange=true;
         view.axi.needRedraw=true;
     },
     getCVindex:function(xaxi){
