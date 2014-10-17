@@ -89,7 +89,7 @@ body{
     background-color: red;
 }
 .halfred{
-    background-color: rgba(255,0,0,0.4);
+    /*background-color: rgba(255,0,0,0.4);*/
 }
 .absolute{
     position:absolute;

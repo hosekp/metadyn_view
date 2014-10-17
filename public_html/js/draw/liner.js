@@ -20,6 +20,7 @@ $.extend(draw.liner,{
         /*if(!this.inited){
             this.init();
         }*/
+        if(!zmax){zmax=1;}
         var height=this.$can.height();
         var width=this.$can.width();
         var ctx=this.ctx;
