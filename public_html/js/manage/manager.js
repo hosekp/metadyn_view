@@ -27,7 +27,7 @@ $.extend(manage.manager,{
         if(this.lastSpace===null){
             ret=this.initSpace()&&ret;
         }
-        if(typeof ret === "undefined"){
+        if(!ret){
             return false;
         }
         var lrat=this.lastSpace.ratio;

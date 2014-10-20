@@ -39,27 +39,30 @@ vec4 compute(){
     if(pos.z==1.0){
         outputVec = texture2D(mainTex, v_texCoord)+texture2D(blobTex, blobpos);
     }else{
-        vec4 heiblob=pos.z*texture2D(blobTex, blobpos);
-        heiblob.z+=fract(heiblob.w*256.0);
-        heiblob.y+=fract(heiblob.z*256.0);
-        heiblob.x+=fract(heiblob.y*256.0);
+        vec4 heiblob=texture2D(blobTex, blobpos)*pos.z;
         outputVec = texture2D(mainTex, v_texCoord)+heiblob;
+        float n=fract(outputVec.w*255.0)/255.0;
+        outputVec.z+=n*256.0;outputVec.w-=n;
+              n=fract(outputVec.z*255.0)/255.0;
+        outputVec.y+=n*256.0;outputVec.z-=n;
+              n=fract(outputVec.y*255.0)/255.0;
+        outputVec.x+=n*256.0;outputVec.y-=n;
     }
     
     if(outputVec.x>1.0){
         float d=floor(outputVec.x);
-        outputVec.x-=d*257.0/256.0;
-        outputVec.y+=d/256.0;
+        outputVec.x-=d*256.0/255.0;
+        outputVec.y+=d/255.0;
     }
     if(outputVec.y>1.0){
         float d=floor(outputVec.y);
-        outputVec.y-=d*257.0/256.0;
-        outputVec.z+=d/256.0;
+        outputVec.y-=d*256.0/255.0;
+        outputVec.z+=d/255.0;
     }
     if(outputVec.z>1.0){
         float d=floor(outputVec.z);
-        outputVec.z-=d*257.0/256.0;
-        outputVec.w+=d/256.0;
+        outputVec.z-=d*256.0/255.0;
+        outputVec.w+=d/255.0;
     }
     if(outputVec.w>1.0){
         outputVec.w=1.0;
