@@ -4,18 +4,21 @@ if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
 compute.tspacer.tspace["gl2"]={
     i8arr:null,
     i32arr:null,
-    dims:[0,0],
-    coefs:[0,0],
+    dims:null,
+    coefs:null,
     ncv:2,
     nbins:0,
-    res:1,
+    resol:1,
     nwhole:0,
     ratio:0,
+    id:0,
     comp:null,
     init:function(nbins){
         var ncv=this.ncv;
         this.nbins=nbins;
         var nwh=1;
+        this.dims=[0,0];
+        this.coefs=[0,0];
         for(var i=0;i<ncv;i++){
             this.dims[i]=nbins[i];
             this.coefs[i]=nwh;

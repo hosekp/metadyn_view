@@ -192,7 +192,7 @@ $.extend(compute.sum_hill,{
             hei=1;
         }
         if(!this.blobs[resol+"_"+hei]){
-            this.blobs[resol+"_"+hei]=compute.tspacer.createBlob(resol,hei);
+            this.blobs[resol+"_"+hei]=compute.tspacer.createBlob(512,hei);
         }
         var blob=this.blobs[resol+"_"+hei];
         var periods=this.isPeriodic();

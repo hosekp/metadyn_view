@@ -3,10 +3,9 @@ if(typeof compute.tspace==="undefined"){compute.tspace={};}
 if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
 compute.tspacer.tspace[1]={
     spacearr:null,
-    dim:0,
-    coef:0,
+    dim:0,  // number of pins in one row
+    coef:0, // stride 
     ncv:1,
-    nbins:0,
     res:1,
     nwhole:0,
     ratio:0,
@@ -42,25 +41,26 @@ compute.tspacer.tspace[1]={
         this.spacearr=new Float32Array(this.nwhole);
     },
     add:function(inds,space){
-        if(this.res!==space.res){
-            manage.console.error("Space.add: Variable resolution not implemented");
-            return;
-        }
+        var rdif=space.resol/this.resol;
+        var tcoef0=this.coef;
+        var bcoef0=space.coef*rdif;
+        var tdims0=this.dim;
+        var bdims0=space.dim;
+        var bres=space.resol;
         var hei=inds[1];
         var divis=[false,false];
-        var tdims0=this.dim;   var bdims0=space.dim;
-        var tmin0=Math.floor(inds[0]*tdims0)-(bdims0)/2;
-        var tmax0=Math.floor(inds[0]*tdims0)+(bdims0)/2;
-        var bmin0=0;
-        //var bmax=space.dims[0];
-        if(tmin0<0){bmin0=-tmin0;tmin0=0;divis[0]=true;}
-        //if(tmax>tdims0){bmax=tdims0-tmax+bdims0;tmax=tdims0;}
-        if(tmax0>tdims0){tmax0=tdims0;divis[1]=true;}
-        var len=tmax0-tmin0;
-        var tcoef0=this.coef;
-        var bcoef0=space.coef;
+        var b2=Math.floor((bdims0)/2);
+        var gtmid0=Math.round(inds[0]*bres);
+        var gtmin0=gtmid0-b2;
+        var gtmax0=gtmid0+b2;
+        var tmin0;
+        if(gtmin0<0){tmin0=0,divis[0]=true;}else{tmin0=Math.ceil(gtmin0/rdif);}
+        var bmin0=tmin0*rdif-gtmin0;
+        var atmax0=gtmax0/rdif;
+        if(atmax0>tdims0){atmax0=tdims0;divis[1]=true;}
+        var len=atmax0-tmin0;
         for(var i=0;i<len;i++){
-            this.spacearr[tcoef0*(tmin0+i)]+=hei*space.spacearr[bcoef0*(bmin0+i)];
+            this.spacearr[tmin0+tcoef0*i]+=hei*space.spacearr[bmin0+bcoef0*i];
         }
         return divis;
     },

@@ -209,7 +209,7 @@ $.extend(compute.gl_summer, {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,width,height,0, gl.RGBA, gl.UNSIGNED_BYTE, typedArray);
         gl.bindTexture(gl.TEXTURE_2D, null);
     },
-    creaupdateTexture:function(typedArray,width,height){
+    /*creaupdateTexture:function(typedArray,width,height){
         var gl = this.g1;
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -219,7 +219,7 @@ $.extend(compute.gl_summer, {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
         return texture;
-    },
+    },*/
     createFramebuffer: function(texture, width, height) {
         var gl = this.g1;
         var globalRenderBufferId = gl.createRenderbuffer();
@@ -285,6 +285,8 @@ $.extend(compute.gl_summer, {
         }
         this.updateTexture(this.frameTexture,space1.getArr(),width,height);
         if(this.last.rightarr!==space2.getArr()){
+            var width=space2.dims[0];
+            var height=space2.dims[1];
             this.updateTexture(this.rightTexture,space2.getArr(),width,height);
             this.last.rightarr=space2.getArr();
         }
@@ -477,8 +479,10 @@ $.extend(compute.gl_summer, {
     test:function(){
         var but=$("<button>")
         .click(function(){
-            var canvas=compute.sum_hill.blobs[400].print();
-            $("#all").append(canvas);
+            for(var key in compute.sum_hill.blobs){
+                var canvas=compute.sum_hill.blobs[key].print();
+                $("#all").append(canvas);
+            }
         })
         .html("Test");
         $("#all").append(but);
