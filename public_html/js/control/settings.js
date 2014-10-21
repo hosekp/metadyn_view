@@ -106,7 +106,10 @@ $.extend(control.settings,{
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
-        ret=this.speed.printout(ret);
+        for(var s in this.shortdict){
+            ret=this.shortdict[s].printout(ret);
+        }
+        /*ret=this.speed.printout(ret);
         ret=this.resol.printout(ret);
         ret=this.loop.printout(ret);
         ret=this.loglvl.printout(ret);
@@ -116,7 +119,7 @@ $.extend(control.settings,{
         ret=this.frameposx.printout(ret);
         ret=this.frameposy.printout(ret);
         ret=this.zoom.printout(ret);
-        ret=this.enunit.printout(ret);
+        ret=this.enunit.printout(ret);*/
         //compute.axi.profiler.time(1);
         //compute.axi.profiler.time(2);
         if(this.lastHash!==ret){
