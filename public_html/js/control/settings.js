@@ -19,7 +19,7 @@ $.extend(control.settings,{
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(1,"axa");
-        this.enunit=this.create(0,"eun");  // 1=kJ/mol,  2=kcal/mol
+        this.enunit=this.create(0,"eun");  // 0=kJ/mol,  1=kcal/mol
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
@@ -116,6 +116,7 @@ $.extend(control.settings,{
         ret=this.frameposx.printout(ret);
         ret=this.frameposy.printout(ret);
         ret=this.zoom.printout(ret);
+        ret=this.enunit.printout(ret);
         //compute.axi.profiler.time(1);
         //compute.axi.profiler.time(2);
         if(this.lastHash!==ret){
