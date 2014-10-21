@@ -34,6 +34,7 @@ $.extend(draw.liner,{
         for(var i=0;i<resol;i++){
             ctx.lineTo(i*step,height-drawable[i]*(height-5)/zmax);
         }
+        ctx.lineTo(resol*step,height);
         ctx.closePath();
         ctx.stroke();
         ctx.fill();
