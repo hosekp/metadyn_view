@@ -11,7 +11,7 @@ $.extend(manage.console,{
      * 4= i debug
      */
     init:function(){
-        this.$console=$("#cons");
+        this.$console=$("#cons").show();
     },
     addText:function(string,loglvl){
         if(control.settings.loglvl.get()<loglvl){return;}
