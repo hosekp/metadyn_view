@@ -292,5 +292,45 @@ $.extend(compute.sum_hill,{
         return higher;
         
     },
-    haveData:function(){return this.loaded;}   // data
+    haveData:function(){return this.loaded;},   // data
+    findClosestHills:function(cvs,num){
+        if(!this.loaded){return [];}
+        var wins=[];
+        var dists=[];
+        var ld=10000000000;
+        var arcvs=this.norcvs;
+        if(this.ncv===1){
+            var distance2=function(pos,ihill){
+                return Math.pow(pos[0]-arcvs[0][ihill],2);
+            };
+        }else if(this.ncv===2){
+            var distance2=function(pos,ihill){
+                return Math.pow(pos[0]-arcvs[0][ihill],2)+Math.pow(pos[1]-arcvs[1][ihill],2);
+            };
+        }else{
+            manage.console.error("Sum_hill: more than 2 CV not implemented");
+            return [];
+        }
+        var dist;
+        for(var j=0;j<num;j++){
+            if(j===this.nbody){return wins;}
+            dist=distance2(cvs,j);
+            wins.push(j);
+            dists.push(dist);
+        }
+        ld=Math.max.apply("",dists);
+        for(var i=j;i<this.nbody;i++){
+            dist=distance2(cvs,i);
+            if(dist<ld){
+                for(var w=0;w<dists.length;w++){
+                    if(dists[w]===ld){
+                        wins[w]=i;
+                        dists[w]=dist;
+                    }
+                }
+                ld=Math.max.apply("",dists);
+            }
+        }
+        return wins;
+    }
 });

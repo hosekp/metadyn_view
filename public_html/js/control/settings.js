@@ -6,7 +6,7 @@ $.extend(control.settings,{
     shortdict:{},
     init:function(){
         this.play=this.create(false);
-        this.measure=this.create(false);
+        this.measure=this.create(false,"mes");
         this.speed=this.create(0.3,"spd");
         this.resol=this.create(128,"res");
         this.loop=this.create(true,"lop");
@@ -43,13 +43,13 @@ $.extend(control.settings,{
         };
         this.loop.call=function(){
         };
-        /*this.measure.call=function(){
+        this.measure.call=function(){
             if(control.settings.measure.value){
-                control.measure.bind();
+                control.measure.show();
             }else{
-                control.measure.unbind();
+                control.measure.hide();
             }
-        };*/
+        };
         this.zoom.call=function(){
             control.control.needRedraw=true;
             view.axi.needRedraw=true;
@@ -64,6 +64,7 @@ $.extend(control.settings,{
         };
         this.ncv.call=function(){
             view.axi.needArrange=true;
+            control.measure.needRedraw=true;
         };
         this.png.call=function(){
             if(!control.settings.play.value){
@@ -73,6 +74,7 @@ $.extend(control.settings,{
         this.enunit.call=function(){
             view.axi.needArrange=true;
             //view.axi.needRedraw=true;
+            control.measure.needRedraw=true;
         };
         this.readHash();
     },

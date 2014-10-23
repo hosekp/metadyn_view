@@ -41,6 +41,7 @@ $.extend(control.control,{
         view.ctrl.redraw();
         view.ctrl.resize();
         view.axi.drawAxes();
+        control.measure.redraw();
         var rat=this.draw();
         this.set(rat);
         this.stats.end();
