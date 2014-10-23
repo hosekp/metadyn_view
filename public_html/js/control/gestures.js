@@ -23,6 +23,7 @@ $.extend(control.gestures,{
         $("#main_cont").on("mouseup mouseout","#canvas_cont",$.proxy(this.mouseend,this));
 //        $("#main_cont").on("click","#canvas_cont",$.proxy(this.mouseclick,this));
         $("#main_cont").on("mousewheel DOMMouseScroll","#canvas_cont",$.proxy(this.mousewheel,this));
+        $("#main_cont").on("contextmenu","#canvas_cont",function(){return false;});
     },
     /*unbind:function(){
         this.$cancont.off("mousemove");
@@ -68,6 +69,7 @@ $.extend(control.gestures,{
         control.measure.setDiff(coord);
     },
     mousedown:function(event){
+        event.preventDefault();
         this.recompute();
         //manage.console.debug("Mousedown");
         event.preventDefault();
