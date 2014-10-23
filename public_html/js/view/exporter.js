@@ -14,9 +14,8 @@ $.extend(view.exporter,{
         </div>\n\
         <div id="export_help" class="left text">To get the picture, just press right mouse button over it and select Save image as.. </div>\n\
     </div>\n\
-    <div id="export_adjust"></div>\n\
 </div>';
-        $("#all").append($(template));
+        $("#all").prepend($(template));
         this.$canvas=$("#export_can");
         this.$cont=$("#export_cont");
         this.inited=true;
@@ -40,22 +39,18 @@ $.extend(view.exporter,{
     },
     redraw:function(){
         var ctx=this.ctx;
-        var $axi_y=$("#axi_y");
+        var $axi_z=$("#axi_z");
         var $axi_x=$("#axi_x");
         var $main_can=$(".main_can");
         var ncv=control.settings.ncv.get();
-        ctx.drawImage($axi_y[0],0,0);
-        ctx.drawImage($axi_x[0],$axi_y.width(),$axi_y.height());
+        ctx.drawImage($axi_x[0],$axi_z.width(),$axi_z.height());
         if(ncv>1){
-            var $axi_z=$("#axi_z");
-            ctx.drawImage($axi_z[0],$axi_y.width()+$axi_x.width(),($axi_y.height()-$axi_z.height())/2);
-            /*draw.drawer.drawer.getBuffer(function(buffer){
-                var imageData=ctx.getImageData(0,0,$main_can.width(),$main_can.height());
-                imageData.data.set(buffer);
-                ctx.putImageData(imageData,$axi_y.width(),0);
-            });*/
+            var $axi_y=$("#axi_y");
+            ctx.drawImage($axi_y[0],0,0);
+            ctx.drawImage($axi_z[0],$axi_z.width()+$axi_x.width(),($axi_z.height()-$axi_z.height())/2);
         }else{
+            ctx.drawImage($axi_z[0],0,0);
         }
-        ctx.drawImage($main_can[0],$axi_y.width()+5,5);
+        ctx.drawImage($main_can[0],$axi_z.width()+5,5);
     }
 });
