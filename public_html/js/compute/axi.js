@@ -154,6 +154,12 @@ $.extend(compute.axi,{
             return [compute.sum_hill.mins[cv],compute.sum_hill.maxs[cv]];
         }
     },
+    getCVval:function(xaxi,ratio){
+        if(!compute.sum_hill.haveData()){return 0;}
+        var cv=this.getCVindex(xaxi);
+        var min=compute.sum_hill.mins[cv];
+        return min+ratio*(compute.sum_hill.maxs[cv]-min);
+    },
     /*getMin:function(xaxi){
         var cv=this.getCVindex(xaxi);
         return compute.sum_hill.mins[cv];
@@ -178,6 +184,7 @@ $.extend(compute.axi,{
         compute.sum_hill.params.cvs[cv].name=val;
         //view.axi.needArrange=true;
         view.axi.needRedraw=true;
+        control.measure.needRedraw=true;
     },
     getCVindex:function(xaxi){
         if(xaxi){return control.settings.axi_x.get();
