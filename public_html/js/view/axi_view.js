@@ -251,7 +251,7 @@ $.extend(view.axi,{
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
-        var limits=compute.axi.getLimits(true,true);
+        var limits=compute.axi.getLimits(false,true);
         var min=limits[0];
         var max=limits[1];
         /*var min=compute.axi.getMin(false);
