@@ -77,6 +77,7 @@ $.extend(control.settings,{
             control.measure.needRedraw=true;
         };
         this.readHash();
+        control.control.subscribe(this,"newHash");
     },
     readHash:function(){
         var hashstr=window.location.hash;

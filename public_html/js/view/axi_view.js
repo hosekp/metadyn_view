@@ -16,6 +16,7 @@ $.extend(view.axi,{
     rendered:false,
     init:function(){
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
+        control.control.subscribe(this,"drawAxes");
     },
     loaded:function(template){
         if(template){

@@ -22,6 +22,8 @@ $.extend(view.ctrl,{
             this.bind();
             this.inited=true;
         },this),"text");
+        control.control.subscribe(this,"redraw");
+        control.control.subscribe(this,"resize");
 
     },
     getSettings:function(){

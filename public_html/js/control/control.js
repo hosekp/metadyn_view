@@ -7,6 +7,7 @@ $.extend(control.control,{
     needRedraw:true,
     running:false,
     lasttime:0,
+    listeners:[],
     RAFprefix:null,
     init:function(){
         var stt=new Stats();
@@ -37,11 +38,15 @@ $.extend(control.control,{
             this.setWanted(nratio);
         }
         this.stats.begin();
-        control.settings.newHash();
+        for(var is=0;is<this.listeners.length;is++){
+            var lis=this.listeners[is];
+            lis.ctx[lis.call]();
+        }
+        /*control.settings.newHash();
         view.ctrl.redraw();
         view.ctrl.resize();
         view.axi.drawAxes();
-        control.measure.redraw();
+        control.measure.redraw();*/
         var rat=this.draw();
         this.set(rat);
         this.stats.end();
@@ -52,6 +57,9 @@ $.extend(control.control,{
         this.requestAnimFrame(function(stamp){
             control.control.cycle(stamp);
         });
+    },
+    subscribe:function(obj,func){
+        this.listeners.push({ctx:obj,call:func});
     },
     requestAnimFrame:function(func){
         if(this.RAFprefix===null){

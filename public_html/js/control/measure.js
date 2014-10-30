@@ -13,6 +13,7 @@ control.measure={
         src:0
     },
     init:function(){
+        control.control.subscribe(this,"redraw");
         var cont=$('<div id="measure_cont"></div>');
         this.div.$cont=cont;
         $("#side").append(cont);
