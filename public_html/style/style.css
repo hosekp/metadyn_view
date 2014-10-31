@@ -76,7 +76,7 @@ body{
     user-select: none;
 }
 #canvas_cont{
-    
+    text-align: center;
 }
 .absolute{
     position:absolute;
