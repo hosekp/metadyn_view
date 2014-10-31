@@ -9,6 +9,7 @@ body{
 #all{
     width:auto;
     height:600px;
+    position:relative;
 }
 #cont{
     width:600px;
@@ -20,7 +21,15 @@ body{
     width:100%;
 }
 #file_cont{
-    background-color: #66ccff
+    /*background-color: #66ccff*/
+    /*background-color: darkred;*/
+    position:relative;
+    background-color: black;
+    /*height:25px;*/
+    color:white;
+    z-index:10;
+    padding-top: 1px;
+    padding-bottom: 2px;
 }
 #ctrl_cont{
     height:25px;
@@ -72,6 +81,9 @@ body{
 .absolute{
     position:absolute;
 }
+.relative{
+    position:relative;
+}
 #slide_cont{
     position:relative;
     width:100%;
@@ -85,6 +97,14 @@ body{
 }
 .example{
     float:right;
+}
+#examples{
+    border-bottom: 1px solid black;
+    background: black;
+}
+#file_seld{
+    padding: 2px;
+    margin-left:5px;
 }
 #feed_cont{
     width:400px;

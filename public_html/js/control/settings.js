@@ -25,6 +25,7 @@ $.extend(control.settings,{
         this.frameposy=this.create(0,"poy");
         this.zoomcoef=this.create(2);
         this.png=this.create(false);
+        this.lang=this.create("eng","lan");
         
         this.zoompow=function(){
             if(this.zoom.value===0){return 1;}
@@ -76,6 +77,9 @@ $.extend(control.settings,{
             //view.axi.needRedraw=true;
             control.measure.needRedraw=true;
         };
+        this.lang.call=function(){
+            compute.reader.render(false);
+        };
         this.readHash();
         control.control.subscribe(this,"newHash");
     },
@@ -112,17 +116,6 @@ $.extend(control.settings,{
         for(var s in this.shortdict){
             ret=this.shortdict[s].printout(ret);
         }
-        /*ret=this.speed.printout(ret);
-        ret=this.resol.printout(ret);
-        ret=this.loop.printout(ret);
-        ret=this.loglvl.printout(ret);
-        ret=this.height.printout(ret);
-        //compute.axi.profiler.time(1);
-        ret=this.axi_auto.printout(ret);
-        ret=this.frameposx.printout(ret);
-        ret=this.frameposy.printout(ret);
-        ret=this.zoom.printout(ret);
-        ret=this.enunit.printout(ret);*/
         //compute.axi.profiler.time(1);
         //compute.axi.profiler.time(2);
         if(this.lastHash!==ret){
@@ -205,7 +198,7 @@ control.settings.template={
             this.set(parsed);
             return;
         }
-        manage.console.warning("Settings: type of "+str+" is string");
+        //manage.console.debug("Settings: type of "+str+" is string");
         this.set(str);
     },
     printout:function(string){
