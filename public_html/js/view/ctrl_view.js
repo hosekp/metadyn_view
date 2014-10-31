@@ -133,7 +133,7 @@ $.extend(view.ctrl,{
     summonSelect:function(ctrl,rendered,callback){
         var div=$("#ctrl_select");
         var off = $(ctrl).offset();
-        div.css({"left":(off.left)+"px","top":(off.top+25)+"px"});
+        div.css({"left":(off.left-8)+"px","top":(off.top+17)+"px"});
         div.html(rendered);
         div.show();
         div.children("div").click(callback);
