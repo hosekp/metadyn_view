@@ -39,8 +39,10 @@
     border-color: yellow;
 }
 .ctrl.on:hover{
-    background-color: white;
     border-color: white;
+}
+.ctrl.on:not(.text):hover{
+    background-color: white;
 }
 .ctrl.text{
     color:white;
