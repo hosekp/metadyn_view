@@ -21,6 +21,9 @@ $.extend(view.exporter,{
         this.inited=true;
     },
     open:function(){
+        if(!$(".main_can")[0]){
+            manage.console.warning("Exporter: Nothing to draw");return;
+        }
         if(!this.inited){this.init();}
         this.$cont.show();
         this.ctx=this.$canvas[0].getContext("2d");
