@@ -6,7 +6,7 @@ compute.reader={
     inited:false,
     exaopen:false,
     chosed:null,
-    needRender:true,
+    needRender:2,
     $filecont:null,
     read:function(files){
         if(!files){
@@ -97,12 +97,12 @@ compute.reader={
     init:function(){
         this.template='\
 <input id="file" type="file" multiple style="display:none"/>\
-<div id="file_but" class="ctrl button left text">Choose files</div>\
+<div id="file_but" class="ctrl button left text">{{chs_but_text}}</div>\
 <div id="file_seld" class="left">{{fchosed}}</div>\
 <div id="lang_sel" class="ctrl button right">\
     <img alt="{{lang}}" src="img/new/{{lang}}.png" />\
 </div>\
-<div id="examples_button" class="ctrl text unselect button right {{exa}}">Examples</div>\
+<div id="examples_button" class="ctrl text unselect button right {{exa}}">{{exa_but_text}}</div>\
 <div class="lclear">\
 ';
         this.seltempl='\
@@ -112,16 +112,15 @@ compute.reader={
     {{/examples}}\
 </div>\
 ';
+        this.render();
         this.inited=true;
-        this.render(true);
         this.initEvents();
         control.control.subscribe(this,"render");
     },
-    render:function(both){
-        if(!this.needRender){return;};
-        if(!this.inited){this.init();return;}
+    render:function(){
+        if(this.needRender===0){return;};
         var obj;
-        if(both){
+        if(this.needRender===2){
             obj={examples:[
                 {id:"HILLS.amber03",name:"2D HILLS v2.0"},
                 {id:"1D_HILLS_1.3",name:"1D HILLS v1.3"},
@@ -132,17 +131,23 @@ compute.reader={
             this.$exasel=$(rendered);
             //$("#file_cont").append(this.$exasel);
         }
-        obj={lang:control.settings.lang.get(),exa:this.exaopen?" on":"",fchosed:this.chosed};
+        obj={
+            lang:control.settings.lang.get(),
+            exa:this.exaopen?" on":"",
+            fchosed:this.chosed,
+            chs_but_text:Lang("Choose files"),
+            exa_but_text:Lang("Examples")
+        };
         rendered=Mustache.render(this.template,obj);
         if(!this.$filecont){
             this.$filecont=$("#file_cont");
         }
         this.$filecont.html(rendered);
         this.$filecont.append(this.$exasel);
-        this.needRender=false;
+        this.needRender=0;
     },
-    redraw:function(){
-        this.needRender=true;
+    redraw:function(both){
+        this.needRender=both?2:1;
     },
     setChosed:function(string){
         this.chosed=string;
