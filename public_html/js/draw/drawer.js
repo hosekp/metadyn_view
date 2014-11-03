@@ -70,6 +70,7 @@ $.extend(draw.drawer,{
         
     },
     draw:function(drawable,zmax){
+        if(zmax===0){zmax=1;}
         if(this.engine)this.engine.draw(drawable,zmax);
         //manage.console.debug("Drawer: draw");
     },
