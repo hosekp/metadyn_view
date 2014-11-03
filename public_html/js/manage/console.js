@@ -28,9 +28,9 @@ $.extend(manage.console,{
         }
         this.$console.html(str);
     },
-    debug:function(string){this.addText(string,4);},
-    log:function(string){this.addText(string,3);},
-    warning:function(string){this.addText(string,2);},
-    error:function(string){this.addText(string,1);}
+    debug:function(){this.addText(Lang.apply(null,arguments),4);},
+    log:function(){this.addText(Lang.apply(null,arguments),3);},
+    warning:function(){this.addText(Lang.apply(null,arguments),2);},
+    error:function(){this.addText(Lang.apply(null,arguments),1);}
 });
 
