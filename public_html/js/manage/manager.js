@@ -6,6 +6,9 @@ $.extend(manage.manager,{
     counter:0,
     lastTransformed:null,
     onesecratio:0,
+    init:function(){
+        control.settings.resol.subscribe(this,"resol");
+    },
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
         var resol=control.settings.resol.get();
@@ -80,7 +83,6 @@ $.extend(manage.manager,{
         this.lastTransformed=null;
         manage.storage.reset();
         compute.axi.lastRatio=-1;
-        control.control.needRedraw=true;
         this.onesecratio=0;
     },
     reset:function(){
@@ -124,8 +126,10 @@ $.extend(manage.manager,{
     },
     refine1sec:function(ratio,time){
         this.onesecratio=(this.onesecratio+(ratio*1000/time))/2;
+    },
+    notify:function(args){
+        if(args==="resol"){this.setResol();}
     }
-    
 });
 
 

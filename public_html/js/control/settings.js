@@ -4,7 +4,7 @@ $.extend(control.settings,{
     hashRequested:false,
     lastHash:false,
     shortdict:{},
-    init:function(){
+    onload:function(){
         this.play=this.create(false);
         this.measure=this.create(false,"mes");
         this.speed=this.create(0.3,"spd");
@@ -32,54 +32,8 @@ $.extend(control.settings,{
             return Math.pow(this.zoomcoef.value,this.zoom.value);
         };
         this.maxresol=function(){return 512;};
-        this.resol.call=function(){
-            manage.manager.setResol();
-        };
-        this.play.call=function(){
-            if(control.settings.play.value){
-                control.control.start();
-            }else{
-                control.control.stop();
-            }
-        };
-        this.loop.call=function(){
-        };
-        this.measure.call=function(){
-            if(control.settings.measure.value){
-                control.measure.show();
-            }else{
-                control.measure.hide();
-            }
-        };
-        this.zoom.call=function(){
-            control.control.needRedraw=true;
-            view.axi.needRedraw=true;
-        };
-        this.frameposx.call=function(){
-            control.control.needRedraw=true;
-            view.axi.needRedraw=true;
-        };
-        this.frameposy.call=function(){
-            control.control.needRedraw=true;
-            view.axi.needRedraw=true;
-        };
-        this.ncv.call=function(){
-            view.axi.needArrange=true;
-            control.measure.needRedraw=true;
-        };
-        this.png.call=function(){
-            if(!control.settings.play.value){
-                view.exporter.open();
-            }
-        };
-        this.enunit.call=function(){
-            view.axi.needArrange=true;
-            //view.axi.needRedraw=true;
-            control.measure.needRedraw=true;
-        };
-        this.lang.call=function(){
-            compute.reader.render(false);
-        };
+    },
+    init:function(){
         this.readHash();
         control.control.subscribe(this,"newHash");
     },
@@ -133,6 +87,7 @@ $.extend(control.settings,{
     },
     create:function(def,short){
         var s=$.extend({},this.template,{def:def,short:short});
+        s.listeners=[];
         s.set(def);
         if(short){
             this.shortdict[short]=s;
@@ -145,6 +100,7 @@ control.settings.template={
     def:false,
     short:"tmpl",
     lastprintout:"",
+    listeners:null,
     set:function(val){
         this.value=val;
         if(this.call){
@@ -185,6 +141,20 @@ control.settings.template={
         control.settings.requestNewHash();
         return this.value;
     },
+    subscribe:function(ctx,args){
+        var list=this.listeners;
+        for(var i=0;i<list.length;i++){
+            if(list[i]===ctx){return;}
+        }
+        list.push({ctx:ctx,args:args});
+    },
+    call:function(){
+        var list=this.listeners;
+        for(var i=0;i<list.length;i++){
+            var lis=list[i];
+            lis.ctx.notify(lis.args);
+        }
+    },
     isdef:function(){
         return this.value===this.def;
     },
@@ -216,4 +186,3 @@ control.settings.template={
         }
     }
 };
-            

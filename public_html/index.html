@@ -66,14 +66,17 @@ and open the template in the editor.
         <script type="text/javascript">
             $(function(){
                 //manage.console.loglevel=4;
+                control.settings.onload();  
+                control.control.init();
                 control.settings.init();
                 view.ctrl.init();
                 view.axi.init();
-                //draw.drawer.init();
-                control.control.init();
                 control.gestures.init();
                 compute.reader.init();
+                manage.manager.init();
                 
+                control.measure.onload();
+                view.exporter.onload();
                 
                 //compute.gl_summer.init();
 //                control.feedback.init();

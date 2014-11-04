@@ -15,6 +15,11 @@ $.extend(control.control,{
         $("#all").append(stt.domElement);
         this.stats=stt;
         this.cycle(this.lasttime);
+        control.settings.zoom.subscribe(this,null);
+        control.settings.frameposx.subscribe(this,null);
+        control.settings.frameposy.subscribe(this,null);
+        control.settings.resol.subscribe(this,null);
+        control.settings.play.subscribe(this,"toggle");
     },
     start:function(){
         if(this.actratio>=1){this.reset();}
@@ -100,6 +105,9 @@ $.extend(control.control,{
         this.running=false;
         this.wantedratio=this.actratio;
     },
+    toggle:function(){
+        if(control.settings.play.get()){this.start();}else{this.stop();}
+    },
     reset:function(){
         this.set(0);
         this.setWanted(0);
@@ -120,5 +128,9 @@ $.extend(control.control,{
         //view.ctrl.slide.byratio(rat);
         this.needRedraw=true;
         //manage.console.debug("Control: Wanted set to "+rat);
+    },
+    notify:function(args){
+        if(args==="toggle"){return this.toggle();}
+        this.needRedraw=true;
     }
 });

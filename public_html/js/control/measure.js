@@ -12,6 +12,9 @@ control.measure={
         ene:0,
         src:0
     },
+    onload:function(){
+        control.settings.measure.subscribe(this,"on");
+    },
     init:function(){
         control.control.subscribe(this,"redraw");
         var cont=$('<div id="measure_cont"></div>');
@@ -44,6 +47,8 @@ control.measure={
     {{/data.chills}}\n\
     {{/chillsOn}}\
 ';
+        control.settings.ncv.subscribe(this,"draw");
+        control.settings.enunit.subscribe(this,"draw");
         this.inited=true;
     },
     div:{},
@@ -76,6 +81,13 @@ control.measure={
     hide:function(){
         this.visible=false;
         this.div.$cont.hide();
+    },
+    toggle:function(){
+        if(control.settings.measure.get()){
+            this.show();
+        }else{
+            this.hide();
+        }
     },
     click:function(pos){
         if(!control.settings.measure.get()){return;}
@@ -139,6 +151,11 @@ control.measure={
             ret.push((compute.sum_hill.artime[ihills[i]]).toFixed(2));
         }
         return ret;
+        
+    },
+    notify:function(args){
+        if(args==="on"){this.toggle();}
+        if(args==="draw"){this.needRedraw=true;}
         
     }
     

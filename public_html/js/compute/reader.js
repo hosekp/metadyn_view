@@ -78,7 +78,6 @@ compute.reader={
             i++;
             if(i>=langs.length){i=0;}
             control.settings.lang.set(langs[i]);
-            compute.reader.redraw();
         })
         .on("click",".example",$.proxy(function(event){
             var tar=event.currentTarget;
@@ -115,6 +114,7 @@ compute.reader={
         this.render();
         this.inited=true;
         this.initEvents();
+        control.settings.lang.subscribe(this,"redraw");
         control.control.subscribe(this,"render");
     },
     render:function(){
@@ -147,7 +147,11 @@ compute.reader={
         this.needRender=0;
     },
     redraw:function(both){
+        if(this.needRender===2){return;}
         this.needRender=both?2:1;
+    },
+    notify:function(args){
+        if(args==="redraw"){this.needRender=1;}
     },
     setChosed:function(string){
         this.chosed=string;

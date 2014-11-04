@@ -17,6 +17,11 @@ $.extend(view.axi,{
     init:function(){
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
         control.control.subscribe(this,"drawAxes");
+        control.settings.zoom.subscribe(this,"draw");
+        control.settings.frameposx.subscribe(this,"draw");
+        control.settings.frameposy.subscribe(this,"draw");
+        control.settings.ncv.subscribe(this,"arrange");
+        control.settings.enunit.subscribe(this,"labels");
     },
     loaded:function(template){
         if(template){
@@ -51,38 +56,6 @@ $.extend(view.axi,{
         //if(this.div.$cancont.children().length <= 0){draw.drawer.appendCans();}
         this.rendered=true;
     },
-    /*arrange:function(zaxi){
-        if(!this.rendered){return;}
-        var zwidth=this.zwidth;
-        if(!zaxi){
-            zwidth=0;
-            this.div.$z_cont.hide();
-            this.div.$z_auto.css({top:"100%",width:this.ywidth+"px",height:this.zheight+"px",left:"0px"}).css({top:"-="+(this.xwidth)+"px"});
-            this.div.$select.hide();
-        }else{
-            this.div.$z_cont.show();
-            this.div.$z_auto.css({top:"100%",width:this.zwidth+"px",height:this.zheight+"px",left:"100%"}).css({top:"-="+(this.zheight)+"px",left:"-="+this.zwidth+"px"});
-            this.div.$select.show();
-        }
-        this.div.$y_cont.css({top:"0px",left:"0px",height:"100%",width:this.ywidth+"px"}).css({height:"-="+this.xwidth+"px"});
-        this.div.$y.css({top:"0px",left:"0px",height:"100%",width:"100%"});
-        this.div.$y_text.css({left:"2px",width:"12px"});
-        this.div.$select.css({top:"100%",left:"0px",height:this.xwidth+"px",width:this.ywidth+"px"}).css({top:"-="+this.xwidth+"px"});
-        this.div.$cancont.css({top:"5px",left:(this.ywidth+5)+"px",height:"100%",width:"100%"}).css({height:"-="+(this.xwidth+10)+"px",width:"-="+(this.ywidth+zwidth+10)+"px"});
-        this.div.$x_cont.css({top:"100%",left:this.ywidth+"px",height:this.xwidth+"px",width:"100%"}).css({top:"-="+this.xwidth+"px",width:"-="+(this.ywidth+zwidth)+"px"});
-        this.div.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
-        this.div.$x_text.css({top:(this.xwidth-14)+"px",height:"12px"});
-        this.div.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
-        this.div.$z_up.css({top:"0px",width:this.zwidth+"px",height:"50%"});
-        this.div.$z.css({top:"0px",width:this.zwidth+"px",height:"100%"});
-        this.div.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
-        this.div.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
-        this.setTextFrames();
-        draw.drawer.resize();
-        this.needRedraw=true;
-        this.needArrange=false;
-        //manage.console.debug("Axis resized");
-    },*/
     arrange:function(zaxi){
         if(!this.rendered){return;}
         var zwidth=this.zwidth;
@@ -130,7 +103,7 @@ $.extend(view.axi,{
         this.div.$x_text.css({left:"50%",width:xCVlen+"px"}).css({left:"-="+(xCVlen/2)+"px"});
         var textlen=this.letterwidth*this.unitsrc[control.settings.enunit.get()].length;
         this.div.$z_text.css({top:"50%",height:textlen+"px"}).css({top:"-="+(textlen/2)+"px"});
-        
+        this.needRedraw=true;
     },
     drawAxes:function(){
         if(this.needArrange){
@@ -403,6 +376,11 @@ $.extend(view.axi,{
             return val.toPrecision(2);
         }
         return val.toFixed(dec);
+    },
+    notify:function(args){
+        if(args==="draw"){this.needRedraw=true;}
+        if(args==="arrange"){this.needArrange=true;}
+        if(args==="labels"){this.setTextFrames();}
     }
 });
 view.axi.renamer={

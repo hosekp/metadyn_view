@@ -18,12 +18,17 @@ $.extend(view.ctrl,{
         this.slide.init();
         $.get("templates/ctrl.html",$.proxy(function(data){
             this.template=data;
-            this.render();
+            this.redraw();
             this.bind();
             this.inited=true;
         },this),"text");
-        control.control.subscribe(this,"redraw");
+        control.control.subscribe(this,"render");
         control.control.subscribe(this,"resize");
+        control.settings.play.subscribe(this,"draw");
+        control.settings.loop.subscribe(this,"draw");
+        control.settings.measure.subscribe(this,"draw");
+        control.settings.resol.subscribe(this,"draw");
+        control.settings.speed.subscribe(this,"draw");
 
     },
     getSettings:function(){
@@ -31,10 +36,6 @@ $.extend(view.ctrl,{
         return {play:sett.play.get(),measure:sett.measure.get()?"on":"",loop:sett.loop.get()?"on":"",resol:sett.resol.get(),resize:(!!this.temp.resizepos)?"on":"",speed:sett.speed.get()};
     },
     render:function(){
-        if(this.ctrlRequested){return;}
-        this.ctrlRequested=true;
-    }, 
-    redraw:function(){
         if(this.ctrlRequested){
             var vars={sett:this.getSettings()};
             var rendered=Mustache.render(this.template,vars);
@@ -42,6 +43,10 @@ $.extend(view.ctrl,{
             //manage.console.debug("CTRL redrawed");
             this.ctrlRequested=false;
         }
+    }, 
+    redraw:function(){
+        if(this.ctrlRequested){return;}
+        this.ctrlRequested=true;
     },
     bind:function (){
         //var thisctrl=this;
@@ -61,7 +66,6 @@ $.extend(view.ctrl,{
                 this.summonSelect(event.currentTarget,rendered,function(event){
                     control.settings.resol.set(parseInt(event.target.getAttribute("data-val")));
                     $("#ctrl_select").hide();
-                    view.ctrl.render();
                 });
                 //control.settings.resol.set((val)%500+100);
             }else if(ctrl==="speed"){
@@ -76,7 +80,6 @@ $.extend(view.ctrl,{
                 this.summonSelect(event.currentTarget,rendered,function(event){
                     control.settings.speed.set(parseFloat(event.target.getAttribute("data-val")));
                     $("#ctrl_select").hide();
-                    //view.ctrl.render();
                 });
             }else if(ctrl==="resize"){
                 
@@ -85,17 +88,14 @@ $.extend(view.ctrl,{
             }else if(ctrl==="reset"){
                 control.control.reset();
             }else if(ctrl==="pict"){
-                view.exporter.open();
-                manage.console.debug("Exporter: open");
+                control.settings["png"].toggle();
             }
-            //this.render();
         },this))
         .on("mousedown","#resize_ctrl",$.proxy(function(event){
             //this.settings.resize=true;
             this.stopTip();
             var div=$("#main_cont");
             this.temp.resizepos={x:event.pageX-div.width(),y:event.pageY-div.height()};
-            //this.render();
             $("body").on("mousemove",$.proxy(function(event){
                 this.resizing=event;
                 this.stopTip();
@@ -103,7 +103,7 @@ $.extend(view.ctrl,{
             $("body").on("mouseup",$.proxy(function(event){
                 //this.settings.resize=false;
                 this.temp.resizepos=false;
-                this.render();
+                this.redraw();
                 //this.resize(event);
                 $("body").off("mousemove");
                 $("body").off("mouseup");
@@ -117,7 +117,7 @@ $.extend(view.ctrl,{
                 $("body").off("mouseup");
                 $("body").off("mouseout");
             },this));*/
-            this.render();
+            this.redraw();
             
             
         },this));
@@ -187,6 +187,9 @@ $.extend(view.ctrl,{
             this.tooldelay=false;
             this.tooltipdiv.hide();
         }
+    },
+    notify:function(args){
+        if(args==="draw"){this.ctrlRequested=true;}
     }
 });
 view.ctrl.slide={
