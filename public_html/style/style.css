@@ -137,7 +137,6 @@ body{
     /* Safari */ -webkit-transform: rotate(-90deg); 
     /* Firefox */ -moz-transform: rotate(-90deg);
     -moz-transform-origin: 20px 0px;  
-    /* Internet explorer 7 */  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     /* Internet Explorer 8*/  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
     -ms-transform: rotate(0deg);
     /* opera*/ -o-transform: rotate(-90deg);  
