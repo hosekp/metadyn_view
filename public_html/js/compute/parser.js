@@ -27,11 +27,11 @@ $.extend(compute.parser,{
             params=this.implicitHeader(lines[0],params);
         }
         if(params.ncv>2){
-            manage.console.error("HILLS with 3 and more CVs is not implemented");
+            manage.console.error("Parser:","3 and more CVs","not implemented");
         }else{
             var body=lines.slice(i);
             var data=this.parseBody(body,params);
-            manage.console.log("parsovano");
+            manage.console.log("Parser:",params.nbody,"lines successfully parsed");
             compute.sum_hill.load(data,params);
         }
     },
@@ -86,7 +86,7 @@ $.extend(compute.parser,{
                         cv.max=parseFloat(val);
                     }
                 }else{
-                    manage.console.warning("Unknown parameter "+line[2]);
+                    manage.console.warning("Parser:","Unknown parameter:",line[2]);
                 }
             }
         }
@@ -100,7 +100,7 @@ $.extend(compute.parser,{
         params.clockpos=0;
         var nelem=line.length;
         if(nelem===0){
-            manage.console.error("Error: Parser: Empty file");
+            manage.console.error("Parser:","Empty file");
             return;
         }
             nelem--;
@@ -137,7 +137,7 @@ $.extend(compute.parser,{
         var ncv=params.ncv;
         var fulllen=params.fulllen;
         var len=0;
-        manage.console.debug("length: "+nbody);
+        //manage.console.debug("length: "+nbody);
         for(var i=0;i<nbody;i++){
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
@@ -245,6 +245,7 @@ compute.parser.tcv={
 compute.parser.TAsorter={
     arraytosort:null,
     array:null,
+    nsplits:0,
     workarray:null,
 //    issorted:function(start,end){
 //        var array=this.array;
@@ -279,7 +280,7 @@ compute.parser.TAsorter={
             }
             //manage.console.error("Error: no SplitPoint");
         }
-        manage.console.debug("Array["+start+":"+end+"] is sorted");
+        //manage.console.debug("Sorter:","Array["+start+":"+end+"] is sorted");
         return -1;
     },
     split:function(start,end){
@@ -295,9 +296,9 @@ compute.parser.TAsorter={
         var start=larray1[0];
         var end=larray2[1];
         var middle=larray1[1];
-        manage.console.debug("Merge: ["+start+":"+middle+":"+end+"]");
+        //manage.console.debug("Merge: ["+start+":"+middle+":"+end+"]");
         if(middle!==larray2[0]){
-            manage.console.error("Sort: Wrong middle point");
+            manage.console.error("Sorter:","Wrong middle point");
         }
         //manage.console.log("array1="+array1);
         //manage.console.log("array2="+array2);
@@ -322,16 +323,17 @@ compute.parser.TAsorter={
             indices[i]=i;
         }
         this.array=indices;
+        this.nsplits=0;
         //this.array=array;
         this.workarray=new Float32Array(arlen);
         this.split(0,arlen);
-        //manage.console.log("Sorted");
+        manage.console.log("Sorter:","Data sorted,",this.nsplits,"reorderings");
         return this.array;
     },
     rearrange:function(array,mustr){
         var arlen=array.length;
         if(arlen!==mustr.length){
-            manage.console.error("Sort: Cannot rearrange array, wrong length");
+            manage.console.error("Sorter:","Cannot rearrange array, wrong length");
         }
         var narr=new Float32Array(arlen);
         for(var i=0;i<arlen;i++){

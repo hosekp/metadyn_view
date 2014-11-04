@@ -178,7 +178,7 @@ $.extend(view.ctrl,{
         var ctrl=$ctrl.attr("data-ctrl");
         var off = $ctrl.offset();
         this.tooltipdiv.css({"left":(off.left)+"px","top":(off.top+25)+"px"});
-        this.tooltipdiv.html(tips[ctrl]);
+        this.tooltipdiv.html(Lang(tips[ctrl]));
         this.tooltipdiv.show();
     },
     stopTip:function(){

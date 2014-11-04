@@ -76,7 +76,7 @@ $.extend(control.control,{
                 this.RAFprefix=2;
             }else{
                 this.RAFprefix=3;
-                manage.console.error("Control: RequestAnimationFrame not supported");
+                manage.console.error("Control:","RequestAnimationFrame","not supported");
             }
         }
         if(this.RAFprefix===0){

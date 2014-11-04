@@ -40,7 +40,7 @@ $.extend(draw.gl,{
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch(e) {this.loadFailed(e);return false;}
         if (!gl) {
-            this.loadFailed("Could not initialise WebGL, sorry :-( ");
+            this.loadFailed("WebGL:","Could not initialize","WebGL");
             return false;}
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         this.g1=gl;
@@ -55,7 +55,7 @@ $.extend(draw.gl,{
         gl.attachShader(progr,this.fragment);
         gl.linkProgram(progr);
         if (!gl.getProgramParameter(progr, gl.LINK_STATUS)) {
-            this.loadFailed("Unable to initialize the shader program.");
+            this.loadFailed("WebGL:","Could to initialize","shader program");
             return false;
         }
         this.initParam();
@@ -104,7 +104,7 @@ $.extend(draw.gl,{
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        manage.console.log("WebGL loaded");
+        manage.console.log("WebGL:","loaded");
         this.inited=true;
     },
     draw:function(array,zmax){
@@ -131,7 +131,7 @@ $.extend(draw.gl,{
         var resol=control.settings.resol.get();
         
         if(resol*resol*4!==array.length){
-            manage.console.error("Error: Wrong length of texture array");
+            manage.console.error("WebGL:","Wrong length of texture array");
         }
         
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,resol,resol,0,gl.RGBA,gl.UNSIGNED_BYTE,array);

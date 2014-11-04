@@ -41,7 +41,7 @@ $.extend(control.gestures,{
             if(this.lease===false){
                 if(Math.abs(mousepos.x-this.lastMousepos.x)>5/this.width||Math.abs(mousepos.y-this.lastMousepos.y)>5/this.height){
                     this.mouselease(event);
-                    manage.console.debug("Gestures: Leasen");
+                    manage.console.debug("Gestures:","Released");
                 }else{
                     return;
                 }

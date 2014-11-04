@@ -33,7 +33,7 @@ $.extend(compute.gl_summer, {
             return false;
         }
         if (!gl) {
-            this.loadFailed("Could not initialise WebGL, sorry :-( ");
+            this.loadFailed("Gl_summer:","Could not initialize","WebGL");
             return false;
         }
         //gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -95,7 +95,7 @@ $.extend(compute.gl_summer, {
         gl.attachShader(progr, this.fragment);
         gl.linkProgram(progr);
         if (!gl.getProgramParameter(progr, gl.LINK_STATUS)) {
-            this.loadFailed("Linker: "+gl.getProgramInfoLog(progr));
+            this.loadFailed("Gl_summer:","Linker: "+gl.getProgramInfoLog(progr));
             return false;
         }
         gl.useProgram(progr);
@@ -140,7 +140,7 @@ $.extend(compute.gl_summer, {
         this.frameTexture=this.createTexture();
         this.frameTexture2=this.createTexture();
         //this.test();
-        manage.console.log("WebGL loaded");
+        manage.console.log("GL_summer:","loaded");
         this.inited = true;
         
     },
@@ -275,7 +275,7 @@ $.extend(compute.gl_summer, {
         var width=space1.dims[0];
         var height=space1.dims[1];
         if(width!==this.last.width||height!==this.last.height){
-            manage.console.debug("Gl_summer: resize conducted");
+            manage.console.debug("Gl_summer:","resize conducted");
             this.resize(width,height);
             this.pixels = new Uint8Array(width* height * 4);
             this.updateTexture(this.frameTexture,this.pixels,width,height);

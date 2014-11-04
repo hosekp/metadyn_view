@@ -35,7 +35,7 @@ control.measure={
         <div id="measure_xaxi">{{data.xaxi}}</div>\n\
         {{#yaxi}}<div id="measure_yaxi">{{data.yaxi}}</div>{{/yaxi}}\n\
     </div>\n\
-    <div id="measure_chills_button" class="ctrl button lclear{{chillsOn}}" data-ctrl="closest_hills">Closest hills</div>\n\
+    <div id="measure_chills_button" class="ctrl button lclear{{chillsOn}}" data-ctrl="closest_hills">{{chil_title}}</div>\n\
     {{#chillsOn}}\n\
     <div id="measure_chills"><ol class="nomargin">\n\
     {{#data.chills}}\
@@ -43,12 +43,13 @@ control.measure={
     {{/data.chills}}\
     </ol></div>\n\
     {{^data.chills}}\n\
-    Click where you want find closest hills to\n\
+    {{chil_help}}\n\
     {{/data.chills}}\n\
     {{/chillsOn}}\
 ';
         control.settings.ncv.subscribe(this,"draw");
         control.settings.enunit.subscribe(this,"draw");
+        control.settings.lang.subscribe(this,"draw");
         this.inited=true;
     },
     div:{},
@@ -62,7 +63,9 @@ control.measure={
             CV1:compute.axi.getName(true),
             CV2:compute.axi.getName(false),
             chillsOn:this.chillsOn?" on":"",
-            eneTitle:!this.diffOn?"Bias":"Difference",
+            eneTitle:!this.diffOn?Lang("Bias"):Lang("Difference"),
+            chil_title:Lang("Closest hills"),
+            chil_help:Lang("Click at point you want to find closest hills to"),
             data:this.data
         });
         this.div.$cont.html(rendered);

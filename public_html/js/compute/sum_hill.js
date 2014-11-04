@@ -25,7 +25,7 @@ $.extend(compute.sum_hill,{
         }else{
             var ncv=this.ncv;
             if(ncv!==arrs["cvs"].length){
-                manage.console.error("Sum_hill: Load: wrong number of CV");
+                manage.console.error("Sum_hill:","Wrong number of CV");
                 return;
             }
             var sorter=$.extend({},compute.parser.TAsorter);
@@ -44,7 +44,7 @@ $.extend(compute.sum_hill,{
         this.loaded=true;
         manage.manager.dataLoaded();
         //this.blob=this.createBlob();
-        manage.console.log("Sum_hills: loaded");
+        //manage.console.log("Sum_hills:","loaded");
     },
     join:function(TA1,TA2){    // data
         var lenTA1=TA1.length;
@@ -140,7 +140,7 @@ $.extend(compute.sum_hill,{
             
         }
         if(!valid){
-            manage.console.warning("Warning: Variable sigma is not implemented");
+            manage.console.warning("Sum_hills:","Variable sigma is not supported");
         }
         return sigmas;
     },
@@ -254,7 +254,7 @@ $.extend(compute.sum_hill,{
                         }
                     }
                 }else if(this.ncv===3){
-                    manage.console.warning("Sum_hills: Add3 not implemented");
+                    manage.console.warning("Sum_hills:","Add3","not implemented");
                 }else{
                 }
             }
@@ -308,7 +308,7 @@ $.extend(compute.sum_hill,{
                 return Math.pow(pos[0]-arcvs[0][ihill],2)+Math.pow(pos[1]-arcvs[1][ihill],2);
             };
         }else{
-            manage.console.error("Sum_hill: more than 2 CV not implemented");
+            manage.console.error("Sum_hill:","3 and more CVs","not implemented");
             return [];
         }
         var dist;

@@ -1,7 +1,7 @@
 if(typeof view==="undefined"){view={};}
 if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
-    tips:{up:"Zvýšit",down:"Snížit",select:"Změnit osy",auto:"Automatická osa",units:"Klikem se změní jednotky"},
+    tips:{up:"Increase",down:"Decrease",select:"Change axis",auto:"Automatic Z axi",units:"Change energy units"},
     autosrc:["manual","semiauto","auto"],
     unitsrc:["bias pot. [kJ/mol]","bias. pot. [kcal/mol]"],
     div:{},
@@ -115,7 +115,7 @@ $.extend(view.axi,{
         }
         var ncv=control.settings.ncv.get();
         if(ncv===0){
-            manage.console.warning("Axi_view: ncv not set");
+            manage.console.warning("Axi_view:","ncv not set");
         }else if(ncv===1){
             this.drawAxes1();
         }else{

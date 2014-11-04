@@ -86,7 +86,7 @@ $.extend(manage.manager,{
         this.onesecratio=0;
     },
     reset:function(){
-        manage.console.debug("Counter: "+this.counter);
+        manage.console.debug("Counter:",this.counter);
         this.counter=0;
         if(this.lastSpace){
             this.lastSpace.reset();
