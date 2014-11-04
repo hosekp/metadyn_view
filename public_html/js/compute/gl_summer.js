@@ -19,8 +19,8 @@ $.extend(compute.gl_summer, {
         if (!ret) {
             return false;
         }
-        this.getShader("add2-vertex.shd", "vertex");
-        this.getShader("add2-fragment.shd", "fragment");
+        this.getShader("add2-vertex", "vertex");
+        this.getShader("add2-fragment", "fragment");
         return false;
     },
     initGL: function() {
@@ -56,7 +56,7 @@ $.extend(compute.gl_summer, {
         this.last.height=height;
     },
     getShader: function(id, typ) {
-        $.get("shaders/" + id, $.proxy(function(str) {
+        $.get("shaders/" + id+".shd", $.proxy(function(str) {
             this.initShader(str, typ);
         }, this), "text");
     },

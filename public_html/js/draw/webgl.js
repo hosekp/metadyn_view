@@ -11,8 +11,8 @@ $.extend(draw.gl,{
     init:function(){
         if(this.inited){return true;}
         if(!this.initGL()){return false;}
-        this.getShader("2d-vertex.shd","vertex");
-        this.getShader("2d-fragment.shd","fragment");
+        this.getShader("2d-vertex","vertex");
+        this.getShader("2d-fragment","fragment");
         return false;
         //if(!this.initShaders()){return false;}
         //this.initBuffers();
@@ -161,7 +161,7 @@ $.extend(draw.gl,{
         
     },
     getShader:function(id,typ) {
-        $.get("shaders/"+id,$.proxy(function(str){
+        $.get("shaders/"+id+".shd",$.proxy(function(str){
             this.initShader(str,typ);
         },this),"text");
     },
