@@ -9,20 +9,24 @@ $.extend(view.exporter,{
 <div id="export_cont">\n\
     <canvas id="export_can" width="600px" height="400px"></canvas>\n\
     <div id="export_help_cont">\n\
-        <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
-            <img alt="Close" src="img/new/close.png">\n\
-        </div>\n\
-        <div id="export_help" class="left text">To get the picture, just press right mouse button over it and select Save image as.. </div>\n\
+        \
     </div>\n\
 </div>';
+        this.help_template='\n\
+        <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
+            <img alt="{{close}}" src="img/new/close.png">\n\
+        </div>\n\
+        <div id="export_help" class="left text">{{helpmsg}}</div>\n\
+        ';
         $("#all").prepend($(template));
         this.$canvas=$("#export_can");
         this.$cont=$("#export_cont");
+        this.$help=$("#export_help_cont");
         this.inited=true;
     },
     open:function(){
         if(!$(".main_can")[0]){
-            manage.console.warning("Exporter: Nothing to draw");return;
+            manage.console.warning("Exporter:","Nothing to draw");return;
         }
         if(!this.inited){this.init();}
         this.$cont.show();
@@ -55,5 +59,8 @@ $.extend(view.exporter,{
             ctx.drawImage($axi_z[0],0,0);
         }
         ctx.drawImage($main_can[0],$axi_z.width()+5,5);
-    }
+        
+        var rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
+        $("#export_help_cont").html(rendered);
+    },
 });
