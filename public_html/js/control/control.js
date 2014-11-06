@@ -45,7 +45,7 @@ $.extend(control.control,{
         this.stats.begin();
         for(var is=0;is<this.listeners.length;is++){
             var lis=this.listeners[is];
-            lis.ctx[lis.call]();
+            lis.ctx.notify(lis.call);
         }
         /*control.settings.newHash();
         view.ctrl.redraw();

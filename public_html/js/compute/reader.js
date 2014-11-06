@@ -152,6 +152,7 @@ compute.reader={
     },
     notify:function(args){
         if(args==="redraw"){this.needRender=1;}
+        if(args==="render"){this.render();}
     },
     setChosed:function(string){
         this.chosed=string;

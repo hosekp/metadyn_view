@@ -379,6 +379,7 @@ $.extend(view.axi,{
     },
     notify:function(args){
         if(args==="draw"){this.needRedraw=true;}
+        if(args==="drawAxes"){this.drawAxes();}
         if(args==="arrange"){this.needArrange=true;}
         if(args==="labels"){this.setTextFrames();}
     }

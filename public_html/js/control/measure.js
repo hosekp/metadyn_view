@@ -16,7 +16,6 @@ control.measure={
         control.settings.measure.subscribe(this,"on");
     },
     init:function(){
-        control.control.subscribe(this,"redraw");
         var cont=$('<div id="measure_cont"></div>');
         this.div.$cont=cont;
         $("#side").append(cont);
@@ -47,6 +46,7 @@ control.measure={
     {{/data.chills}}\n\
     {{/chillsOn}}\
 ';
+        control.control.subscribe(this,"redraw");
         control.settings.ncv.subscribe(this,"draw");
         control.settings.enunit.subscribe(this,"draw");
         control.settings.lang.subscribe(this,"draw");
@@ -159,6 +159,7 @@ control.measure={
     notify:function(args){
         if(args==="on"){this.toggle();}
         if(args==="draw"){this.needRedraw=true;}
+        if(args==="redraw"){this.redraw();}
         
     }
     

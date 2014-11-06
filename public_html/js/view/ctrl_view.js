@@ -190,6 +190,9 @@ $.extend(view.ctrl,{
     },
     notify:function(args){
         if(args==="draw"){this.ctrlRequested=true;}
+        if(args==="render"){this.render();}
+        if(args==="resize"){this.resize();}
+        
     }
 });
 view.ctrl.slide={

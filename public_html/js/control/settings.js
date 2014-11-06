@@ -93,6 +93,9 @@ $.extend(control.settings,{
             this.shortdict[short]=s;
         }
         return s;
+    },
+    notify:function(args){
+        if(args==="newHash"){this.newHash();}
     }
 });
 control.settings.template={
