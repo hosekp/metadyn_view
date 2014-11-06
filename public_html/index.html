@@ -27,6 +27,7 @@ and open the template in the editor.
         <script type="text/javascript" src="js/manage/console.js"></script>
         <script type="text/javascript" src="js/manage/manager.js"></script>
         <script type="text/javascript" src="js/manage/storage.js"></script>
+        <script type="text/javascript" src="js/manage/tests.js"></script>
         <script type="text/javascript" src="js/view/ctrl_view.js"></script>
         <script type="text/javascript" src="js/view/axi_view.js"></script>
         <script type="text/javascript" src="js/view/exporter.js"></script>
@@ -77,7 +78,7 @@ and open the template in the editor.
                 
                 control.measure.onload();
                 view.exporter.onload();
-                
+                manage.tests.run();
                 //compute.gl_summer.init();
 //                control.feedback.init();
                 //draw.gl.init();
