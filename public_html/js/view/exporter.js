@@ -4,6 +4,9 @@ $.extend(view.exporter,{
     inited:false,
     $canvas:null,
     ctx:null,
+    onload:function(){
+        control.settings.png.subscribe(this,"toggle");
+    },
     init:function(){
         var template='\
 <div id="export_cont">\n\
@@ -63,4 +66,9 @@ $.extend(view.exporter,{
         var rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
         $("#export_help_cont").html(rendered);
     },
+    notify:function(args){
+        if(args==="toggle"){
+            if(control.settings.png.get()){this.open();}else{this.close();}
+        }
+    }
 });
