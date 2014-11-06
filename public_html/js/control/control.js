@@ -66,6 +66,15 @@ $.extend(control.control,{
     subscribe:function(obj,func){
         this.listeners.push({ctx:obj,call:func});
     },
+    unsubscribe:function(obj,func){
+        for(var i=0;i<this.listeners.length;i++){
+            var lis=this.listeners[i];
+            if(lis.ctx===obj&&lis.call===func){
+                this.listeners.pop(i);
+                return;
+            }
+        }
+    },
     requestAnimFrame:function(func){
         if(this.RAFprefix===null){
             if(window.requestAnimationFrame){
