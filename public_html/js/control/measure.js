@@ -82,6 +82,7 @@ control.measure={
         this.div.$cont.show();
     },
     hide:function(){
+        if(!this.inited){return;}
         this.visible=false;
         this.div.$cont.hide();
     },

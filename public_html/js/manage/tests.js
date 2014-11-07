@@ -17,9 +17,10 @@ $.extend(manage.tests,{
         this.run();
     },
     createTests:function(){
-        var testnames=["langReader","loopHash"];
-        //var testnames=["langReader"];
-        //var testnames=["bugus"];
+        var testnames=[];
+        testnames=["1d_hills","webgl_amber_exp"];
+        //testnames=["langReader","loopHash","webgl_amber_exp"];
+        //testnames=["bugus"];
         for(var i=0;i<testnames.length;i++){
             var testname=testnames[i];
             this.tests.push($.extend({name:testname},manage.tests.prototest));
@@ -37,10 +38,11 @@ manage.tests.prototest={
     lines:null,
     active:0,
     sleeping:0,
-    vars:{},
+    vars:null,
     start:function(){
         manage.console.log(this.name,"executed");
         control.control.subscribe(this,"run");
+        this.vars={};
     },
     run:function(){
         while(this.active<this.lines.length){
@@ -65,52 +67,59 @@ manage.tests.prototest={
     executeLine:function(line){
         if(line.length===0){return 2;}
         var cmd=line[0];
+        if(cmd.length===0){return 2;}
         manage.console.debug(line.join(" "),"executed");
-        if(cmd==="do"){
-            if(line.length===1){this.error("no command to evaluate");return 1;}
-            this.evaluate(line[1]);
-            return 2;
-        }else if(cmd==="var"){
-            if(line.length<3){this.error("too few arguments");return 1;}
-            this.vars[line[1]]=this.evaluate(line[2]);
-            return 2;
-        }else if(cmd==="=="||cmd===">"||cmd==="<"||cmd==="<="||cmd===">="){
-            if(line.length<3){this.error("too few arguments");return 1;}
-            var res=this.evaluate(line[1]+cmd+line[2]);
-            var var1=this.evaluate(line[1]);
-            var var2=this.evaluate(line[2]);
-            if(!res){this.error(var1,cmd,var2);}
-            return res?2:1;
-        }else if(cmd==="is"||cmd==="not"){
-            if(line.length<2){this.error("too few arguments");return 1;}
-            var res=this.evaluate(line[1]);
-            var should=cmd==="is";
-            if(res!==should){this.error(res,"should be",should);}
-            return res===should?2:1;
-        }else if(cmd==="sleep"){
-            if(line.length<2){
-                this.error("too few arguments");return 1;
-            }
-            var num=parseInt(line[1]);
-            if(this.sleeping>=num){
-                this.sleeping=0;
+        try{
+            if(cmd.indexOf("#")===0){return 2;}
+            else if(cmd==="do"){
+                if(line.length===1){this.error("no command to evaluate");return 1;}
+                this.evaluate(line[1]);
                 return 2;
+            }else if(cmd==="var"){
+                if(line.length<3){this.error("too few arguments");return 1;}
+                var val1=this.evaluate(line[2]);
+                this.vars[line[1]]=val1;
+                return 2;
+            }else if(cmd==="!="||cmd==="=="||cmd===">"||cmd==="<"||cmd==="<="||cmd===">="){
+                if(line.length<3){this.error("too few arguments");return 1;}
+                var res=this.evaluate(line[1]+cmd+line[2]);
+                var var1=this.evaluate(line[1]);
+                var var2=this.evaluate(line[2]);
+                if(!res){this.error(var1,cmd,var2);}
+                return res?2:1;
+            }else if(cmd==="is"||cmd==="not"){
+                if(line.length<2){this.error("too few arguments");return 1;}
+                var res=this.evaluate(line[1]);
+                var should=cmd==="is";
+                if(res!==should){this.error(res,"should be",should);}
+                return res===should?2:1;
+            }else if(cmd==="sleep"){
+                if(line.length<2){
+                    this.error("too few arguments");return 1;
+                }
+                var num=parseInt(line[1]);
+                if(this.sleeping>=num){
+                    this.sleeping=0;
+                    return 2;
+                }else{
+                    this.sleeping++;
+                    return 0;
+                }
+            }else if(cmd==="wait"){
+                if(line.length<2){this.error("too few arguments");return 1;}
+                var val=this.evaluate(line[1]);
+                return val?2:0;
             }else{
-                //manage.console.debug(this.name,"sleeps",this.sleeping,"ticks");
-                this.sleeping++;
-                return 0;
+                this.error("Unknown command");
+                return 1;
             }
-        }else if(cmd==="wait"){
-            if(line.length<2){this.error("too few arguments");return 1;}
-            var val=this.evaluate(line[1]);
-            return val?2:0;
-        }else{
-            this.error("Unknown command");
+        }catch(err){
+            this.error(err.toString());
             return 1;
         }
     },
     evaluate:function(cmd){
-        var replaced=cmd.replace("$$","this.vars.");
+        var replaced=cmd.replace(/\$\$/g,"this.vars.");
         return eval(replaced);
     },
     compileTest:function(data){
@@ -132,7 +141,7 @@ manage.tests.prototest={
             }
             even=!even;
         }
-        line=strspl.join('"');
+        line=strspl.join("'");
         var spcspl=line.split(" ");
         for(var i=0;i<spcspl.length;i++){
             spcspl[i]=spcspl[i].replace("__"," ");
