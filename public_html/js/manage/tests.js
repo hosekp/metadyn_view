@@ -18,7 +18,7 @@ $.extend(manage.tests,{
     },
     createTests:function(){
         var testnames=[];
-        testnames=["1d_hills","webgl_amber_exp"];
+        testnames=["langReader","loopHash","raster_blob_exp","1d_hills","webgl_amber_exp"];
         //testnames=["langReader","loopHash","webgl_amber_exp"];
         //testnames=["bugus"];
         for(var i=0;i<testnames.length;i++){
@@ -68,7 +68,7 @@ manage.tests.prototest={
         if(line.length===0){return 2;}
         var cmd=line[0];
         if(cmd.length===0){return 2;}
-        manage.console.debug(line.join(" "),"executed");
+        //manage.console.debug(line.join(" "),"executed");
         try{
             if(cmd.indexOf("#")===0){return 2;}
             else if(cmd==="do"){

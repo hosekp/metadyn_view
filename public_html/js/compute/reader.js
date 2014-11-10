@@ -82,8 +82,8 @@ compute.reader={
         .on("click",".example",$.proxy(function(event){
             var tar=event.currentTarget;
             var path=tar.getAttribute("data-path");
+            manage.manager.purge();
             $.get(path,function(data){
-                manage.manager.purge();
                 compute.parser.parse(data);
             },"text");
             this.exaopen=false;
