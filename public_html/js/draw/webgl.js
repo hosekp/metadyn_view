@@ -34,9 +34,10 @@ $.extend(draw.gl,{
         this.$can=can;
         //draw.drawer.appendCanvas();
         try {
-            var PDB=true;
-            var gl = can[0].getContext("webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB}) 
-                  || can[0].getContext("experimental-webgl",{premultipliedAlpha:false,preserveDrawingBuffer:PDB});
+            var params={premultipliedAlpha:false,preserveDrawingBuffer:true};
+            var gl = can[0].getContext("webgl",params) 
+                  || can[0].getContext("experimental-webgl",params);
+            //var gl = can[0].getContext("webgl");
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch(e) {this.loadFailed(e);return false;}
         if (!gl) {
@@ -66,8 +67,8 @@ $.extend(draw.gl,{
     initParam:function(){
         var gl=this.g1;
         var progr=this.program;
-        progr.vertexPositionAttribute = gl.getAttribLocation(progr, "a_position");
-        gl.enableVertexAttribArray(progr.vertexPositionAttribute);
+        progr.positionLocation = gl.getAttribLocation(progr, "a_position");
+        gl.enableVertexAttribArray(progr.positionLocation);
 
         progr.texCoordLocation=gl.getAttribLocation(progr,"a_texCoord");
         gl.enableVertexAttribArray(progr.texCoordLocation);
@@ -135,11 +136,12 @@ $.extend(draw.gl,{
         }
         
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,resol,resol,0,gl.RGBA,gl.UNSIGNED_BYTE,array);
-        //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,resol,resol,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
+        //var err=gl.getError();if(err!==gl.NO_ERROR){manage.console.error("WebGL texture error: ",err);}
         //array=new Uint8Array([0,80,160,240]);
         //gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA,2,2,0,gl.ALPHA,gl.UNSIGNED_BYTE,array);
         //texImage2D (ulong target, long level, ulong intformat, ulong width, ulong height, long border, ulong format, ulong type, Object data )
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        //var err=gl.getError();if(err!==gl.NO_ERROR){manage.console.error("WebGL draw error: ",err);}
     },
     updateCoord:function(arr){
         var zoom=control.settings.zoom.get();
