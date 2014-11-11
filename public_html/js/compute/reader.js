@@ -60,13 +60,14 @@ compute.reader={
             this.exaopen=!this.exaopen;
             if(!this.exaopen){
                 this.$exasel.hide();
+                this.redraw(false);
             }else{
                 var off = $(event.target).offset();
                 var exasel=this.$exasel.show();
                 exasel.css({"right":0+"px","top":(off.top+18)+"px"});
                 //this.$filecont.append(exasel);
+                $("#examples_button").addClass("on");
             }
-            this.redraw();
         },this))
         .on("click","#lang_sel",function(){
             var langs=["eng","cze"];
@@ -142,7 +143,8 @@ compute.reader={
         if(!this.$filecont){
             this.$filecont=$("#file_cont");
         }
-        this.$filecont.html(rendered);
+        this.$filecont.children(":not(#examples)").remove();
+        this.$filecont.append($(rendered));
         this.$filecont.append(this.$exasel);
         this.needRender=0;
     },
