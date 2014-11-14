@@ -41,7 +41,7 @@ $.extend(view.ctrl,{
             resol:sett.resol.get(),
             resize:(!!this.temp.resizepos)?"on":"",
             speed:sett.speed.get(),
-            webgl:sett.glwant.get()?"on":"",
+            webgl:sett.glwant.get()?"on":""
         };
     },
     render:function(){
@@ -152,11 +152,17 @@ $.extend(view.ctrl,{
         $("#main_cont").css({height:Math.max(300,event.pageY-this.temp.resizepos.y)+"px"});
         view.axi.arrange();*/
         if(this.resizing!==false){
-            var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x)+"px";
             //manage.console.debug("width="+this.temp.resizepos.x);
-            this.width=parseInt(wid);
-            $("#cont").css({width:wid});
-            $("#main_cont").css({height:Math.max(300,this.resizing.pageY-this.temp.resizepos.y)+"px"});
+            var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x);
+            var hei=Math.max(300,this.resizing.pageY-this.temp.resizepos.y);
+            var sqdif=view.axi.isSquare(wid,hei);
+            if(sqdif!==0){
+                wid-=sqdif;
+                hei+=sqdif;
+            }
+            this.width=wid;
+            $("#cont").css({width:wid+"px"});
+            $("#main_cont").css({height:hei+"px"});
             view.axi.needArrange=true;
             view.ctrl.slide.render();
             control.gestures.needRecompute=true;

@@ -382,6 +382,12 @@ $.extend(view.axi,{
         if(args==="drawAxes"){this.drawAxes();}
         if(args==="arrange"){this.needArrange=true;}
         if(args==="labels"){this.setTextFrames();}
+    },
+    isSquare:function(wid,hei){
+        hei-=this.xwidth;
+        wid-=this.ywidth+this.zwidth;
+        if(Math.abs(wid-hei)<25){return (wid-hei)/2;}
+        return 0;
     }
 });
 view.axi.renamer={
