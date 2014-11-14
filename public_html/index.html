@@ -69,7 +69,6 @@ and open the template in the editor.
                 //manage.console.loglevel=4;
                 control.settings.onload();  
                 control.control.init();
-                control.settings.init();
                 view.ctrl.init();
                 view.axi.init();
                 control.gestures.init();
@@ -78,7 +77,7 @@ and open the template in the editor.
                 
                 control.measure.onload();
                 view.exporter.onload();
-                manage.tests.run();
+                manage.tests.onload();
                 //compute.gl_summer.init();
 //                control.feedback.init();
                 //draw.gl.init();
@@ -88,6 +87,7 @@ and open the template in the editor.
                 //$("#file").trigger("change");
                 //result=compute.parser.TAsorter.sort(new Float32Array([0,1,2,3,5,6,4,8,7,9,10,11,12,14,15,13]));
                 //var array=new Float32Array([8,14,2,7,13,4,9,12,6,0,15,3,10,1,5,11]);
+                control.settings.init();
 
 
 

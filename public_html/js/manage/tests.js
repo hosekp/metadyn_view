@@ -4,6 +4,9 @@ $.extend(manage.tests,{
     active:0,
     tests:[],
     inited:false,
+    onload:function(){
+      control.settings.tests.subscribe(this,"run");
+    },
     run:function(){
         if(!this.inited){
             this.createTests();this.inited=true;
@@ -33,6 +36,13 @@ $.extend(manage.tests,{
         $.get("tests/"+testname+".tst",$.proxy(function(data){
             this.tests[index].compileTest(data);
         },this),"text");
+    },
+    notify:function(args){
+      if(args==="run"){
+        if(control.settings.tests.get()){
+          this.run();
+        }
+      }
     }
 });
 manage.tests.prototest={
