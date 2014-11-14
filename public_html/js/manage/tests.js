@@ -17,11 +17,12 @@ $.extend(manage.tests,{
         this.run();
     },
     createTests:function(){
-        control.settings.loglvl.set(2.5);
         var testnames=[];
         testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
         //testnames=["raster_ala_exp"];
         //testnames=["bugus"];
+        if(testnames.length===0){return;}
+        control.settings.loglvl.set(2.5);
         for(var i=0;i<testnames.length;i++){
             var testname=testnames[i];
             this.tests.push($.extend({name:testname},manage.tests.prototest));
