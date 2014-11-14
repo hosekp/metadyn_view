@@ -13,8 +13,8 @@ $.extend(control.settings,{
         
         this.height=this.create(1,"hei");
         this.ncv=this.create(0);
-//        this.webgl=this.create(false);
-        this.webgl=this.create(true);
+        this.glcan=this.create(true);
+        this.glwant=this.create(true,"wgl");
         this.loglvl=this.create(4,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
@@ -26,7 +26,12 @@ $.extend(control.settings,{
         this.zoomcoef=this.create(2);
         this.png=this.create(false);
         this.lang=this.create("eng","lan");
-        
+        this.webgl=function(){
+            if(!this.glwant.value){return false;}
+            if(!this.glcan.value){return false;}
+            if(this.ncv.get()===1){return false;}
+            return true;
+        };
         this.zoompow=function(){
             if(this.zoom.value===0){return 1;}
             return Math.pow(this.zoomcoef.value,this.zoom.value);

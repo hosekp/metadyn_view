@@ -4,13 +4,10 @@ $.extend(compute.tspacer,{
     lastId:1,
     msi:2.8,  // const - multiple of sigma   2=95%
     //tspace:null,
-    isWebgl:function(){
-        return control.settings.webgl.get()&&control.settings.ncv.get()>1;
-    },
     createSpace:function(bins,ncv){   // spacer
         if(!ncv){ncv=control.settings.ncv.get();}
         if(typeof bins==="undefined"){bins=control.settings.resol.get();}
-        if(this.isWebgl()){
+        if(control.settings.webgl()){
             if(!compute.gl_summer.init()){return null;};
             var space=$.extend({},this.tspace["gl"+ncv]);
         }else{
@@ -31,7 +28,7 @@ $.extend(compute.tspacer,{
             sigmas1.push(sigmas[i]*resol/compute.sum_hill.diffs[i]);
             sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
         }
-        if(ncv===1||this.isWebgl()){
+        if(ncv===1||control.settings.webgl()){
             var space=this.createSpace(resol);
         }else{
             var space=this.createSpace(sigmas8);

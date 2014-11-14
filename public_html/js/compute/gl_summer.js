@@ -146,7 +146,7 @@ $.extend(compute.gl_summer, {
     },
     loadFailed:function(error){
         manage.console.warning(error);
-        control.settings.webgl.set(false);
+        control.settings.glcan.set(false);
     },
     /*createTexture:function(width, height, srcarr, bytesPerValue) {
         var packValue = function(value, bytesPerValue) {

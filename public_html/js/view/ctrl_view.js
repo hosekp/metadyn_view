@@ -10,7 +10,7 @@ $.extend(view.ctrl,{
     inited:false,
     resizing:false,  // event 
     temp:{resizepos:false,resoldata:[16,64,128,256,512],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
-    tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
+    tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",webgl:"WebGL",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
     //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
     init:function(){
         this.div=$("#ctrl_cont");
@@ -26,6 +26,7 @@ $.extend(view.ctrl,{
         control.control.subscribe(this,"resize");
         control.settings.play.subscribe(this,"draw");
         control.settings.loop.subscribe(this,"draw");
+        control.settings.glwant.subscribe(this,"draw");
         control.settings.measure.subscribe(this,"draw");
         control.settings.resol.subscribe(this,"draw");
         control.settings.speed.subscribe(this,"draw");
@@ -33,7 +34,15 @@ $.extend(view.ctrl,{
     },
     getSettings:function(){
         var sett=control.settings;
-        return {play:sett.play.get(),measure:sett.measure.get()?"on":"",loop:sett.loop.get()?"on":"",resol:sett.resol.get(),resize:(!!this.temp.resizepos)?"on":"",speed:sett.speed.get()};
+        return {
+            play:sett.play.get(),
+            measure:sett.measure.get()?"on":"",
+            loop:sett.loop.get()?"on":"",
+            resol:sett.resol.get(),
+            resize:(!!this.temp.resizepos)?"on":"",
+            speed:sett.speed.get(),
+            webgl:sett.glwant.get()?"on":"",
+        };
     },
     render:function(){
         if(this.ctrlRequested){
@@ -83,7 +92,7 @@ $.extend(view.ctrl,{
                 });
             }else if(ctrl==="resize"){
                 
-            }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play"){
+            }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play" || ctrl==="glwant"){
                 control.settings[ctrl].toggle();
             }else if(ctrl==="reset"){
                 control.control.reset();

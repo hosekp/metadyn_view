@@ -67,12 +67,12 @@ $.extend(compute.axi,{
     transform:function(space,nar,type){
         var max,min=0;
         this.profiler.init();
-        var webgl=control.settings.webgl.get();
+        var webgl=control.settings.webgl();
         /*if(space.isEmpty()){
             manage.console.debug("Axi: Nothing to transform");
             return nar;
         }*/
-        if(webgl&&space.ncv>1){
+        if(webgl){
             var array=space.getArr(32);
         }else{
             var array=space.getArr();
@@ -83,7 +83,7 @@ $.extend(compute.axi,{
             var limits=this.findMaxMin(array,autoset===2);
             max=limits[0];
             min=limits[1];
-            if(webgl&&space.ncv>1){
+            if(webgl){
                 if(max>this.zmax*16384){
                     this.setZmax(max/16384.0);
                 }
@@ -103,7 +103,7 @@ $.extend(compute.axi,{
             max=this.zmax;
             min=this.zmin;
         }
-        if(webgl&&space.ncv>1){
+        if(webgl){
             if(!nar&&type==="float32"){
                 nar=new Float32Array(len);
                 for (var i=0;i<len;i++){

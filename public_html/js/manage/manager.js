@@ -8,6 +8,7 @@ $.extend(manage.manager,{
     onesecratio:0,
     init:function(){
         control.settings.resol.subscribe(this,"resol");
+        control.settings.glwant.subscribe(this,"loaded");
     },
     draw_text:function(rat){
         if(!draw.gl.inited){return false;}
@@ -113,6 +114,7 @@ $.extend(manage.manager,{
         return this.lastTransformed;
     },
     dataLoaded:function(){
+        if(!compute.sum_hill.haveData()){return;}
         this.lastSpace=null;
         this.lastDrawable=null;
         control.settings.ncv.set(compute.sum_hill.ncv);
@@ -129,6 +131,7 @@ $.extend(manage.manager,{
     },
     notify:function(args){
         if(args==="resol"){this.setResol();}
+        if(args==="loaded"){this.dataLoaded();}
     }
 });
 

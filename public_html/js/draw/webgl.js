@@ -192,7 +192,7 @@ $.extend(draw.gl,{
     },
     loadFailed:function(error){
         manage.console.warning(error);
-        control.settings.webgl.set(false);
+        control.settings.glcan.set(false);
         draw.drawer.switchTo("raster");
     }
 });

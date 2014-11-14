@@ -215,7 +215,7 @@ $.extend(compute.sum_hill,{
                     if(divis[0]){space.add([ind1-1],blob);}
                     if(divis[1]){space.add([ind1+1],blob);}
                 }else if(this.ncv===2){
-                    if(!control.settings.webgl.get()){
+                    if(!control.settings.webgl()){
                         if(divis[0]){
                             inds[0]+=1;
                             space.add(inds,blob);

@@ -1,7 +1,7 @@
 do control.settings.loop.set(false)
 not control.settings.loop.get()
-do control.settings.webgl.set(true)
-is control.settings.webgl.get()
+do control.settings.glwant.set(true)
+is control.settings.glwant.get()
 do $("#examples_button").click()
 sleep 1
 is $("#examples").is(":visible")

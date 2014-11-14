@@ -28,7 +28,7 @@ $.extend(draw.drawer,{
     switchTo:function(eng){
         if(!eng){
             var ncv=control.settings.ncv.get();
-            var webgl=control.settings.webgl.get();
+            var webgl=control.settings.webgl();
             if(ncv===1){eng="liner";}else
             if(webgl){eng="gl";}else{eng="raster";}
         }
@@ -76,7 +76,12 @@ $.extend(draw.drawer,{
     },
     reset:function(){
         draw.engine.inited=false;
-    }/*,
+    },
+    notify:function(args){
+        if(args==="switch"){this.switchTo();}
+    }
+    
+    /*,
     getImageData:function(){
         //if(this.engine)this.engine.getImageData();
         var ncv=control.settings.ncv.get();
