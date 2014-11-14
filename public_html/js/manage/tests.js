@@ -19,8 +19,8 @@ $.extend(manage.tests,{
     createTests:function(){
         control.settings.loglvl.set(2.5);
         var testnames=[];
-        //testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
-        testnames=["raster_ala_exp"];
+        testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
+        //testnames=["raster_ala_exp"];
         //testnames=["bugus"];
         for(var i=0;i<testnames.length;i++){
             var testname=testnames[i];
