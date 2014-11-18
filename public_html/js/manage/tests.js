@@ -53,7 +53,7 @@ manage.tests.prototest={
     vars:null,
     start:function(){
         manage.console.log(this.name,"executed");
-        control.control.subscribe(this,"run");
+        control.control.everysec(this,"run");
         this.vars={};
     },
     run:function(){
@@ -171,63 +171,4 @@ manage.tests.prototest={
         if(args==="run"){this.run();}
     }
     
-};
-manage.tests.prototest2={
-    result:2, // 0=unknown 1=fail 2=pass
-    numtest:0,
-    progress:0,
-    sleeping:0,
-    inited:false,
-    run:function(){
-        this.numtest=0;
-        this.result=2;
-        this.body();
-        if(this.result===2){
-            manage.console.success(this.name,"finished successfully");
-        }else if(this.result===1){
-            manage.console.error(this.name,"failed");
-        }else{
-            return false;
-        }
-        control.control.unsubscribe(this,"run");
-        manage.tests.run();
-    },
-    init:function(){
-        manage.console.log(this.name,"executed");
-        control.control.subscribe(this,"run");
-    },
-    assertEqual:function(val1,val2){
-        this.numtest++;
-        if(this.result!==2||this.progress>=this.numtest){return;}
-        if(val1===val2){
-        }else{
-            manage.console.error("test",this.numtest,"failed","-",val1,"!=",val2);
-            this.result=1;
-        }
-        this.progress++;
-    },
-    wait:function(bool){
-        this.numtest++;
-        if(this.result!==2||this.progress>=this.numtest){return;}
-        if(!bool){
-            this.result=0;
-            return;
-        }else{
-            this.progress++;
-        }
-    },
-    sleep:function(num){
-        this.numtest++;
-        if(this.result!==2||this.progress>=this.numtest){return;}
-        if(this.sleeping>=num){
-            this.progress++;
-            this.sleeping=0;
-        }else{
-            this.sleeping++;
-            this.result=0;
-        }
-    },
-    notify:function(args){
-        if(args==="run"){this.run();}
-    }
 };

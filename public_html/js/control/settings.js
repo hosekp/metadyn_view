@@ -41,7 +41,7 @@ $.extend(control.settings,{
     },
     init:function(){
         this.readHash();
-        control.control.subscribe(this,"newHash");
+        control.control.everysec(this,"newHash");
     },
     readHash:function(){
         var hashstr=window.location.hash;
@@ -65,11 +65,12 @@ $.extend(control.settings,{
     },
     newHash:function(){
         //compute.axi.profiler.init();
+        if(window.location.hash!=="#"+this.lastHash){
+            this.readHash();
+        }
         if(!this.hashRequested){return;}
         //compute.axi.profiler.time(1);
-        if(view.ctrl.inited){
-            view.ctrl.render();
-        }
+        view.ctrl.redraw();
         var ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
@@ -85,6 +86,7 @@ $.extend(control.settings,{
         //compute.axi.profiler.time(3);
         this.hashRequested=false;
         //compute.axi.profiler.print();
+        //manage.console.debug("newHash created");
     },
     requestNewHash:function(){
         if(this.hashRequested){return;}

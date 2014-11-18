@@ -22,8 +22,8 @@ $.extend(view.ctrl,{
             this.bind();
             this.inited=true;
         },this),"text");
-        control.control.subscribe(this,"render");
-        control.control.subscribe(this,"resize");
+        control.control.everytick(this,"render");
+        control.control.everytick(this,"resize");
         control.settings.play.subscribe(this,"draw");
         control.settings.loop.subscribe(this,"draw");
         control.settings.glwant.subscribe(this,"draw");

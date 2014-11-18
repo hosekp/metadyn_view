@@ -16,7 +16,7 @@ $.extend(view.axi,{
     rendered:false,
     init:function(){
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
-        control.control.subscribe(this,"drawAxes");
+        control.control.everytick(this,"drawAxes");
         control.settings.zoom.subscribe(this,"draw");
         control.settings.frameposx.subscribe(this,"draw");
         control.settings.frameposy.subscribe(this,"draw");

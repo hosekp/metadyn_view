@@ -7,8 +7,10 @@ $.extend(control.control,{
     needRedraw:true,
     running:false,
     lasttime:0,
-    listeners:[],
+    fastObser:[],
+    slowObser:[],
     RAFprefix:null,
+    lastSlow:1000000,
     init:function(){
         var stt=new Stats();
         stt.setMode(0);
@@ -27,8 +29,8 @@ $.extend(control.control,{
         this.lasttime=window.performance.now();
     },
     cycle:function(stamp){
+        var dt = stamp - this.lasttime;
         if(this.running){
-            var dt = stamp - this.lasttime;
             var nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
             if(nratio>1){
                 nratio=1;
@@ -43,10 +45,18 @@ $.extend(control.control,{
             this.setWanted(nratio);
         }
         this.stats.begin();
-        for(var is=0;is<this.listeners.length;is++){
-            var lis=this.listeners[is];
+        for(var is=0;is<this.fastObser.length;is++){
+            var lis=this.fastObser[is];
             lis.ctx.notify(lis.call);
         }
+        if(this.lastSlow>100){
+            for(var is=0;is<this.slowObser.length;is++){
+                var lis=this.slowObser[is];
+                lis.ctx.notify(lis.call);
+            }
+            this.lastSlow=0;
+        }
+        this.lastSlow+=dt;
         /*control.settings.newHash();
         view.ctrl.redraw();
         view.ctrl.resize();
@@ -63,14 +73,24 @@ $.extend(control.control,{
             control.control.cycle(stamp);
         });
     },
-    subscribe:function(obj,func){
-        this.listeners.push({ctx:obj,call:func});
+    everytick:function(obj,func){
+        this.fastObser.push({ctx:obj,call:func});
+    },
+    everysec:function(obj,func){
+        this.slowObser.push({ctx:obj,call:func});
     },
     unsubscribe:function(obj,func){
-        for(var i=0;i<this.listeners.length;i++){
-            var lis=this.listeners[i];
+        for(var i=0;i<this.fastObser.length;i++){
+            var lis=this.fastObser[i];
             if(lis.ctx===obj&&lis.call===func){
-                this.listeners.pop(i);
+                this.fastObser.pop(i);
+                return;
+            }
+        }
+        for(var i=0;i<this.slowObser.length;i++){
+            var lis=this.slowObser[i];
+            if(lis.ctx===obj&&lis.call===func){
+                this.slowObser.pop(i);
                 return;
             }
         }

@@ -46,14 +46,14 @@ control.measure={
     {{/data.chills}}\n\
     {{/chillsOn}}\
 ';
-        control.control.subscribe(this,"redraw");
+        control.control.everysec(this,"render");
         control.settings.ncv.subscribe(this,"draw");
         control.settings.enunit.subscribe(this,"draw");
         control.settings.lang.subscribe(this,"draw");
         this.inited=true;
     },
     div:{},
-    redraw:function(){
+    render:function(){
         if(!this.visible){return;}
         if(!this.needRedraw){return;}
         
@@ -160,7 +160,7 @@ control.measure={
     notify:function(args){
         if(args==="on"){this.toggle();}
         if(args==="draw"){this.needRedraw=true;}
-        if(args==="redraw"){this.redraw();}
+        if(args==="render"){this.render();}
         
     }
     

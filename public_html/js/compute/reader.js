@@ -116,7 +116,7 @@ compute.reader={
         this.inited=true;
         this.initEvents();
         control.settings.lang.subscribe(this,"redraw");
-        control.control.subscribe(this,"render");
+        control.control.everysec(this,"render");
     },
     render:function(){
         if(this.needRender===0){return;};
