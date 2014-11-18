@@ -113,6 +113,7 @@ control.settings.template={
     lastprintout:"",
     listeners:null,
     set:function(val){
+        if(this.value===val){return;}
         this.value=val;
         if(this.call){
             this.call();

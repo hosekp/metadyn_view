@@ -94,6 +94,7 @@ $.extend(control.control,{
                 return;
             }
         }
+        manage.console.warning("Control:","Unsubscription of",func,"failed");
     },
     requestAnimFrame:function(func){
         if(this.RAFprefix===null){
