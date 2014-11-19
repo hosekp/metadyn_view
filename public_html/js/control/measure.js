@@ -103,7 +103,7 @@ control.measure={
     measure:function(pos){
         if(!control.settings.measure.get()){return false;}
         pos.y=1-pos.y;
-        var val=this.getValueAt(pos);
+        var val=-this.getValueAt(pos);
         var data=this.data;
         var override=false;
         if(this.diffOn){
@@ -121,7 +121,7 @@ control.measure={
     setDiff:function(pos){
         if(!control.settings.measure.get()){return;}
         pos.y=1-pos.y;
-        var val=this.getValueAt(pos);
+        var val=-this.getValueAt(pos);
         this.data.src=val;
         this.data.ene=0;
         this.diffOn=true;

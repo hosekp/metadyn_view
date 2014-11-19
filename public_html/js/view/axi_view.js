@@ -3,7 +3,7 @@ if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
     tips:{up:"Increase",down:"Decrease",select:"Change axis",auto:"Automatic Z axi",units:"Change energy units"},
     autosrc:["manual","semiauto","auto"],
-    unitsrc:["bias pot. [kJ/mol]","bias. pot. [kcal/mol]"],
+    unitsrc:["Energy [kJ/mol]","Energy [kcal/mol]"],
     div:{},
     template:"",
     xwidth:40,
@@ -168,10 +168,10 @@ $.extend(view.axi,{
         var range=this.drange(limits);
         var dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
-            var pos=height-5-(range[i]-min)/diff*(height-10);
+            var pos=6+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);
+            ctx.fillText(this.toPrecision(-range[i],dec),width-30,pos+5);
         }
         ctx.stroke();
         ctx.save();
@@ -276,10 +276,10 @@ $.extend(view.axi,{
         range=this.drange(limits);
         dec=this.getDec(limits[2]);
         for(var i=0;i<range.length;i++){
-            var pos=margin+(1-range[i]/max)*(height-2*margin);
+            var pos=margin+(range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
-            ctx.fillText(this.toPrecision(range[i],dec),barwid+7,pos+5);
+            ctx.fillText(this.toPrecision(-range[i],dec),barwid+7,pos+5);
         }
         ctx.stroke();
         ctx.save();
@@ -451,9 +451,10 @@ view.axi.bar={
         var sigma=1000.0;
         var hei = 380.0;
         for(var i=0;i<height;i++){
-            var red=Math.min(Math.max(hei-Math.abs(i/height-0.77)*sigma,0),255);
-            var green=Math.min(Math.max(hei-Math.abs(i/height-0.51)*sigma,0),255);
-            var blue=Math.min(Math.max(hei-Math.abs(i/height-0.23)*sigma,0),255);
+            var rat=1-i/height;
+            var red=Math.min(Math.max(hei-Math.abs(rat-0.77)*sigma,0),255);
+            var green=Math.min(Math.max(hei-Math.abs(rat-0.51)*sigma,0),255);
+            var blue=Math.min(Math.max(hei-Math.abs(rat-0.23)*sigma,0),255);
             for(var j=0;j<wid;j++){
                 var ind=4*(i*wid+j);
                 imd.data[ind]=red;

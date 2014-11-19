@@ -26,15 +26,16 @@ $.extend(draw.liner,{
         var ctx=this.ctx;
         ctx.clearRect(0,0,width,height);
         ctx.beginPath();
-        ctx.moveTo(0,height-drawable[0]*height/zmax);
+        ctx.moveTo(0,height);
         ctx.strokeStyle="black";
         ctx.fillStyle="red";
         var resol=control.settings.resol.get();
         var step=width/resol;
         for(var i=0;i<resol;i++){
-            ctx.lineTo(i*step,height-drawable[i]*(height-5)/zmax);
+            ctx.lineTo(i*step,1+drawable[i]*(height-5)/zmax);
         }
-        ctx.lineTo(resol*step,height);
+        ctx.lineTo(width,0);
+        ctx.lineTo(width,height);
         ctx.closePath();
         ctx.stroke();
         ctx.fill();
