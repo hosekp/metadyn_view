@@ -34,6 +34,7 @@ body{
 #ctrl_cont{
     height:25px;
     background-color: black;
+    position:relative;
 }
 #slide_cont{
     height:25px;
@@ -101,6 +102,8 @@ body{
 #examples{
     border-bottom: 1px solid black;
     background: black;
+    top:28px;
+    right:0px;
 }
 #file_seld{
     padding: 2px;

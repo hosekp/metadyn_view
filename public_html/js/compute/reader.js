@@ -65,9 +65,7 @@ compute.reader={
                 this.$exasel.hide();
                 this.redraw(false);
             }else{
-                var off = $(event.target).offset();
-                var exasel=this.$exasel.show();
-                exasel.css({"right":0+"px","top":(off.top+18)+"px"});
+                this.$exasel.show();
                 //this.$filecont.append(exasel);
                 $("#examples_button").addClass("on");
             }

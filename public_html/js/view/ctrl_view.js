@@ -67,9 +67,10 @@ $.extend(view.ctrl,{
             var ctrl=event.currentTarget.getAttribute("data-ctrl");
             //alert(ctrl);
             if(ctrl==="resol"){
+                var ctrlSel=$("#ctrl_select");
+                if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
+                this.temp.$ctrlSel=ctrlSel;
                 var val=control.settings.resol.get();
-                //this.settings.resol+=100;
-                //if(this.settings.resol===600){this.settings.resol=100;}
                 var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
                 var resoldata=this.preMustache(this.temp.resoldata,val);
                 //var resoldata=$.extend({},this.temp.resoldata);
@@ -81,9 +82,10 @@ $.extend(view.ctrl,{
                 });
                 //control.settings.resol.set((val)%500+100);
             }else if(ctrl==="speed"){
+                var ctrlSel=$("#ctrl_select");
+                if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
+                this.temp.$ctrlSel=ctrlSel;
                 var val=control.settings.speed.get();
-                //this.settings.resol+=100;
-                //if(this.settings.resol===600){this.settings.resol=100;}
                 var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
                 var speeddata=this.preMustache(this.temp.speeddata,val);
                 //var resoldata=$.extend({},this.temp.resoldata);
@@ -143,9 +145,9 @@ $.extend(view.ctrl,{
         return data;
     },
     summonSelect:function(ctrl,rendered,callback){
-        var div=$("#ctrl_select");
+        var div=this.temp.$ctrlSel;
         var off = $(ctrl).offset();
-        div.css({"left":(off.left-8)+"px","top":(off.top+17)+"px"});
+        div.css({"left":(off.left-8)+"px"});
         div.html(rendered);
         div.show();
         div.children("div").click(callback);
