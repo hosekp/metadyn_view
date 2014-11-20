@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof draw==="undefined"){draw={};}
 if(typeof draw.raster==="undefined"){draw.raster={};}
 $.extend(draw.raster,{
@@ -168,3 +171,4 @@ $.extend(draw.raster,{
         }
     }
 });
+// @license-end

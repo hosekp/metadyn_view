@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof control==="undefined"){control={};}
 if(typeof control.control==="undefined"){control.control={};}
 $.extend(control.control,{
@@ -164,3 +167,4 @@ $.extend(control.control,{
         this.needRedraw=true;
     }
 });
+// @license-end

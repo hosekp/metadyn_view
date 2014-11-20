@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof view==="undefined"){view={};}
 if(typeof view.lang==="undefined"){view.lang={};}
 $.extend(view.lang,{
@@ -6,6 +9,7 @@ $.extend(view.lang,{
         "opened":"otevřeno",
         "Close":"Zavřít",
         "To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
+        //"To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
         "Choose files":"Vyber soubory",
         "Examples":"Příklady",
         "Drop yours HILLS files here":"Upusť zde soubory",
@@ -55,3 +59,4 @@ Lang=function(){
     }
     return ret.join(" ");
 };
+// @license-end

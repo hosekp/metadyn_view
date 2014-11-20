@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof view==="undefined"){view={};}
 if(typeof view.axi==="undefined"){view.axi={};}
 $.extend(view.axi,{
@@ -468,7 +471,4 @@ view.axi.bar={
         return imd;
     }
 };
-        /*min(max(hei-abs(d-0.23)*sigma,0.0),1.0),
-        min(max(hei-abs(d-0.49)*sigma,0.0),1.0),
-        min(max(hei-abs(d-0.77)*sigma,0.0),1.0),
-        1*/
+// @license-end
