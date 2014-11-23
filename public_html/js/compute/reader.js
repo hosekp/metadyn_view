@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof compute==="undefined"){compute={};}
 compute.reader={
     template:null,
@@ -62,9 +65,7 @@ compute.reader={
                 this.$exasel.hide();
                 this.redraw(false);
             }else{
-                var off = $(event.target).offset();
-                var exasel=this.$exasel.show();
-                exasel.css({"right":0+"px","top":(off.top+18)+"px"});
+                this.$exasel.show();
                 //this.$filecont.append(exasel);
                 $("#examples_button").addClass("on");
             }
@@ -161,5 +162,5 @@ compute.reader={
         this.redraw();
     }
 };
-
+// @license-end
 

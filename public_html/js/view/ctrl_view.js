@@ -1,3 +1,6 @@
+/** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+* Copyright (C) 2014  Petr Hošek
+*/
 if(typeof view==="undefined"){view={};}
 if(typeof view.ctrl==="undefined"){view.ctrl={};}
 $.extend(view.ctrl,{
@@ -64,9 +67,10 @@ $.extend(view.ctrl,{
             var ctrl=event.currentTarget.getAttribute("data-ctrl");
             //alert(ctrl);
             if(ctrl==="resol"){
+                var ctrlSel=$("#ctrl_select");
+                if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
+                this.temp.$ctrlSel=ctrlSel;
                 var val=control.settings.resol.get();
-                //this.settings.resol+=100;
-                //if(this.settings.resol===600){this.settings.resol=100;}
                 var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
                 var resoldata=this.preMustache(this.temp.resoldata,val);
                 //var resoldata=$.extend({},this.temp.resoldata);
@@ -78,9 +82,10 @@ $.extend(view.ctrl,{
                 });
                 //control.settings.resol.set((val)%500+100);
             }else if(ctrl==="speed"){
+                var ctrlSel=$("#ctrl_select");
+                if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
+                this.temp.$ctrlSel=ctrlSel;
                 var val=control.settings.speed.get();
-                //this.settings.resol+=100;
-                //if(this.settings.resol===600){this.settings.resol=100;}
                 var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
                 var speeddata=this.preMustache(this.temp.speeddata,val);
                 //var resoldata=$.extend({},this.temp.resoldata);
@@ -140,9 +145,9 @@ $.extend(view.ctrl,{
         return data;
     },
     summonSelect:function(ctrl,rendered,callback){
-        var div=$("#ctrl_select");
+        var div=this.temp.$ctrlSel;
         var off = $(ctrl).offset();
-        div.css({"left":(off.left-8)+"px","top":(off.top+17)+"px"});
+        div.css({"left":(off.left-8)+"px"});
         div.html(rendered);
         div.show();
         div.children("div").click(callback);
@@ -277,3 +282,4 @@ view.ctrl.slide={
         this.slider.css("left",lft);
     }
 };
+// @license-end
