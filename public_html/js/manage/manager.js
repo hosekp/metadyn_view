@@ -134,5 +134,20 @@ $.extend(manage.manager,{
         if(args==="loaded"){this.dataLoaded();}
     }
 });
+// ############################################################xx
+// Allrunner
+$(function(){
+    control.settings.onload();  
+    control.control.init();
+    view.ctrl.init();
+    view.axi.init();
+    control.gestures.init();
+    compute.reader.init();
+    manage.manager.init();
+    control.measure.onload();
+    view.exporter.onload();
+    manage.tests.onload();
+    control.settings.init();
+}); 
 
 

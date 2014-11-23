@@ -29,6 +29,6 @@ var height $$canvas.height()
 var ctx $$canvas[0].getContext("2d")
 var imdadata $$ctx.getImageData(0,0,$$width,$$height).data
 == $$imdadata.length 1080000
-== $$imdadata[2563]+$$imdadata[253547]+$$imdadata[786126]+$$imdadata[869457] 255
+== $$imdadata[2563]+$$imdadata[253547]+$$imdadata[786126]+$$imdadata[869457] 0
 do control.settings.png.set(false)
 do control.control.reset()
