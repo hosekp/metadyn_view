@@ -25,6 +25,10 @@ $.extend(manage.tests,{
     createTests:function(){
         var testnames=[];
         testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
+        if(control.settings.tests.get()>1){
+            testnames=["webgl_bench","raster_bench"];
+            //testnames=["sum_bench","gl_sum_bench","raster_bench","webgl_bench"];
+        }
         //testnames=["raster_ala_exp"];
         //testnames=["bugus"];
         if(testnames.length===0){return;}
@@ -42,7 +46,8 @@ $.extend(manage.tests,{
     },
     notify:function(args){
       if(args==="run"){
-        if(control.settings.tests.get()){
+          var istest=control.settings.tests.get();
+        if(istest>0){
           this.run();
         }
       }
@@ -53,6 +58,7 @@ manage.tests.prototest={
     lines:null,
     active:0,
     sleeping:0,
+    bench:null,
     vars:null,
     start:function(){
         manage.console.log(this.name,"executed");
@@ -124,6 +130,19 @@ manage.tests.prototest={
                 if(line.length<2){this.error("too few arguments");return 1;}
                 var val=this.evaluate(line[1]);
                 return val?2:0;
+            }else if(cmd==="bench"){
+                if(line.length<3){this.error("too few arguments");return 1;}
+                var now=window.performance.now();
+                if(line[1]==="start"){
+                    this.bench={start:now,finish:now+parseFloat(line[2])};
+                    return 2;
+                }
+                //manage.console.debug("now",now,"finish",this.bench.finish);
+                if(now<this.bench.finish){return 0;}
+                var val=this.evaluate(line[1]);
+                val/=(now-this.bench.start)/parseFloat(line[2]);
+                manage.console.success("Benchmark",this.name,":",val.toFixed(1),"points");
+                return 2;
             }else{
                 this.error("Unknown command");
                 return 1;

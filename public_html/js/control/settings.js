@@ -15,7 +15,7 @@ $.extend(control.settings,{
         this.loop=this.create(true,"lop");
         
         this.height=this.create(1,"hei");
-        this.tests=this.create(false,"tst");
+        this.tests=this.create(0,"tst");
         this.ncv=this.create(0);
         this.glcan=this.create(true);
         this.glwant=this.create(true,"wgl");
