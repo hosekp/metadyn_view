@@ -101,7 +101,7 @@ compute.reader={
 <div id="file_but" class="ctrl button left text">{{chs_but_text}}</div>\
 <div id="file_seld" class="left">{{fchosed}}</div>\
 <div id="lang_sel" class="ctrl button right">\
-    <img alt="{{lang}}" src="img/new/{{lang}}.png" />\
+    <img alt="{{lang}}" src="img/{{lang}}.png" />\
 </div>\
 <div id="examples_button" class="ctrl text unselect button right {{exa}}">{{exa_but_text}}</div>\
 <div class="lclear">\
