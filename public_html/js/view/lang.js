@@ -37,6 +37,7 @@ $.extend(view.lang,{
         "Wrong number of CV":"Špatný počet CV",
         "Variable sigma is not supported":"Proměnná velikost sigmy není podporována",
         "resize conducted":"Provedena změna velikosti",
+        "Drop your HILLS files here":"Přesuňte sem HILLS soubory"
     }
 });
 Lang=function(){

@@ -144,6 +144,7 @@ compute.reader={
         if(!this.$filecont){
             this.$filecont=$("#file_cont");
         }
+        $("#middle_can_text").html(Lang("Drop your HILLS files here"));
         this.$filecont.children(":not(#examples)").remove();
         this.$filecont.append($(rendered));
         this.$filecont.append(this.$exasel);

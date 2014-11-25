@@ -52,6 +52,10 @@ body{
     display:none;
     /*width:200px;*/
 }
+#middle_can_text{
+    position:relative;
+    top:45%
+}
 .ctrl{}
 .left{
     float:left;
