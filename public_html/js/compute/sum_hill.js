@@ -133,6 +133,9 @@ $.extend(compute.sum_hill,{
         return inds;
     },*/
     checkHeights:function(from,to){
+        if(to-from<3){
+            //manage.console.warning("CheckHeights:","too short",to-from)
+            return false;}
         var last=this.arhei[from];
         for(var i=from+1;i<to;i++){
             if(last!==this.arhei[i]){
