@@ -19,6 +19,7 @@ $.extend(control.control,{
         stt.setMode(0);
         $("#all").append(stt.domElement);
         this.stats=stt;
+        this.findRAF();
         this.cycle(this.lasttime);
         control.settings.zoom.subscribe(this,null);
         control.settings.frameposx.subscribe(this,null);
@@ -72,7 +73,7 @@ $.extend(control.control,{
         //var newtime=this.time+dt*control.settings.speed.get()/1000;
         //graf.draw(this.set(newtime));
         this.lasttime = stamp;
-        this.requestAnimFrame(function(stamp){
+        window.requestAnimationFrame(function(stamp){
             control.control.cycle(stamp);
         });
     },
@@ -99,7 +100,25 @@ $.extend(control.control,{
         }
         manage.console.warning("Control:","Unsubscription of",func,"failed");
     },
-    requestAnimFrame:function(func){
+    findRAF:function(){
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        if(!window.requestAnimationFrame){
+            for(var i = 0; i < vendors.length;i++) {
+                var vRAF=window[vendors[i]+'RequestAnimationFrame'];
+                if(vRAF){
+                    window.requestAnimationFrame = vRAF;
+                    break;
+                }
+            }
+        }else{
+            //this.requestAnimFrame = window.requestAnimationFrame;
+        }
+        if(!window.requestAnimationFrame){
+            manage.console.error("Control:","RequestAnimationFrame","not supported");
+        }
+        //manage.console.debug("RAF:","new RAF selected");
+    },
+    /*requestAnimFrame:function(func){
         if(this.RAFprefix===null){
             if(window.requestAnimationFrame){
                 this.RAFprefix=0;
@@ -119,7 +138,7 @@ $.extend(control.control,{
         }else if(this.RAFprefix===2){
             window.mozRequestAnimationFrame(func);
         }
-    },
+    },*/
     draw:function(){
         if(this.needRedraw){
             var rat=manage.manager.draw(this.wantedratio);
