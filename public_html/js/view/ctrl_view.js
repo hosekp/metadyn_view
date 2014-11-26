@@ -146,8 +146,8 @@ $.extend(view.ctrl,{
     },
     summonSelect:function(ctrl,rendered,callback){
         var div=this.temp.$ctrlSel;
-        var off = $(ctrl).offset();
-        div.css({"left":(off.left-8)+"px"});
+        var off = $(ctrl).position();
+        div.css({"left":off.left+"px"});
         div.html(rendered);
         div.show();
         div.children("div").click(callback);
