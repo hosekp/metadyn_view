@@ -106,29 +106,6 @@ $.extend(compute.sum_hill,{
             this.norcvs.push(norcv);
         }
     },
-    /*createSpace:function(resol,ncv){   // spacer
-        if(!ncv){ncv=this.ncv;}
-        if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var space=$.extend({},compute.tspace[ncv]);
-        space.init(this.multibin(resol,ncv),ncv);
-        return space;
-    },
-    createBlob:function(resol){   // spacer
-        if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var sigmas=this.checkSigmaConst();
-        //var sigmas=[0.3,0.3,0.3];
-        var sigmas8=[];
-        var sigmas1=[];
-        for(var i=0;i<this.ncv;i++){
-            var cvstep=resol/this.diffs[i];
-            sigmas1.push(sigmas[i]*cvstep);
-            sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
-        }
-        var space=this.createSpace(resol);
-        //space.all(1);
-        space.blob(sigmas1);
-        return space;
-    },*/
     checkSigmaConst:function(){   // data
         var sigmas=[];
         var valid=true;
@@ -161,15 +138,8 @@ $.extend(compute.sum_hill,{
             if(last!==this.arhei[i]){
                 return false;
             }
-            last=this.arhei[i];
         }
         return last;
-        /*if(diff===0){
-            this.costthei=0;
-        }else if(diff<4){
-            this.costthei=diff;
-        }
-        */
     },
     toIndices:function(line,hei){   // sum
         if(!this.tempind){
@@ -195,10 +165,16 @@ $.extend(compute.sum_hill,{
         if(hei===false){
             hei=1;
         }
-        if(!this.blobs[resol+"_"+hei]){
-            this.blobs[resol+"_"+hei]=compute.tspacer.createBlob(512,hei);
+        if(!this.blobs[1]){this.blobs[1]=compute.tspacer.createBlob(512,hei);};
+        if(!this.blobs[hei]){
+            this.blobs[hei]=this.blobs[1].copy(hei);
+            /*var len=0;
+            for(var i in this.blobs){
+                len++;
+            }
+            manage.console.warning("Tspacer:","blob created.","hei=",hei,"len=",len);*/
         }
-        var blob=this.blobs[resol+"_"+hei];
+        var blob=this.blobs[hei];
         var periods=this.isPeriodic();
         //manage.console.debug("Add from "+last+" to "+to);
         var anyperiod=false;

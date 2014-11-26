@@ -34,11 +34,21 @@ compute.tspacer.tspace["gl2"]={
         this.i8arr=new Uint8Array(len*4);
         this.i32arr=new Uint32Array(this.i8arr.buffer);
     },
-    copy:function(){
+    copy:function(hei){
         var space=$.extend(true,{},this);
         space.id=compute.tspace.lastid++;
         space.createArrays(this.nwhole);
-        space.i8arr.set(this.i8arr);
+        if(typeof hei !== "undefined"){
+            var len=this.i32arr.length;
+            var spi32arr=space.i32arr;
+            var thi32arr=this.i32arr;
+            for(var i=0;i<len;i++){
+                spi32arr[i]=thi32arr[i]*hei;
+            }
+            space.i32arr=spi32arr;
+        }else{
+            space.i32arr.set(this.i32arr);
+        }
         //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
     },
