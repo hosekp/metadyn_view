@@ -152,28 +152,31 @@ $.extend(view.ctrl,{
         div.show();
         div.children("div").click(callback);
     },
-    resize:function(){
+    resize:function(optWid,optHei){
         /*$("#cont").css({width:Math.max(400,event.pageX-this.temp.resizepos.x)+"px"});
         $("#main_cont").css({height:Math.max(300,event.pageY-this.temp.resizepos.y)+"px"});
         view.axi.arrange();*/
-        if(this.resizing!==false){
-            //manage.console.debug("width="+this.temp.resizepos.x);
+        if(typeof optHei === "undefined"){
+            if(this.resizing===false){return;}
             var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x);
             var hei=Math.max(300,this.resizing.pageY-this.temp.resizepos.y);
-            var sqdif=view.axi.isSquare(wid,hei);
-            if(sqdif!==0){
-                wid-=sqdif;
-                hei+=sqdif;
-            }
-            this.width=wid;
-            $("#cont").css({width:wid+"px"});
-            $("#main_cont").css({height:hei+"px"});
-            view.axi.needArrange=true;
-            view.ctrl.slide.render();
-            control.gestures.needRecompute=true;
-            control.control.needRedraw=true;
-            this.resizing=false;
+        }else{
+            wid=optWid;
+            hei=optHei;
         }
+        var sqdif=view.axi.isSquare(wid,hei);
+        if(sqdif!==0){
+            wid-=sqdif;
+            hei+=sqdif;
+        }
+        this.width=wid;
+        $("#cont").css({width:wid+"px"});
+        $("#main_cont").css({height:hei+"px"});
+        view.axi.needArrange=true;
+        view.ctrl.slide.render();
+        control.gestures.needRecompute=true;
+        control.control.needRedraw=true;
+        this.resizing=false;
     },
     bindTips:function(div,tips){
         div
