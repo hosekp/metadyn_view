@@ -20,7 +20,7 @@ $.extend(view.exporter,{
 </div>';
         this.help_template='\n\
         <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
-            <img alt="{{close}}" src="img/new/close.png">\n\
+            <img alt="{{close}}" src="img/close.png">\n\
         </div>\n\
         <div id="export_help" class="left text">{{helpmsg}}</div>\n\
         ';
