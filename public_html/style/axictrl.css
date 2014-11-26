@@ -52,10 +52,10 @@
     padding-left:2px;
     padding-right:2px;
 }
-.abutton{
+.axis.button{
     background-color: red;
 }
-.abutton img{
+.axis.button img{
     width:calc(100% - 4px);
     width: -moz-calc(100% - 4px);
     width: -webkit-calc(100% - 4px);
