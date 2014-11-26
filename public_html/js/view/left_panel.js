@@ -29,7 +29,10 @@ $.extend(view.panel,{
             $.get("templates/panel_"+lang+".html",$.proxy(function(data){
                 this.templates[lang]=data;
                 this.render();
-            },this),"text");
+            },this),"text")
+            .fail(function(){
+                this.needRender=false;
+            });
             this.templates[lang]="";
             return;
         }
