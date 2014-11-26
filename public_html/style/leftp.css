@@ -1,0 +1,39 @@
+#leftp{
+    height:100%;
+    width:200px;
+    float:left;
+    /*border:1px solid black;*/
+    background-color: darkred;
+    color:white;
+}
+#leftp_logo{
+    cursor: pointer;
+}
+#leftp_logo img{
+    width: 90%;
+    height:auto;
+    margin:5%
+}
+.leftp.button{
+    font-weight: bold;
+    padding-top: 5px;
+    width: calc( 100% - 2px );
+    height: 28px;
+    text-align: center;
+    cursor: pointer;
+}
+.leftp.button:not(.on){
+    border: 1px solid black;
+    background-color: darkred;
+}
+.leftp.button:not(.on):hover{
+    background-color: red;
+    color:black;
+}
+.leftp.button.on{
+    background-color: yellow;
+    color:black;
+}
+.leftp.button.on:hover{
+    background-color: white;
+}

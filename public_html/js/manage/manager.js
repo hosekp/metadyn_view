@@ -151,5 +151,6 @@ $(function(){
     view.exporter.onload();
     manage.tests.onload();
     control.settings.init();
+    view.panel.init();
 }); 
 // @license-end
