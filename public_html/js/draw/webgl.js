@@ -114,7 +114,7 @@ $.extend(draw.gl,{
     draw:function(array,zmax){
         //if(!this.inited){this.init();}
         var gl=this.g1;
-        var nat=view.axi.natureRange(0,zmax,7,false);
+        var nat=view.axi.natureRange(0,zmax,10,false);
         //manage.console.debug("step="+nat[2]);
         //manage.console.debug("drawing");
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
