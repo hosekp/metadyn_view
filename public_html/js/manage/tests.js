@@ -26,7 +26,7 @@ $.extend(manage.tests,{
         var testnames=[];
         testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
         if(control.settings.tests.get()>1){
-            testnames=["webgl_bench","raster_bench"];
+            testnames=["webgl_bench","raster_bench","bugus"];
             //testnames=["sum_bench","gl_sum_bench","raster_bench","webgl_bench"];
         }
         //testnames=["raster_ala_exp"];
@@ -53,6 +53,22 @@ $.extend(manage.tests,{
       }
     }
 });
+manage.tests.perf={
+        ncyc:0,
+        suma:0,
+        last:null,
+        start:function(){
+            this.last=window.performance.now();
+        },
+        end:function(){
+            this.ncyc++;
+            this.suma+=window.performance.now()-this.last;
+        },
+        reset:function(){
+            this.ncyc=0;
+            this.suma=0;
+        }
+    };
 manage.tests.prototest={
     inited:false,
     lines:null,
@@ -130,17 +146,48 @@ manage.tests.prototest={
                 if(line.length<2){this.error("too few arguments");return 1;}
                 var val=this.evaluate(line[1]);
                 return val?2:0;
+            }else if(cmd==="goto"){
+                if(line.length<2){this.error("too few arguments");return 1;}
+                if(line[1]==="target"){return 2;}
+                if(!this.vars.goto){this.vars.goto=0;}
+                this.vars.goto++;
+                if(this.vars.goto>200){this.error("Goto","too many iteration");return 1;}
+                var val=this.evaluate(line[1]);
+                if(val){
+                    var act=parseInt(line[2])-1;
+                    if(this.lines[act][1]==="target"){
+                        this.active=act;
+                        return 2;
+                    }else{
+                        this.error("Goto not pointing to target at",act);return 1;
+                    }
+                }else{
+                    return 2;
+                }
             }else if(cmd==="bench"){
                 if(line.length<3){this.error("too few arguments");return 1;}
                 var now=window.performance.now();
                 if(line[1]==="start"){
                     this.bench={start:now,finish:now+parseFloat(line[2])};
                     return 2;
+                }else if(line[1]==="perf"){
+                    if(!this.bench){
+                        this.bench=$.extend({},manage.tests.perf);
+                    }
+                    this.bench.start();
+                    this.evaluate(line[2]);
+                    this.bench.end();
+                    return 2;
                 }
+                
                 //manage.console.debug("now",now,"finish",this.bench.finish);
-                if(now<this.bench.finish){return 0;}
-                var val=this.evaluate(line[1]);
-                val/=(now-this.bench.start)/parseFloat(line[2]);
+                if(this.bench.finish){
+                    if(now<this.bench.finish){return 0;}
+                    var val=this.evaluate(line[1]);
+                    val/=(now-this.bench.start)/parseFloat(line[2]);
+                }else{
+                    val=this.bench.ncyc/this.bench.suma*parseFloat(line[2]);
+                }
                 manage.console.success("Benchmark",this.name,":",val.toFixed(1),"points");
                 return 2;
             }else{
@@ -183,7 +230,7 @@ manage.tests.prototest={
         return spcspl;
     },
     error:function(){
-        var msg=[this.active+")",'"'+this.lines[this.active].join(" ")+'"',"-"];
+        var msg=[(this.active+1)+")",'"'+this.lines[this.active].join(" ")+'"',"-"];
         for(var i=0;i<arguments.length;i++){
             msg.push(arguments[i]);
         }

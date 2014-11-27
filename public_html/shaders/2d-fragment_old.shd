@@ -7,19 +7,8 @@ uniform float u_zmax;
 uniform float u_step;
 uniform float u_cmargin;
 varying vec2 v_texCoord;
-const vec3 colorcon=vec3(0.23,0.49,0.77);
 
 vec4 colorScale(float d){
-    vec4 col;
-    for(int i=0;i<3;i++){
-        float dif=abs(d-colorcon[i]);
-        if(dif<0.13){col[i]=1.0;}else
-        if(dif<0.37){col[i]=(0.37-dif)/0.24;}else
-        {col[i]=0.0;}
-    }
-    col.w=1.0;
-    return col;
-    /*
     float sigma=1000.0/255.0;
     float hei = 380.0/255.0;
     return vec4(
@@ -27,7 +16,7 @@ vec4 colorScale(float d){
         min(max(hei-abs(d-0.49)*sigma,0.0),1.0),
         min(max(hei-abs(d-0.77)*sigma,0.0),1.0),
         1
-    );*/
+    );
 }
 float unpack(vec4 rgba){
     float d = rgba.a;
@@ -63,17 +52,27 @@ int compare(vec4 v1,vec4 v2){
     if(d+v1.x>v2.x+margin){return -1;}
     return 0;
 }
-bool contour(float center){
+bool contour(vec4 pcenter){
+    //const float margin=0.003;
+    //float margin=u_cmargin;
+    float center=unpack(pcenter);
     if(center<u_step/2.0){
         return false;
     }
+    //vec4 pstep=pack(u_step);
+    //vec4 pstep2=pack(u_step/2.0);
+    //vec4 nstep=vec4(pstep2);
     float unstep=u_step/2.0;
     for (int i=0;i<20;i++){
+        //if(compare(nstep,pcenter)<0){break;}
+        //nstep=add(nstep,pstep);
         if(unstep>center){break;}
         unstep+=u_step;
     }
     unstep-=u_step/2.0;
     vec4 nstep=pack(unstep);
+    //nstep=pack(step*floor(unpack(pcenter)/step+0.5));
+    //vec4 up,down,left,right;
     vec4 up = texture2D(u_image,v_texCoord+vec2(0,-u_cmargin));
     vec4 down = texture2D(u_image,v_texCoord+vec2(0,u_cmargin));
     vec4 left = texture2D(u_image,v_texCoord+vec2(-u_cmargin,0));
@@ -102,7 +101,7 @@ void main() {
     //d=unpack(pack(d));
     vec4 outVec;
     gl_FragColor=colorScale(d/u_zmax);
-    contour(d);
+    contour(center);
     //gl_FragColor = texture2D(u_image,v_texCoord);
     //outVec = vec4(1.0,0.0,0.0,1.0);
     //gl_FragColor = outVec;

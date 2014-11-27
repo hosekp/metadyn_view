@@ -2,6 +2,7 @@ do control.settings.loop.set(false)
 not control.settings.loop.get()
 do control.settings.glwant.set(true)
 is control.settings.glwant.get()
+do view.ctrl.resize(800,600)
 do $("#examples_button").click()
 sleep 1
 is $("#examples").is(":visible")
@@ -19,7 +20,8 @@ do control.settings.resol.set(64)
 do control.settings.speed.set(0.01)
 bench start 3000
 do control.settings.play.set(true)
-bench manage.manager.counter 5100
+bench manage.manager.counter 2040
+# multiblob(40->100) ColorScaleIntervals(83->105) ColorScaleNoHeiSigma(80->84) 
 do control.settings.play.set(false)
 
 do control.settings.resol.set(512)
