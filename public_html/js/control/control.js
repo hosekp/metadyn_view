@@ -30,9 +30,11 @@ $.extend(control.control,{
     start:function(){
         if(this.actratio>=1){this.reset();}
         this.running=true;
-        this.lasttime=window.performance.now();
     },
     cycle:function(stamp){
+        if(typeof stamp === "undefined"){
+            stamp=new Date().getTime();
+        }
         var dt = stamp - this.lasttime;
         if(this.running){
             var nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
@@ -48,6 +50,7 @@ $.extend(control.control,{
             }
             this.setWanted(nratio);
         }
+        //manage.console.debug("Control:","cycle");
         this.stats.begin();
         for(var is=0;is<this.fastObser.length;is++){
             var lis=this.fastObser[is];
@@ -61,17 +64,9 @@ $.extend(control.control,{
             this.lastSlow=0;
         }
         this.lastSlow+=dt;
-        /*control.settings.newHash();
-        view.ctrl.redraw();
-        view.ctrl.resize();
-        view.axi.drawAxes();
-        control.measure.redraw();*/
         var rat=this.draw();
         this.set(rat);
         this.stats.end();
-        //var now = window.performance.now();
-        //var newtime=this.time+dt*control.settings.speed.get()/1000;
-        //graf.draw(this.set(newtime));
         this.lasttime = stamp;
         window.requestAnimationFrame(function(stamp){
             control.control.cycle(stamp);
@@ -114,31 +109,13 @@ $.extend(control.control,{
             //this.requestAnimFrame = window.requestAnimationFrame;
         }
         if(!window.requestAnimationFrame){
-            manage.console.error("Control:","RequestAnimationFrame","not supported");
+            manage.console.warning("Control:","RequestAnimationFrame","not supported");
+            window.requestAnimationFrame=function(call){
+                window.setTimeout(call,10);
+            };
         }
         //manage.console.debug("RAF:","new RAF selected");
     },
-    /*requestAnimFrame:function(func){
-        if(this.RAFprefix===null){
-            if(window.requestAnimationFrame){
-                this.RAFprefix=0;
-            }else if(window.webkitRequestAnimationFrame){
-                this.RAFprefix=1;
-            }else if(window.mozRequestAnimationFrame){
-                this.RAFprefix=2;
-            }else{
-                this.RAFprefix=3;
-                manage.console.error("Control:","RequestAnimationFrame","not supported");
-            }
-        }
-        if(this.RAFprefix===0){
-            window.requestAnimationFrame(func);
-        }else if(this.RAFprefix===1){
-            window.webkitRequestAnimationFrame(func);
-        }else if(this.RAFprefix===2){
-            window.mozRequestAnimationFrame(func);
-        }
-    },*/
     draw:function(){
         if(this.needRedraw){
             var rat=manage.manager.draw(this.wantedratio);
