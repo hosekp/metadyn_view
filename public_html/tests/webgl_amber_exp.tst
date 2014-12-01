@@ -19,7 +19,7 @@ do control.settings.speed.set(10)
 do control.settings.measure.set(false)
 do control.settings.play.set(true)
 wait control.settings.play.get()==false
-> compute.axi.zmax 118.35
+> compute.axi.zmax 118.25
 < compute.axi.zmax 118.50
 == manage.manager.lastSpace.ratio 1
 do control.settings.png.set(true)
@@ -30,7 +30,7 @@ var ctx $$canvas[0].getContext("2d")
 var imdadata $$ctx.getImageData(0,0,$$width,$$height).data
 == $$imdadata.length 1080000
 var suma $$imdadata[2563]+$$imdadata[253547]+$$imdadata[786126]+$$imdadata[869457]
->= $$suma 402
+>= $$suma 401
 <= $$suma 403
 do control.settings.png.set(false)
 do control.control.reset()
