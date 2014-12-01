@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if (typeof compute === "undefined") {compute = {};}
-if (typeof compute.gl_summer === "undefined") {compute.gl_summer = {};}
+if (compute === undefined) {compute = {};}
+if (compute.gl_summer === undefined) {compute.gl_summer = {};}
 $.extend(compute.gl_summer, {
     initstart:false,
     inited: false,
@@ -27,9 +27,9 @@ $.extend(compute.gl_summer, {
         return false;
     },
     initGL: function() {
-        var can = $("<canvas>");
+        var gl,can = $("<canvas>");
         try {
-            var gl = can[0].getContext("webgl",{premultipliedAlpha:false}) || can[0].getContext("experimental-webgl",{premultipliedAlpha:false});
+            gl = can[0].getContext("webgl",{premultipliedAlpha:false}) || can[0].getContext("experimental-webgl",{premultipliedAlpha:false});
             //gl = getWebGLContext(main.div.canvas[0]);
         } catch (e) {
             this.loadFailed(e);
@@ -64,9 +64,9 @@ $.extend(compute.gl_summer, {
         }, this), "text");
     },
     initShader: function(str, typ) {
-        var gl = this.g1;
+        var gl = this.g1,shader;
         if (typ === "vertex") {
-            var shader = gl.createShader(gl.VERTEX_SHADER);
+            shader = gl.createShader(gl.VERTEX_SHADER);
         } else if (typ === "fragment") {
             shader = gl.createShader(gl.FRAGMENT_SHADER);
         } else {
@@ -91,8 +91,8 @@ $.extend(compute.gl_summer, {
         }
     },
     initProgram: function() {
-        var gl = this.g1;
-        var progr = gl.createProgram();
+        var gl = this.g1,progr;
+        progr = gl.createProgram();
         this.program = progr;
         gl.attachShader(progr, this.vertex);
         gl.attachShader(progr, this.fragment);
@@ -107,8 +107,8 @@ $.extend(compute.gl_summer, {
         return true;
     },
     initParam: function() {
-        var gl = this.g1;
-        var progr = this.program;
+        var gl = this.g1,progr;
+        progr = this.program;
         progr.positionLocation = gl.getAttribLocation(progr, "a_position");
         gl.enableVertexAttribArray(progr.positionLocation);
 
@@ -197,8 +197,8 @@ $.extend(compute.gl_summer, {
         return this.createTextureTA(array,width,height);
     },*/
     createTexture: function() {
-        var gl = this.g1;
-        var texture = gl.createTexture();
+        var gl = this.g1,texture;
+        texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         //manage.console.debug("createTexture: arg is type "+(typeof typedArray));
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -224,15 +224,15 @@ $.extend(compute.gl_summer, {
         return texture;
     },*/
     createFramebuffer: function(texture, width, height) {
-        var gl = this.g1;
-        var globalRenderBufferId = gl.createRenderbuffer();
+        var gl = this.g1,
+        globalRenderBufferId = gl.createRenderbuffer(),
+        globalFbo = gl.createFramebuffer();
+
         gl.bindRenderbuffer(gl.RENDERBUFFER, globalRenderBufferId);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
         gl.isRenderbuffer(globalRenderBufferId);
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 
-
-        var globalFbo = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, globalFbo);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, globalRenderBufferId);
@@ -272,11 +272,12 @@ $.extend(compute.gl_summer, {
         return desarr;
     },*/
     preadd:function(space1,space2,periods){
-        var gl = this.g1;
+        //var gl = this.g1,
+        var width,height;
         if(!this.inited){return false;}
         this.periods=periods;
-        var width=space1.dims[0];
-        var height=space1.dims[1];
+        width=space1.dims[0];
+        height=space1.dims[1];
         if(width!==this.last.width||height!==this.last.height){
             manage.console.debug("Gl_summer:","resize conducted");
             this.resize(width,height);
@@ -288,8 +289,8 @@ $.extend(compute.gl_summer, {
         }
         this.updateTexture(this.frameTexture,space1.getArr(),width,height);
         if(this.last.rightarr!==space2.getArr()){
-            var width=space2.dims[0];
-            var height=space2.dims[1];
+            width=space2.dims[0];
+            height=space2.dims[1];
             this.updateTexture(this.rightTexture,space2.getArr(),width,height);
             this.last.rightarr=space2.getArr();
         }
@@ -298,7 +299,7 @@ $.extend(compute.gl_summer, {
         
     },
     add:function(pos){
-        var gl = this.g1;
+        //var gl = this.g1;
         /*if(!this.inited){return null;}
         var width=space1.dims[0];
         var height=space1.dims[1];
@@ -332,10 +333,11 @@ $.extend(compute.gl_summer, {
         //return this.unpackTexture(pixels, width, height, 4);
     },
     postadd:function(space1){
-        var gl = this.g1;
+        var gl = this.g1,
+        width,height;
         //gl.bindFramebuffer( gl.FRAMEBUFFER, null);
-        var width=space1.dims[0];
-        var height=space1.dims[1];
+        width=space1.dims[0];
+        height=space1.dims[1];
         if(this.tick){
             gl.bindFramebuffer( gl.FRAMEBUFFER, this.framebuffer);
         }else{
@@ -345,7 +347,7 @@ $.extend(compute.gl_summer, {
         gl.bindFramebuffer( gl.FRAMEBUFFER, null);
         
     },
-    calculateFrame: function(framebuffer, textureOne, textureTwo,pos,periods) {
+    calculateFrame: function(framebuffer, textureOne, textureTwo,pos) {
         var gl = this.g1;
         gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
@@ -387,7 +389,7 @@ $.extend(compute.gl_summer, {
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    },
+    }
     /*test:function(){
         var width=32*8;
         var height=width;
@@ -479,16 +481,17 @@ $.extend(compute.gl_summer, {
         .html("Test");
         $("#all").append(but);
     }*/
-    test:function(){
-        var but=$("<button>")
+    /*test:function(){
+        var but,key,canvas;
+        but=$("<button>")
         .click(function(){
-            for(var key in compute.sum_hill.blobs){
-                var canvas=compute.sum_hill.blobs[key].print();
+            for(key in compute.sum_hill.blobs){
+                canvas=compute.sum_hill.blobs[key].print();
                 $("#all").append(canvas);
             }
         })
         .html("Test");
         $("#all").append(but);
-    }
+    }*/
 });
 // @license-end

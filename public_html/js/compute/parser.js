@@ -1,11 +1,12 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof compute==="undefined"){compute={};}
-if(typeof compute.parser==="undefined"){compute.parser={};}
+if(compute===undefined){compute={};}
+if(compute.parser===undefined){compute.parser={};}
 $.extend(compute.parser,{
     mintime:null,
     parse:function(toparse){
+        var lines,i,params,header,body,data;
         if (typeof String.prototype.startsWith !== 'function') {
             String.prototype.startsWith = function(str) {
                 return this.slice(0, str.length) === str;
@@ -16,15 +17,15 @@ $.extend(compute.parser,{
                 return this.slice(-str.length) === str;
             };
         }
-        var lines=toparse.split("\n");
-        var i=0;
+        lines=toparse.split("\n");
+        i=0;
         while(lines[i].startsWith("#!")){
-            i++;
+            i+=1;
         }
-        var params={filetype:"HILLS_1"};
+        params={filetype:"HILLS_1"};
         if(i>0){
             params.filetype="HILLS_2";
-            var header=lines.slice(0,i);
+            header=lines.slice(0,i);
             params=this.parseHeader(header,params);
         }else{
             params=this.implicitHeader(lines[0],params);
@@ -32,57 +33,59 @@ $.extend(compute.parser,{
         if(params.ncv>2){
             manage.console.error("Parser:","3 and more CVs","not implemented");
         }else{
-            var body=lines.slice(i);
-            var data=this.parseBody(body,params);
+            body=lines.slice(i);
+            if(body[body.length-1].length<3){
+                body.pop();
+            }
+            data=this.parseBody(body,params);
             manage.console.log("Parser:",params.nbody,"lines successfully parsed");
             compute.sum_hill.load(data,params);
         }
     },
     //parseCOLVAR:function(){},
     parseHeader:function(header,params){
-        var line;
+        var line,cvs=[],p=3,cv,elspl,i,val;
         line=header[0].match(/[^ ]+/g);
         params.timepos=0;
         params.clockpos=0;
-        var cvs=[];
-        var p=3;
         while(!line[p].startsWith("sigma")){
-            var cv=$.extend({},compute.parser.tcv,{name:line[p],pos:p-2});
+            cv=$.extend({},compute.parser.tcv,{name:line[p],pos:p-2});
             cvs.push(cv);
-            p++;
+            p+=1;
         }
         while(line[p].startsWith("sigma")){
-            var elspl=line[p].split("_");
-            var cv=this.getCVByName(cvs,elspl[1]);
+            elspl=line[p].split("_");
+            cv=this.getCVByName(cvs,elspl[1]);
             cv.sigmapos=p-2;
-            p++;
+            p+=1;
         }
         params.heipos=p-2;
-        for(;p<line.length;p++){
+        while(p<line.length){
             if(line[p].endsWith(".bias")||line[p].startsWith("height")){
                 params.heipos=p-2;
             }
             if(line[p].startsWith("clock")){
                 params.clockpos=p-2;
             }
+            p+=1;
         }
         params.fulllen=line.length-2;
-        for(var i=1;i<header.length;i++){
+        for(i=1;i<header.length;i+=1){
             line=header[i].match(/[^ ]+/g);
             if(line[1]==="SET"){
                 if(line[2].startsWith("min")){
-                    var elspl=line[2].split("_");
-                    var cv=this.getCVByName(cvs,elspl[1]);
-                    var val=line[3];
+                    elspl=line[2].split("_");
+                    cv=this.getCVByName(cvs,elspl[1]);
+                    val=line[3];
                     if(val.startsWith("-pi")){
                         cv.min=-Math.PI;cv.periodic=true;
                     }else{
                         cv.min=parseFloat(val);
                     }
                 }else if(line[2].startsWith("max")){
-                    var elspl=line[2].split("_");
-                    var cv=this.getCVByName(cvs,elspl[1]);
-                    var val=line[3];
+                    elspl=line[2].split("_");
+                    cv=this.getCVByName(cvs,elspl[1]);
+                    val=line[3];
                     if(val.startsWith("pi")){
                         cv.max=Math.PI;cv.periodic=true;
                     }else{
@@ -98,19 +101,20 @@ $.extend(compute.parser,{
         return params;
     },
     implicitHeader:function(firstline,params){
-        var line=firstline.match(/[^ ]+/g);
+        var line,nelem,ncv,cvs,i;
+        line=firstline.match(/[^ ]+/g);
+        nelem=line.length;
         params.timepos=0;
         params.clockpos=0;
-        var nelem=line.length;
         if(nelem===0){
             manage.console.error("Parser:","Empty file");
             return;
         }
-            nelem--;
-        var ncv=Math.floor((nelem-2)/2);
+            nelem-=1;
+        ncv=Math.floor((nelem-2)/2);
         params.heipos=2*ncv+1;
-        var cvs=[];
-        for(var i=1;i<=ncv;i++){
+        cvs=[];
+        for(i=1;i<=ncv;i+=1){
             cvs.push($.extend({},compute.parser.tcv,{name:"CV_"+i,pos:i,sigmapos:ncv+i,defsigma:parseFloat(line[ncv+i])}));
         }
         params.cvs=cvs;
@@ -120,28 +124,22 @@ $.extend(compute.parser,{
     },
     parseBody:function(body,params){
         //var data={time:null,cvs:[],hei:null,sigma:[]};
-        var nbody=body.length;
-        if(body[nbody-1].length<3){
-            body.pop();nbody-=1;
-        }
-        var cvbuffer=new ArrayBuffer(4*nbody*params.ncv);
-        var sigmabuffer=new ArrayBuffer(4*nbody*params.ncv);
-        var restbuffer=new ArrayBuffer(4*nbody*3);
-        var time,hei,cvs=[],sigma=[],clock;
-        for(var i=0;i<params.ncv;i++){
+        var nbody=body.length,
+        cvbuffer=new ArrayBuffer(4*nbody*params.ncv),
+        sigmabuffer=new ArrayBuffer(4*nbody*params.ncv),
+        restbuffer=new ArrayBuffer(4*nbody*3),
+        time,hei,i,j,pcv,cvs=[],sigma=[],clock;
+        for(i=0;i<params.ncv;i+=1){
             cvs.push(new Float32Array(cvbuffer,4*i*nbody,nbody));
             sigma.push(new Float32Array(sigmabuffer,4*i*nbody,nbody));
         }
         time=new Float32Array(restbuffer,0,nbody);
         hei=new Float32Array(restbuffer,4*nbody,nbody);
         clock=new Float32Array(restbuffer,8*nbody,nbody);
-        var line,timepos=params.timepos,heipos=params.heipos,clockpos=params.clockpos;
-        var pcvs=params.cvs;
-        var ncv=params.ncv;
-        var fulllen=params.fulllen;
-        var len=0;
+        var line,timepos=params.timepos,heipos=params.heipos,clockpos=params.clockpos,
+        pcvs=params.cvs,ncv=params.ncv,fulllen=params.fulllen,len=0;
         //manage.console.debug("length: "+nbody);
-        for(var i=0;i<nbody;i++){
+        for(i=0;i<nbody;i+=1){
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
             time[len]=parseFloat(line[timepos]);
@@ -150,18 +148,18 @@ $.extend(compute.parser,{
             }
             clock[len]=parseFloat(line[clockpos]-this.mintime);
             hei[len]=parseFloat(line[heipos]);
-            for(var j=0;j<ncv;j++){
-                var pcv=pcvs[j];
+            for(j=0;j<ncv;j+=1){
+                pcv=pcvs[j];
                 cvs[j][len]=parseFloat(line[pcv.pos]);
                 sigma[j][len]=parseFloat(line[pcv.sigmapos]);
             }
-            len++;
+            len+=1;
             //manage.console.debug("Line: "+body[i]);
         }
         params.nbody=len;
         //manage.console.debug("length: "+len);
         if(len!==nbody){
-            for(var i=0;i<params.ncv;i++){
+            for(i=0;i<params.ncv;i+=1){
                 cvs[i]=new Float32Array(cvbuffer,4*i*nbody,len);
                 sigma[i]=new Float32Array(sigmabuffer,4*i*nbody,len);
             }
@@ -172,19 +170,18 @@ $.extend(compute.parser,{
         /*for(var i=4;i>=1;i--){
             manage.console.debug("last: "+body[params.nbody-i]+""+cvs[0][params.nbody-i]+" "+hei[params.nbody-i]);
         }*/
-        for(var c=0;c<cvs.length;c++){
-            this.findLimits(cvs[c],pcvs[c]);
+        for(i=0;i<cvs.length;i+=1){
+            this.findLimits(cvs[i],pcvs[i]);
         }
-        var sorting=true;
-        if(sorting){
-            var sorter=$.extend({},this.TAsorter);
-            //var sorted=sorter.sort(time);
+        if(control.settings.sort.get()){
+            var sorter=$.extend({},this.TAsorter),
+            sorted;
             if(isNaN(clock[0])){
-                var sorted=sorter.sort(time);
+                sorted=sorter.sort(time);
             }else{
-                var sorted=sorter.sort(clock);
+                sorted=sorter.sort(clock);
             }
-            for(var i=0;i<ncv;i++){
+            for(i=0;i<ncv;i+=1){
                 cvs[i]=sorter.rearrange(cvs[i],sorted);
                 sigma[i]=sorter.rearrange(sigma[i],sorted);
             }
@@ -192,31 +189,31 @@ $.extend(compute.parser,{
             clock=sorter.rearrange(clock,sorted);
             hei=sorter.rearrange(hei,sorted);
         }
-        var data={time:time,cvs:cvs,height:hei,sigma:sigma,clock:clock};
-        return data;
+        return {time:time,cvs:cvs,height:hei,sigma:sigma,clock:clock}; // data
     },
     findLimits:function(array,cv){
+        var max,min,nbody,i,d;
         if(cv.min>=cv.max){
-            var max=cv.max,min=cv.min;
-            var nbody=array.length;
+            max=cv.max;min=cv.min;
+            nbody=array.length;
             if(min===100000000&&max===-100000000){
-                for(var i=0;i<nbody;i++){
+                for(i=0;i<nbody;i+=1){
                     if(array[i]<min){min=array[i];}
                     if(array[i]>max){max=array[i];}
                 }
             }else
             if(min===100000000) {
-                for(var i=0;i<nbody;i++){
+                for(i=0;i<nbody;i+=1){
                     if (array[i] < min) {min = array[i];}
                 }
             } else {
-                for(var i=0;i<nbody;i++){
+                for(i=0;i<nbody;i+=1){
                     if (array[i] > max) {max = array[i];}
                 }
             }
             cv.min=min;cv.max=max;
             cv.diff=cv.max-cv.min;
-            var d=Math.abs(cv.diff-2*Math.PI);
+            d=Math.abs(cv.diff-2*Math.PI);
             if(d<0.3){
                 cv.periodic=true;
                 cv.max=Math.PI;
@@ -231,7 +228,8 @@ $.extend(compute.parser,{
     },
     getCVByName:function(cvs,name){
         //var cvs=params.cvs;
-        for(var i=0;i<cvs.length;i++){
+        var i;
+        for(i=0;i<cvs.length;i+=1){
             if(cvs[i].name===name){return cvs[i];}
         }
     }
@@ -264,13 +262,13 @@ compute.parser.TAsorter={
         return this.arraytosort[a]<=this.arraytosort[b];
     },
     findSplitPoint:function(start,end){
-        var len=end-start;
+        var array,span,middle,i,len=end-start;
         if (len>2){
-            var array=this.array;
-            var span=Math.floor((len-1)/2);
-            var middle=start+span;
+            array=this.array;
+            span=Math.floor((len-1)/2);
+            middle=start+span;
             //manage.console.log("SplitPoint at "+middle);
-            for(var i=0;i<span;i++){
+            for(i=0;i<span;i+=1){
                 if(!this.compare(array[middle+i],array[middle+i+1])){
                     return middle+i+1;
                 }
@@ -294,35 +292,34 @@ compute.parser.TAsorter={
         return this.merge(this.split(start,middle),this.split(middle,end));
     },
     merge:function(larray1,larray2){
-        var narray=this.workarray;
-        var array=this.array;
-        var start=larray1[0];
-        var end=larray2[1];
-        var middle=larray1[1];
+        var narray=this.workarray,array=this.array,
+        start=larray1[0],end=larray2[1],middle=larray1[1],
+        i1,i2,nsum,i;
         //manage.console.debug("Merge: ["+start+":"+middle+":"+end+"]");
         if(middle!==larray2[0]){
             manage.console.error("Sorter:","Wrong middle point");
         }
         //manage.console.log("array1="+array1);
         //manage.console.log("array2="+array2);
-        var i1=start,i2=middle,nsum=end-start;
-        for(var i=0;i<nsum;i++){
-            if( i2 === end || i1 !== middle && this.compare(array[i1],array[i2]) ){
-                narray[i]=(array[i1]);i1++;
+        i1=start;i2=middle;nsum=end-start;
+        for(i=0;i<nsum;i+=1){
+            if( (i2 === end || i1 !== middle) && this.compare(array[i1],array[i2]) ){
+                narray[i]=(array[i1]);i1+=1;
             }else{
-                narray[i]=(array[i2]);i2++;
+                narray[i]=(array[i2]);i2+=1;
             }
         }
-        for(var i=0;i<nsum;i++){
+        for(i=0;i<nsum;i+=1){
             array[start+i]=narray[i];
         }
         return [start,end];
     },
     sort:function(array){
+        var arlen,indices,i;
         this.arraytosort=array;
-        var arlen=array.length;
-        var indices=new Float32Array(arlen);
-        for(var i=0;i<arlen;i++){
+        arlen=array.length;
+        indices=new Float32Array(arlen);
+        for(i=0;i<arlen;i+=1){
             indices[i]=i;
         }
         this.array=indices;
@@ -334,83 +331,15 @@ compute.parser.TAsorter={
         return this.array;
     },
     rearrange:function(array,mustr){
-        var arlen=array.length;
+        var arlen=array.length,narr,i;
         if(arlen!==mustr.length){
             manage.console.error("Sorter:","Cannot rearrange array, wrong length");
         }
-        var narr=new Float32Array(arlen);
-        for(var i=0;i<arlen;i++){
+        narr=new Float32Array(arlen);
+        for(i=0;i<arlen;i+=1){
             narr[i]=array[mustr[i]];
         }
         return narr;
     }
 };
-/*compute.parser.sorter={
-    issorted:function(array){
-        var len=array.length;
-        if(len===1){return true;}
-        for(var i=1;i<len;i++){
-            if(!this.compare(array[i-1],array[i])){return false;}
-        }
-        return true;
-    },
-    compare:function(a,b){
-        return a<=b;
-    },
-    findSplitPoint:function(array){
-        var len=array.length;
-        var middle=Math.floor(len/2);
-        manage.console.debug("SplitPoint from "+middle+" in <"+array+">");
-        for(var i=0;i<middle;i++){
-            if(!this.compare(array[middle+i],array[middle+i+1])){return middle+i+1;}
-            if(!this.compare(array[middle-i-1],array[middle-i])){return middle-i+1;}
-        }
-        if(middle*2===len){
-            if(!this.compare(array[len-2],array[len-1])){return len-1;}
-        }
-        manage.console.error("Error: no SplitPoint");
-        return -1;
-    },
-    split:function(array){
-        if(this.issorted(array)){
-            return array;
-        }else{
-            var splpoint=this.findSplitPoint(array);
-            if(splpoint===-1){return array;}
-            //manage.console.log("Split on "+splpoint);
-            var array1=array.slice(0,splpoint);
-            var array2=array.slice(splpoint,array.length);
-            return this.merge(this.split(array1),this.split(array2));
-        }
-    },
-    merge:function(array1,array2){
-        var narray=[];
-        //manage.console.log("array1="+array1);
-        //manage.console.log("array2="+array2);
-        var i1=0,i2=0,nsum=array1.length+array2.length;
-        for(var i=0;i<nsum;i++){
-            if(this.compare(array1[i1],array2[i2])){
-                narray.push(array1[i1]);i1++;
-            }else{
-                narray.push(array2[i2]);i2++;
-            }
-            if(i1===array1.length){
-                for(var i=i2;i<array2.length;i++){
-                    narray.push(array2[i]);
-                }
-                break;
-            }
-            if(i2===array2.length){
-                for(var i=i1;i<array1.length;i++){
-                    narray.push(array1[i]);
-                }
-                break;
-            }
-        }
-        return narray;
-    },
-    sort:function(array){
-        return this.split(array);
-    }
-};*/
 // @license-end

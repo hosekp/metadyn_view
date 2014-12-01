@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof compute==="undefined"){compute={};}
-if(typeof compute.axi==="undefined"){compute.axi={};}
+if(compute===undefined){compute={};}
+if(compute.axi===undefined){compute.axi={};}
 $.extend(compute.axi,{
     zmax:0,
     zmin:0,
@@ -35,22 +35,21 @@ $.extend(compute.axi,{
         }
     },
     findMaxMin:function(array,alsomin){
-        var max,min=0;
-        var len=array.length;
+        var max,min=0,len=array.length,
+        maxs,mins,i,subarr;
         if(len<124000){
             max=Math.max.apply(null,array);
             if(alsomin){
                 min=Math.min.apply(null,array);
             }
         }else{
-            var maxs=[];
-            var mins=[];
+            maxs=[];mins=[];
             if(this.temp.buffer!==array.buffer){
                 this.temp.subarrs=[];
             }
-            for(var i=0;i<len/124000;i++){
+            for(i=0;i<len/124000;i+=1){
                 if(this.temp.subarrs.length>i){
-                    var subarr=this.temp.subarrs[i];
+                    subarr=this.temp.subarrs[i];
                 }else{
                     subarr=array.subarray(i*124000,(i+1)*124000);
                     this.temp.subarrs.push(subarr);
@@ -68,22 +67,23 @@ $.extend(compute.axi,{
         return [max,min];
     },
     transform:function(space,nar,type){
-        var max,min=0;
+        var max,min=0,webgl,array,
+        len,autoset,limits,i8,i;
         this.profiler.init();
-        var webgl=control.settings.webgl();
+        webgl=control.settings.webgl();
         /*if(space.isEmpty()){
             manage.console.debug("Axi: Nothing to transform");
             return nar;
         }*/
         if(webgl){
-            var array=space.getArr(32);
+            array=space.getArr(32);
         }else{
-            var array=space.getArr();
+            array=space.getArr();
         }
-        var len=array.length;
-        var autoset=control.settings.axi_auto.get();
+        len=array.length;
+        autoset=control.settings.axi_auto.get();
         if(this.lastRatio<space.ratio||autoset===2){
-            var limits=this.findMaxMin(array,autoset===2);
+            limits=this.findMaxMin(array,autoset===2);
             max=limits[0];
             min=limits[1];
             if(webgl){
@@ -109,11 +109,11 @@ $.extend(compute.axi,{
         if(webgl){
             if(!nar&&type==="float32"){
                 nar=new Float32Array(len);
-                for (var i=0;i<len;i++){
+                for (i=0;i<len;i+=1){
                     nar[i]=array[i]/16384.0;
                 }
             }else{
-                var i8=space.getArr();
+                i8=space.getArr();
                 nar.set(i8);
             }
             //this.profiler.time(3);
@@ -137,30 +137,31 @@ $.extend(compute.axi,{
         }
     },*/
     getLimits:function(xaxi,visible){
-        var cv=this.getCVindex(xaxi);
+        var cv,max,min,diff,pow,posx,posy;
+        cv=this.getCVindex(xaxi);
         if(visible){
-            var max=compute.sum_hill.maxs[cv];
-            var min=compute.sum_hill.mins[cv];
-            var diff=max-min;
-            var pow=control.settings.zoompow();
+            max=compute.sum_hill.maxs[cv];
+            min=compute.sum_hill.mins[cv];
+            diff=max-min;
+            pow=control.settings.zoompow();
             if(xaxi){
-                var posx=control.settings.frameposx.get();
+                posx=control.settings.frameposx.get();
                 max=min+diff*(-posx)+diff/pow;
                 min=min+diff*(-posx);
             }else{
-                var posy=control.settings.frameposy.get();
+                posy=control.settings.frameposy.get();
                 min=max+diff*(+posy)-diff/pow;
                 max=max+diff*(+posy);
             }
             return [min,max];
-        }else{
-            return [compute.sum_hill.mins[cv],compute.sum_hill.maxs[cv]];
         }
+        return [compute.sum_hill.mins[cv],compute.sum_hill.maxs[cv]];
     },
     getCVval:function(xaxi,ratio){
+        var cv,min;
         if(!compute.sum_hill.haveData()){return 0;}
-        var cv=this.getCVindex(xaxi);
-        var min=compute.sum_hill.mins[cv];
+        cv=this.getCVindex(xaxi);
+        min=compute.sum_hill.mins[cv];
         return min+ratio*(compute.sum_hill.maxs[cv]-min);
     },
     /*getMin:function(xaxi){
@@ -178,9 +179,8 @@ $.extend(compute.axi,{
         var cv=this.getCVindex(xaxi);
         if(compute.sum_hill.haveData()){
             return compute.sum_hill.params.cvs[cv].name;
-        }else{
-            return "";
         }
+        return "";
     },
     setName:function(xaxi,val){
         var cv=this.getCVindex(xaxi);
@@ -190,8 +190,8 @@ $.extend(compute.axi,{
         control.measure.needRedraw=true;
     },
     getCVindex:function(xaxi){
-        if(xaxi){return control.settings.axi_x.get();
-        }else{return control.settings.axi_y.get();}
+        if(xaxi){return control.settings.axi_x.get();}
+        return control.settings.axi_y.get();
     },
     setZmax:function(zm){
         this.zmax=zm;
