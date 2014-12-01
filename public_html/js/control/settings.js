@@ -16,6 +16,7 @@ $.extend(control.settings,{
         
         this.height=this.create(1,"hei");
         this.tests=this.create(0,"tst");
+        this.sort=this.create(true,"sort");
         this.ncv=this.create(0);
         this.glcan=this.create(true);
         this.glwant=this.create(true,"wgl");
