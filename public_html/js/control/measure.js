@@ -1,7 +1,7 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof control==="undefined"){control={};}
+if(window.control===undefined){var control={};}
 control.measure={
     inited:false,
     needRedraw:true,
@@ -57,10 +57,11 @@ control.measure={
     },
     div:{},
     render:function(){
+        var rendered;
         if(!this.visible){return;}
         if(!this.needRedraw){return;}
         
-        var rendered=Mustache.render(this.template,{
+        rendered=Mustache.render(this.template,{
             units:control.settings.enunit.get()===0?"kJ/mol":"kcal/mol",
             yaxi:control.settings.ncv.get()>1,
             CV1:compute.axi.getName(true),
@@ -104,11 +105,12 @@ control.measure={
         this.needRedraw=true;
     },
     measure:function(pos){
+        var val,data,override;
         if(!control.settings.measure.get()){return false;}
         pos.y=1-pos.y;
-        var val=-this.getValueAt(pos);
-        var data=this.data;
-        var override=false;
+        val=-this.getValueAt(pos);
+        data=this.data;
+        override=false;
         if(this.diffOn){
             val-=data.src;override=true;
         }
@@ -122,9 +124,10 @@ control.measure={
         return override;
     },
     setDiff:function(pos){
+        var val;
         if(!control.settings.measure.get()){return;}
         pos.y=1-pos.y;
-        var val=-this.getValueAt(pos);
+        val=-this.getValueAt(pos);
         this.data.src=val;
         this.data.ene=0;
         this.diffOn=true;
@@ -136,36 +139,35 @@ control.measure={
         this.needRedraw=true;
     },
     getValueAt:function(pos){
-        var trans=manage.manager.getTransformed();
+        var trans,resol,ncv,x,y=0,val;
+        trans=manage.manager.getTransformed();
         if(trans===null){return 0;}
-        var resol=control.settings.resol.get();
-        var ncv=control.settings.ncv.get();
-        var x,y=0;
+        resol=control.settings.resol.get();
+        ncv=control.settings.ncv.get();
         if(ncv===2){
             x=Math.floor(pos.x*resol);
             y=Math.floor(pos.y*resol);
         }else if(ncv===1){
             x=Math.floor(pos.x*resol);
         }
-        var val=trans[x+y*resol];
-        if(!val){return 0;}else{return val;}
+        val=trans[x+y*resol];
+        if(!val){return 0;}
+        return val;
     },
     findChills:function(cvs){
+        var ihills,ret,i;
         if(!compute.sum_hill.haveData()){return [];}
-        var ihills=compute.sum_hill.findClosestHills(cvs,3);
-        var ret=[];
-        for(var i=0;i<ihills.length;i++){
+        ihills=compute.sum_hill.findClosestHills(cvs,3);
+        ret=[];
+        for(i=0;i<ihills.length;i+=1){
             ret.push((compute.sum_hill.artime[ihills[i]]).toFixed(2));
         }
         return ret;
-        
     },
     notify:function(args){
         if(args==="on"){this.toggle();}
         if(args==="draw"){this.needRedraw=true;}
         if(args==="render"){this.render();}
-        
     }
-    
 };
 // @license-end

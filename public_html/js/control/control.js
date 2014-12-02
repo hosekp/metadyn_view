@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof control==="undefined"){control={};}
-if(typeof control.control==="undefined"){control.control={};}
+if(window.control===undefined){var control={};}
+if(control.control===undefined){control.control={};}
 $.extend(control.control,{
     actratio:0,
     wantedratio:0,
@@ -32,12 +32,13 @@ $.extend(control.control,{
         this.running=true;
     },
     cycle:function(stamp){
-        if(typeof stamp === "undefined"){
+        var dt,nratio,is,lis,rat;
+        if(stamp === undefined){
             stamp=new Date().getTime();
         }
-        var dt = stamp - this.lasttime;
+        dt = stamp - this.lasttime;
         if(this.running){
-            var nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
+            nratio=this.wantedratio+dt*control.settings.speed.get()/10000;
             if(nratio>1){
                 nratio=1;
             }
@@ -52,19 +53,19 @@ $.extend(control.control,{
         }
         //manage.console.debug("Control:","cycle");
         this.stats.begin();
-        for(var is=0;is<this.fastObser.length;is++){
-            var lis=this.fastObser[is];
+        for(is=0;is<this.fastObser.length;is+=1){
+            lis=this.fastObser[is];
             lis.ctx.notify(lis.call);
         }
         if(this.lastSlow>100){
-            for(var is=0;is<this.slowObser.length;is++){
-                var lis=this.slowObser[is];
+            for(is=0;is<this.slowObser.length;is+=1){
+                lis=this.slowObser[is];
                 lis.ctx.notify(lis.call);
             }
             this.lastSlow=0;
         }
         this.lastSlow+=dt;
-        var rat=this.draw();
+        rat=this.draw();
         this.set(rat);
         this.stats.end();
         this.lasttime = stamp;
@@ -79,15 +80,16 @@ $.extend(control.control,{
         this.slowObser.push({ctx:obj,call:func});
     },
     unsubscribe:function(obj,func){
-        for(var i=0;i<this.fastObser.length;i++){
-            var lis=this.fastObser[i];
+        var i,lis;
+        for(i=0;i<this.fastObser.length;i+=1){
+            lis=this.fastObser[i];
             if(lis.ctx===obj&&lis.call===func){
                 this.fastObser.pop(i);
                 return;
             }
         }
-        for(var i=0;i<this.slowObser.length;i++){
-            var lis=this.slowObser[i];
+        for(i=0;i<this.slowObser.length;i+=1){
+            lis=this.slowObser[i];
             if(lis.ctx===obj&&lis.call===func){
                 this.slowObser.pop(i);
                 return;
@@ -96,17 +98,16 @@ $.extend(control.control,{
         manage.console.warning("Control:","Unsubscription of",func,"failed");
     },
     findRAF:function(){
-        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        var vendors,i,vRAF;
+        vendors = ['ms', 'moz', 'webkit', 'o'];
         if(!window.requestAnimationFrame){
-            for(var i = 0; i < vendors.length;i++) {
-                var vRAF=window[vendors[i]+'RequestAnimationFrame'];
+            for(i = 0; i < vendors.length;i+=1) {
+                vRAF=window[vendors[i]+'RequestAnimationFrame'];
                 if(vRAF){
                     window.requestAnimationFrame = vRAF;
                     break;
                 }
             }
-        }else{
-            //this.requestAnimFrame = window.requestAnimationFrame;
         }
         if(!window.requestAnimationFrame){
             manage.console.warning("Control:","RequestAnimationFrame","not supported");
@@ -117,15 +118,15 @@ $.extend(control.control,{
         //manage.console.debug("RAF:","new RAF selected");
     },
     draw:function(){
+        var rat;
         if(this.needRedraw){
-            var rat=manage.manager.draw(this.wantedratio);
+            rat=manage.manager.draw(this.wantedratio);
             if(rat===false){
                 this.needRedraw=true;
                 return false;
-            }else{
-                this.needRedraw=(rat!==this.wantedratio);
-                return rat;
             }
+            this.needRedraw=(rat!==this.wantedratio);
+            return rat;
         }
         return false;
         //manage.console.debug("drawing "+this.ratio);

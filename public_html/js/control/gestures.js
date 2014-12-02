@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof control==="undefined"){control={};}
-if(typeof control.gestures==="undefined"){control.gestures={};}
+if(window.control===undefined){var control={};}
+if(control.gestures===undefined){control.gestures={};}
 $.extend(control.gestures,{
     $cancont:null,
     height:0,
@@ -32,12 +32,13 @@ $.extend(control.gestures,{
         this.$cancont.off("mousemove");
     },*/
     mousemove:function(event){
+        var mousepos,coord,pow,nposx,nposy;
         event.preventDefault();
         this.recompute();
-        var mousepos={x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height};
+        mousepos={x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height};
         //manage.console.debug("Pos ["+pos.x+","+pos.y+"]");
         if(this.button===0){
-            var coord=this.getCoord(mousepos);
+            coord=this.getCoord(mousepos);
             control.measure.measure(coord);
         }
         if(this.button===1){
@@ -49,16 +50,14 @@ $.extend(control.gestures,{
                     return;
                 }
             }
-            var coord=this.getCoord(mousepos);
-            var override=control.measure.measure(coord);
+            coord=this.getCoord(mousepos);
+            control.measure.measure(coord);
         }
         if(this.button===3){
-            if(this.lastMousepos!==null){  // LMB pressed
-                var newzoom=control.settings.zoom.get();
-                var zoomcoef=control.settings.zoomcoef.get();
-                var pow=Math.pow(zoomcoef,newzoom);
-                var nposx=(mousepos.x-this.lastMousepos.x)/pow+this.lastPos.x;
-                var nposy=(mousepos.y-this.lastMousepos.y)/pow+this.lastPos.y;
+            if(this.lastMousepos!==null){  // RMB pressed
+                pow=control.settings.zoompow();
+                nposx=(mousepos.x-this.lastMousepos.x)/pow+this.lastPos.x;
+                nposy=(mousepos.y-this.lastMousepos.y)/pow+this.lastPos.y;
                 this.setFramepos(nposx,nposy);
             }
         }
@@ -95,23 +94,25 @@ $.extend(control.gestures,{
         control.measure.unsetDiff();
     },
     mousewheel:function(event){
+        var wheelup,newzoom,zoomcoef,oldpow,pos,pow,frameposx,frameposy,delta;
         this.recompute();
         event.preventDefault();
-        var wheelup=event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
+        wheelup=event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
         //manage.console.debug("Wheeling: "+(wheelup?"up":"down"));
-        var newzoom=control.settings.zoom.get();
-        var zoomcoef=control.settings.zoomcoef.get();
-        var oldpow=Math.pow(zoomcoef,newzoom);
+        newzoom=control.settings.zoom.get();
+        zoomcoef=control.settings.zoomcoef.get();
+        oldpow=Math.pow(zoomcoef,newzoom);
         if(wheelup){
             newzoom=Math.min(newzoom+1,6);
         }else{
             newzoom=Math.max(newzoom-1,0);
         }
-        var pos=this.nowPos;
-        var pow=Math.pow(zoomcoef,newzoom);
-        var frameposx=control.settings.frameposx.get();
-        var frameposy=control.settings.frameposy.get();
-        var delta=1/oldpow-1/pow;
+        pos=this.nowPos;
+        if(!pos){return;}
+        pow=Math.pow(zoomcoef,newzoom);
+        frameposx=control.settings.frameposx.get();
+        frameposy=control.settings.frameposy.get();
+        delta=1/oldpow-1/pow;
         //manage.console.debug("Wheeling: ["+pos.x+","+pos.y+"] delta="+delta);
         control.settings.zoom.set(newzoom);
         this.setFramepos(frameposx-delta*pos.x,frameposy-delta*pos.y);
@@ -120,8 +121,7 @@ $.extend(control.gestures,{
         //manage.console.debug("Wheeling: "+(event.originalEvent.wheelDelta > 0));
     },
     mouseclick:function(event){
-        var mousepos={x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height};
-        var coord=this.getCoord(mousepos);
+        var coord=this.getCoord({x:(event.pageX-this.left)/this.width,y:(event.pageY-this.top)/this.height}); // mousepos as argument
         control.measure.click(coord);
     },
     setFramepos:function(nposx,nposy){
@@ -134,8 +134,9 @@ $.extend(control.gestures,{
         control.settings.frameposy.set(Math.floor(nposy*1000)/1000);
     },
     recompute:function(){
+        var off;
         if(this.needRecompute){
-            var off=this.$cancont.offset();
+            off=this.$cancont.offset();
             this.top=off.top;
             this.left=off.left;
             this.height=this.$cancont.height();
@@ -144,10 +145,10 @@ $.extend(control.gestures,{
         }
     },
     getCoord:function(pos){
-        var zoompow=control.settings.zoompow();
-        var frameposx=control.settings.frameposx.get();
-        var frameposy=control.settings.frameposy.get();
-        var ret={};
+        var zoompow,frameposx,frameposy,ret={};
+        zoompow=control.settings.zoompow();
+        frameposx=control.settings.frameposx.get();
+        frameposy=control.settings.frameposy.get();
         ret.x=-frameposx+pos.x/zoompow;
         ret.y=-frameposy+pos.y/zoompow;
         return ret;

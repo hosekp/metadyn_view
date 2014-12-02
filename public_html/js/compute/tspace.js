@@ -1,62 +1,62 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof compute==="undefined"){compute={};}
-if(typeof compute.tspacer==="undefined"){compute.tspacer={};}
+if(window.compute===undefined){var compute={};}
+if(compute.tspacer===undefined){compute.tspacer={};}
 $.extend(compute.tspacer,{
     lastId:1,
     msi:2.8,  // const - multiple of sigma   2=95%
     //tspace:null,
     createSpace:function(bins,ncv){   // spacer
+        var space;
         if(!ncv){ncv=control.settings.ncv.get();}
-        if(typeof bins==="undefined"){bins=control.settings.resol.get();}
+        if(bins===undefined){bins=control.settings.resol.get();}
         if(control.settings.webgl()){
-            if(!compute.gl_summer.init()){return null;};
-            var space=$.extend({},this.tspace["gl"+ncv]);
+            if(!compute.gl_summer.init()){return null;}
+            space=$.extend({},this.tspace["gl"+ncv]);
         }else{
-            var space=$.extend({},this.tspace[ncv]);
+            space=$.extend({},this.tspace[ncv]);
         }
         $.extend(space,{id:this.lastId++,resol:bins});
         space.init(this.multibin(bins,ncv));
         return space;
     },
     createBlob:function(resol,hei){   // spacer
-        if(typeof resol==="undefined"){resol=control.settings.resol.get();}
-        var sigmas=compute.sum_hill.checkSigmaConst();
-        //var sigmas=[0.3,0.3,0.3];
-        var sigmas8=[];
-        var sigmas1=[];
-        var ncv=control.settings.ncv.get();
-        for(var i=0;i<ncv;i++){
+        var sigmas,sigmas1,sigmas8,ncv,i,space;
+        if(resol===undefined){resol=control.settings.resol.get();}
+        sigmas=compute.sum_hill.checkSigmaConst();
+        sigmas8=[];
+        sigmas1=[];
+        ncv=control.settings.ncv.get();
+        for(i=0;i<ncv;i+=1){
             sigmas1.push(sigmas[i]*resol/compute.sum_hill.diffs[i]);
             sigmas8.push(Math.floor(sigmas1[i]*this.msi)*2+1);
         }
         if(ncv===1||control.settings.webgl()){
-            var space=this.createSpace(resol);
+            space=this.createSpace(resol);
         }else{
-            var space=this.createSpace(sigmas8);
+            space=this.createSpace(sigmas8);
         }
         space.resol=resol;
         space.blob(sigmas1,hei);
         return space;
     },
     multibin:function(nbins,ncv){   // spacer
+        var bins,i;
         if(nbins.length){
-            if(nbins.length===ncv){
-                return nbins;
-            }else{
+            if(nbins.length!==ncv){
                 manage.console.error("Error: Tspace: wrong length of nbins");
             }
-        }else{
-            var bins=[];
-            for(var i=0;i<ncv;i++){
-                bins.push(nbins);
-            }
-            return bins;
+            return nbins;
         }
+        bins=[];
+        for(i=0;i<ncv;i+=1){
+            bins.push(nbins);
+        }
+        return bins;
     }
 });
-if(typeof compute.tspacer.tspace==="undefined"){compute.tspacer.tspace={};}
+if(compute.tspacer.tspace===undefined){compute.tspacer.tspace={};}
 compute.tspacer.tspace[2]={
     id:0,
     dims:null,
@@ -66,12 +66,11 @@ compute.tspacer.tspace[2]={
     nwhole:0,
     ratio:0,
     init:function(nbins){
+        var ncv=this.ncv,nwh=1,i;
         this.id=this.lastid++;
-        var ncv=this.ncv;
-        var nwh=1;
         this.coefs=new Int32Array(ncv);
         this.dims=new Int32Array(ncv);
-        for(var i=0;i<ncv;i++){
+        for(i=0;i<ncv;i+=1){
             this.dims[i]=nbins[i];
             this.coefs[i]=nwh;
             nwh*=nbins[i];
@@ -80,32 +79,29 @@ compute.tspacer.tspace[2]={
         this.spacearr=new Float32Array(nwh);
     },
     copy:function(){
-        var space=$.extend(true,{},this);
+        var space,copyInt32Array,copyFloat32Array;
+        space=$.extend(true,{},this);
         this.id=this.lastid++;
         //space.init(this.nbins,this.ncv);
-        space.spacearr=this.copyFloat32Array(this.spacearr);
-        space.coefs=this.copyInt32Array(this.coefs);
-        space.dims=this.copyInt32Array(this.dims);
+        copyInt32Array=function(array){
+            var nar;
+            if(!array){return null;}
+            nar=new Int32Array(array.length);
+            nar.set(array);
+            return nar;
+        };
+        copyFloat32Array=function(array){
+            var nar;
+            if(!array){return null;}
+            nar=new Float32Array(array.length);
+            nar.set(array);
+            return nar;
+        };
+        space.spacearr=copyFloat32Array(this.spacearr);
+        space.coefs=copyInt32Array(this.coefs);
+        space.dims=copyInt32Array(this.dims);
         //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
-    },
-    copyFloat32Array:function(array){
-        if(!array){return null;}
-        var nar=new Float32Array(array.length);
-        nar.set(array);
-        return nar;
-    },
-    copyInt32Array:function(array){
-        if(!array){return null;}
-        var nar=new Int32Array(array.length);
-        nar.set(array);
-        return nar;
-    },
-    copyUint8Array:function(array){
-        if(!array){return null;}
-        var nar=new Uint8Array(array.length);
-        nar.set(array);
-        return nar;
     },
     set:function(space){
         if(this.ncv!==space.ncv){manage.console.error("Storage: Incompatible arrays");return;}
@@ -136,60 +132,61 @@ compute.tspacer.tspace[2]={
         }
     },*/
     plane:function(value,axi,axival,typ){
-        var raxi=this.restaxi(axi);
-        var c0=raxi[0];
-        var axiin=axival*this.coefs[axi];
-        var coe0=this.coefs[c0];
+        var raxi,c0,axiin,coe0,i;
+        raxi=this.restaxi(axi);
+        c0=raxi[0];
+        axiin=axival*this.coefs[axi];
+        coe0=this.coefs[c0];
         if(typ==="add"){
-            for(var i=0;i<this.dims[c0];i++){
+            for(i=0;i<this.dims[c0];i+=1){
                 this.spacearr[axiin+i*coe0]+=value;
             }
         }else
         if(typ==="multiply"){
-            for(var i=0;i<this.dims[c0];i++){
+            for(i=0;i<this.dims[c0];i+=1){
                 this.spacearr[axiin+i*coe0]*=value;
             }
         }else
         {
-            for(var i=0;i<this.dims[c0];i++){
+            for(i=0;i<this.dims[c0];i+=1){
                 this.spacearr[axiin+i*coe0]=value;
             }
         }
     },
     oldadd:function(inds,space){
+        var tdims,bdims,divis,lims,i,icv,hei,len0,len1,tcoef,bcoef,tp,bp,tp1,bp1,j;
         if(this.resol!==space.resol){
             manage.console.error("Space.add: Variable resolution not implemented");
             return;
         }
-        var tdims=this.dims;
-        var bdims=space.dims;
-        var divis=[false,false,false,false];
-        var lims=this.templims;
+        tdims=this.dims;
+        bdims=space.dims;
+        divis=[false,false,false,false];
+        lims=this.templims;
         if(!lims){
             this.templims=new Float32Array(2*(2+1));
             lims=this.templims;
         }
-        for(var i=0;i<2;i++){
-            var icv=3*i;
+        for(i=0;i<2;i+=1){
+            icv=3*i;
             lims[icv]=Math.floor(inds[i]*tdims[i])-(bdims[i]-1)/2;
             lims[icv+1]=Math.floor(inds[i]*tdims[i])+(bdims[i]-1)/2+1;
             lims[icv+2]=0;
             if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;divis[i*2]=true;}
             if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];divis[i*2+1]=true;}
         }
-        var hei=inds[2];
+        hei=inds[2];
         //var lims=this.computeLims(inds,space);
-        var len0=lims[1]-lims[0];
-        var len1=lims[4]-lims[3];
+        len0=lims[1]-lims[0];
+        len1=lims[4]-lims[3];
         if(len0<1||len1<1){return;}
-        var tcoef=this.coefs;var bcoef=space.coefs;
-        var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
-        var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
-        var tp1,bp1;
-        for(var j=0;j<len1;j++){
+        tcoef=this.coefs;bcoef=space.coefs;
+        tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
+        bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
+        for(j=0;j<len1;j+=1){
             tp1=tp+tcoef[1]*j;
             bp1=bp+bcoef[1]*j;
-            for(var i=0;i<len0;i++){
+            for(i=0;i<len0;i+=1){
                 //this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)];
                 this.spacearr[tp1+tcoef[0]*i]+=hei*space.spacearr[bp1+bcoef[0]*i];
             }
@@ -197,45 +194,45 @@ compute.tspacer.tspace[2]={
         return divis;
     },
     add:function(inds,space){
-        var rdif=space.resol/this.resol;
-        var tdims=this.dims;
-        var bdims=space.dims;
-        var divis=[false,false,false,false];
-        var lims=this.templims;
+        var rdif,tdims,bdims,divis,lims,i,j,icv,b2,gtmid,gtmin,gtmax,tmin,bmin,atmax,len0,len1,
+        tcoef,bcoef,hei,tp,bp,bc0rd,tp1,bp1;
+        rdif=space.resol/this.resol;
+        tdims=this.dims;
+        bdims=space.dims;
+        divis=[false,false,false,false];  // is overflowing on [left,right,top,bottom]
+        lims=this.templims;
         if(!lims){
             this.templims=new Int32Array(2*(2+1));
             lims=this.templims;
         }
-        var divis=[false,false,false,false];
-        for(var i=0;i<2;i++){
-            var icv=3*i;
-            var b2=Math.floor((bdims[i])/2);
-            var gtmid=Math.round(inds[i]*space.resol);
-            var gtmin=gtmid-b2;
-            var gtmax=gtmid+b2;
-            var tmin;
-            if(gtmin<0){tmin=0;divis[i*2]=true;}else{tmin=Math.ceil(gtmin/rdif);}
-            var bmin=tmin*rdif-gtmin;
-            var atmax=gtmax/rdif;
+        for(i=0;i<2;i+=1){
+            icv=3*i;
+            b2=Math.floor((bdims[i])/2);
+            gtmid=Math.round(inds[i]*space.resol); // this.mid in greater resolution
+            gtmin=gtmid-b2;                        // this.min in greater resolution (partially floored)
+            gtmax=gtmid+b2;                        // this.max in greater resolution (partially floored)
+            if(gtmin<0){tmin=0;divis[i*2]=true;}else{tmin=Math.ceil(gtmin/rdif);} // this.min floored
+            bmin=tmin*rdif-gtmin;                                                 // offset of space.min
+            atmax=gtmax/rdif;                                                     // this.max (not floored)
             if(atmax>tdims[i]){atmax=tdims[i];divis[i*2+1]=true;}
             lims[icv]=tmin;
             lims[icv+1]=Math.floor(atmax);
             lims[icv+2]=bmin;
         }
-        var len0=lims[1]-lims[0];
-        var len1=lims[4]-lims[3];
+        len0=lims[1]-lims[0];
+        len1=lims[4]-lims[3];
         if(len0<1||len1<1){
             return divis;
         }
-        var tcoef=this.coefs;var bcoef=space.coefs;
-        var hei=inds[2];
-        var tp=lims[0]*tcoef[0]+lims[3]*tcoef[1];
-        var bp=lims[2]*bcoef[0]+lims[5]*bcoef[1];
-        var tp1,bp1,bc0rd=bcoef[0]*rdif;
-        for(var j=0;j<len1;j++){
-            tp1=tp+tcoef[1]*j;
-            bp1=bp+bcoef[1]*j*rdif;
-            for(var i=0;i<len0;i++){
+        tcoef=this.coefs;bcoef=space.coefs;
+        hei=inds[2];
+        tp=lims[0]*tcoef[0]+lims[3]*tcoef[1]; // i,j-invariable part of indices for this
+        bp=lims[2]*bcoef[0]+lims[5]*bcoef[1]; // i,j-invariable part of indices for space
+        bc0rd=bcoef[0]*rdif;
+        for(j=0;j<len1;j+=1){
+            tp1=tp+tcoef[1]*j;      // i-invariable part of tp
+            bp1=bp+bcoef[1]*j*rdif; // i-invariable part of bp
+            for(i=0;i<len0;i+=1){
                 //this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)]+=hei*space.spacearr[bcoef[0]*(lims[2]+i*rdif)+bcoef[1]*(lims[5]+j*rdif)];
                 this.spacearr[tp1+tcoef[0]*i]+=hei*space.spacearr[bp1+bc0rd*i];
             }
@@ -243,39 +240,39 @@ compute.tspacer.tspace[2]={
         //manage.console.debug(divis);
         return divis;
     },
-    
     sum:function(space){
-        var len=space.length;
-        for(var i=0;i<len;i++){
+        var len=space.length,i;
+        for(i=0;i<len;i+=1){
             this.spacearr[i]+=space.spacearr[i];
         }
         return this; 
     },
     isEmpty:function(){
-        var len=this.nwhole;
-        for(var i=0;i<len;i++){
+        var len=this.nwhole,i;
+        for(i=0;i<len;i+=1){
             if(this.spacearr[i]!==0){return false;}
         }
         return true; 
     },
     restaxi:function(axi){
-        var raxi=[];
-        for(var i=0;i<this.ncv;i++){
+        var raxi=[],i;
+        for(i=0;i<this.ncv;i+=1){
             if(i!==axi){raxi.push(i);}
         }
         return raxi;
     },
     blob:function(sigmastep,hei){
-        for(var c=0;c<this.ncv;c++){
-            var dim2=Math.floor((this.dims[c]-1)/2);
-            var sigma=sigmastep[c];
-            for(var i=-dim2;i<=dim2;i++){
-                var val=Math.pow(i/sigma,2);
+        var c,dim2,sigma,i,val,len;
+        for(c=0;c<this.ncv;c+=1){
+            dim2=Math.floor((this.dims[c]-1)/2);
+            sigma=sigmastep[c];
+            for(i=-dim2;i<=dim2;i+=1){
+                val=Math.pow(i/sigma,2);
                 this.plane(val,c,i+dim2,"add");
             }
         }
-        var len=this.nwhole;
-        for(var i=0;i<len;i++){
+        len=this.nwhole;
+        for(i=0;i<len;i+=1){
             this.spacearr[i]=hei*Math.exp(-this.spacearr[i]/2);
         }
     },
@@ -286,7 +283,7 @@ compute.tspacer.tspace[2]={
         var hei=1;var sig=0.03;
         var ctx=canvas[0].getContext("2d");
         //var data=imageData.data;
-        for(var i=0;i<len;i++){
+        for(var i=0;i<len;i+=1){
             
             data[4*i]=255*Math.exp(-Math.pow(this.spacearr[i]/hei-0.8,2)/sig);
             data[4*i+1]=255*Math.exp(-Math.pow(this.spacearr[i]/hei-0.5,2)/sig);
@@ -304,69 +301,11 @@ compute.tspacer.tspace[2]={
     getDrawable:function(){
         return new Float32Array(this.nwhole);
     },
-    compute:function(){}
+    compute:function(){return;} // Not used in this Tspace, but in others 
 };
 compute.tspacer.tspace[3]={
     init:function(){
         manage.console.error("Error: More than 2 CVs is not implemented");
-    },
-    add3:function(inds,space){
-        if(this.res!==space.res){
-            manage.console.error("Space.add: Variable resolution not implemented");
-            return;
-        }
-        var tdims=this.dims;
-        var bdims=space.dims;
-        var lims=new Float32Array(3*(2+1));
-        for(var i=0;i<3;i++){
-            var icv=3*i;
-            lims[icv]=Math.floor(inds[i]*tdims[i])-(bdims[i]-1)/2;
-            lims[icv+1]=Math.floor(inds[i]*tdims[i])+(bdims[i]-1)/2+1;
-            lims[icv+2]=0;
-            if(lims[icv]<0){lims[icv+2]=-lims[icv];lims[icv]=0;}
-            if(lims[icv+1]>tdims[i]){lims[icv+1]=tdims[i];}
-        }
-        var len0=lims[1]-lims[0];
-        var len1=lims[3+1]-lims[3];
-        var len2=lims[6+1]-lims[6];
-        var tcoef=this.coefs;var bcoef=space.coefs;
-        for(var i=0;i<len0;i++){
-            for(var j=0;j<len1;j++){
-                for(var k=0;k<len2;k++){
-                    this.spacearr[tcoef[0]*(lims[0]+i)+tcoef[1]*(lims[3]+j)+tcoef[2]*(lims[6]+k)]+=space.spacearr[bcoef[0]*(lims[2]+i)+bcoef[1]*(lims[5]+j)+bcoef[2]*(lims[8]+k)];
-                }
-            }
-        }
-        
-    },
-    plane3:function(value,axi,axival,typ){
-        var raxi=this.restaxi(axi);
-        var c0=raxi[0];
-        var c1=raxi[1];
-        var axiin=axival*this.coefs[axi];
-        var coe0=this.coefs[c0];
-        var coe1=this.coefs[c1];
-        if(typ==="add"){
-            for(var i=0;i<this.dims[c0];i++){
-                for(var j=0;j<this.dims[c1];j++){
-                    this.spacearr[axiin+i*coe0+j*coe1]+=value;
-                }
-            }
-        }else
-        if(typ==="multiply"){
-            for(var i=0;i<this.dims[c0];i++){
-                for(var j=0;j<this.dims[c1];j++){
-                    this.spacearr[axiin+i*coe0+j*coe1]*=value;
-                }
-            }
-        }else
-        {
-            for(var i=0;i<this.dims[c0];i++){
-                for(var j=0;j<this.dims[c1];j++){
-                    this.spacearr[axiin+i*coe0+j*coe1]=value;
-                }
-            }
-        }
     }
 };
 // @license-end

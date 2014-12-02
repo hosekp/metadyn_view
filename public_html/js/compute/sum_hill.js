@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof compute==="undefined"){compute={};}
-if(typeof compute.sum_hill==="undefined"){compute.sum_hill={};}
+if(window.compute===undefined){var compute={};}
+if(compute.sum_hill===undefined){compute.sum_hill={};}
 $.extend(compute.sum_hill,{
     arhei:null,
     arcvs:null,
@@ -16,29 +16,29 @@ $.extend(compute.sum_hill,{
     loaded:false,
     load:function(arrs,params){   // data
         if(this.arhei===null){
-            this.arhei=arrs["height"];
-            this.arcvs=arrs["cvs"];
-            this.arsigma=arrs["sigma"];
-            this.artime=arrs["time"];
-            this.arclock=arrs["clock"];
+            this.arhei=arrs.height;
+            this.arcvs=arrs.cvs;
+            this.arsigma=arrs.sigma;
+            this.artime=arrs.time;
+            this.arclock=arrs.clock;
             this.nbody=params.nbody;
             this.ncv=this.arcvs.length;
             //this.nbins=this.multibin(50);
             this.params=params;
         }else{
-            var ncv=this.ncv;
-            if(ncv!==arrs["cvs"].length){
+            var ncv=this.ncv,sorter,nartime,sorted,i;
+            if(ncv!==arrs.cvs.length){
                 manage.console.error("Sum_hill:","Wrong number of CV");
                 return;
             }
-            var sorter=$.extend({},compute.parser.TAsorter);
-            var nartime=this.join(this.artime,arrs["clock"]);
-            var sorted=sorter.sort(nartime);
+            sorter=$.extend({},compute.parser.TAsorter);
+            nartime=this.join(this.artime,arrs.clock);
+            sorted=sorter.sort(nartime);
             this.artime=sorter.rearrange(nartime,sorted);
-            this.arhei=sorter.rearrange(this.join(this.arhei,arrs["height"]),sorted);
-            for(var i=0;i<ncv;i++){
-                this.arcvs[i]=sorter.rearrange(this.join(this.arcvs[i],arrs["cvs"][i]),sorted);
-                this.arsigma[i]=sorter.rearrange(this.join(this.arsigma[i],arrs["sigma"][i]),sorted);
+            this.arhei=sorter.rearrange(this.join(this.arhei,arrs.height),sorted);
+            for(i=0;i<ncv;i+=1){
+                this.arcvs[i]=sorter.rearrange(this.join(this.arcvs[i],arrs.cvs[i]),sorted);
+                this.arsigma[i]=sorter.rearrange(this.join(this.arsigma[i],arrs.sigma[i]),sorted);
             }
             this.nbody+=params.nbody;
             this.params=this.joinParams(this.params,params);
@@ -50,20 +50,19 @@ $.extend(compute.sum_hill,{
         //manage.console.log("Sum_hills:","loaded");
     },
     join:function(TA1,TA2){    // data
-        var lenTA1=TA1.length;
-        var lenTA2=TA2.length;
-        var nar=new Float32Array(lenTA1+lenTA2);
-        for(var i=0;i<lenTA1;i++){
+        var lenTA1=TA1.length,lenTA2=TA2.length,nar,i;
+        nar=new Float32Array(lenTA1+lenTA2);
+        for(i=0;i<lenTA1;i+=1){
             nar[i]=TA1[i];
         }
-        //var sumlen=lenTA1+lenTA2;
-        for(var i=0;i<lenTA2;i++){
+        for(i=0;i<lenTA2;i+=1){
             nar[i+lenTA1]=TA2[i];
         }
         return nar;
     },
     joinParams:function(par1,par2){    // data
-        for(var i=0;i<this.ncv;i++){
+        var i;
+        for(i=0;i<this.ncv;i+=1){
             par1.cvs[i].min=Math.min(par1.cvs[i].min,par2.cvs[i].min);
             par1.cvs[i].max=Math.max(par1.cvs[i].max,par2.cvs[i].max);
             par1.cvs[i].diff=par1.cvs[i].max-par1.cvs[i].min;
@@ -82,37 +81,31 @@ $.extend(compute.sum_hill,{
         compute.parser.mintime=null;
     },
     setRealLimits:function(){   // data
-        var params=this.params;
-        this.mins=[];
-        this.maxs=[];
-        this.diffs=[];
-        for(var i=0;i<this.ncv;i++){
-            this.mins.push(params.cvs[i].min);
-            this.maxs.push(params.cvs[i].max);
-            this.diffs.push(params.cvs[i].max-params.cvs[i].min);
+        var params=this.params,i,norcv,arcv,min,diff,j,lmins=[],lmaxs=[],ldiffs=[],lncv=this.ncv; 
+        for(i=0;i<lncv;i+=1){
+            lmins.push(params.cvs[i].min);
+            lmaxs.push(params.cvs[i].max);
+            ldiffs.push(params.cvs[i].max-params.cvs[i].min);
         }
-        this.normalize();
-    },
-    normalize:function(){   // data
+        this.mins=lmins;this.maxs=lmaxs;this.diffs=ldiffs;
         this.norcvs=[];
-        for(var i=0;i<this.ncv;i++){
-            var norcv=new Float32Array(this.nbody);
-            var arcv=this.arcvs[i];
-            var min=this.mins[i];
-            var diff=this.diffs[i];
-            for(var j=0;j<this.nbody;j++){
+        for(i=0;i<lncv;i+=1){
+            norcv=new Float32Array(this.nbody);
+            arcv=this.arcvs[i];
+            min=lmins[i];
+            diff=ldiffs[i];
+            for(j=0;j<this.nbody;j+=1){
                 norcv[j]=(arcv[j]-min)/diff;
             }
             this.norcvs.push(norcv);
         }
     },
     checkSigmaConst:function(){   // data
-        var sigmas=[];
-        var valid=true;
-        for(var i=0;i<this.ncv;i++){
-            var sig=this.arsigma[i][0];
+        var sigmas=[],valid=true,i,quarter,sig;
+        for(i=0;i<this.ncv;i+=1){
+            sig=this.arsigma[i][0];
             sigmas.push(sig);
-            var quarter=Math.floor(this.nbody/4);
+            quarter=Math.floor(this.nbody/4);
             if(sig!==this.arsigma[i][quarter]){valid=false;/*manage.console.debug("Sigma"+i+" "+sig+"!="+this.arsigma[i][quarter]+" at 1/4");*/}
             if(sig!==this.arsigma[i][quarter*2]){valid=false;}
             if(sig!==this.arsigma[i][quarter*3]){valid=false;}
@@ -127,17 +120,18 @@ $.extend(compute.sum_hill,{
     },
     /*toIndices:function(pos){
         var inds=[];
-        for(var i=0;i<this.ncv;i++){
+        for(var i=0;i<this.ncv;i+=1){
             inds.push((pos[i]-this.mins[i])/this.diffs[i]);
         }
         return inds;
     },*/
     checkHeights:function(from,to){
+        var last,i;
         if(to-from<3){
             //manage.console.warning("CheckHeights:","too short",to-from)
             return false;}
-        var last=this.arhei[from];
-        for(var i=from+1;i<to;i++){
+        last=this.arhei[from];
+        for(i=from+1;i<to;i+=1){
             if(last!==this.arhei[i]){
                 return false;
             }
@@ -145,11 +139,12 @@ $.extend(compute.sum_hill,{
         return last;
     },
     toIndices:function(line,hei){   // sum
+        var inds,i;
         if(!this.tempind){
             this.tempind = new Float32Array(this.ncv+1);
         }
-        var inds=this.tempind;
-        for(var i=0;i<this.ncv;i++){
+        inds=this.tempind;
+        for(i=0;i<this.ncv;i+=1){
             inds[i]=this.norcvs[i][line];
         }
         if(hei===1){
@@ -160,43 +155,41 @@ $.extend(compute.sum_hill,{
         return inds;
     },
     add:function(space,torat){    // sum
-        var resol=control.settings.resol.get();
-        var ncv=this.ncv;
-        var last=this.locate(space.ratio);
-        var to=this.locate(torat);
-        var hei=this.checkHeights(last,to);
+        var ncv=this.ncv,last,to,hei,blob,periods,anyperiod,i,inds,divis,ind1;
+        //var resol=control.settings.resol.get();
+        last=this.locate(space.ratio);
+        to=this.locate(torat);
+        hei=this.checkHeights(last,to);
         if(hei===false){
             hei=1;
         }
-        if(!this.blobs[1]){this.blobs[1]=compute.tspacer.createBlob(512,hei);};
+        if(!this.blobs[1]){this.blobs[1]=compute.tspacer.createBlob(512,hei);}
         if(!this.blobs[hei]){
             this.blobs[hei]=this.blobs[1].copy(hei);
             /*var len=0;
             for(var i in this.blobs){
-                len++;
+                len+=1;
             }
             manage.console.warning("Tspacer:","blob created.","hei=",hei,"len=",len);*/
         }
-        var blob=this.blobs[hei];
-        var periods=this.isPeriodic();
+        blob=this.blobs[hei];
+        periods=this.isPeriodic();
         //manage.console.debug("Add from "+last+" to "+to);
-        var anyperiod=false;
-        for(var i=0;i<this.ncv;i++){
+        anyperiod=false;
+        for(i=0;i<ncv;i+=1){
             if(periods[i]){
                 anyperiod=true;break;
             }
         }
-        var inds;
-        var divis;
         if(anyperiod){
-            for(var i=last;i<to;i++){
+            for(i=last;i<to;i+=1){
                 inds=this.toIndices(i,hei);
                 divis=space.add(inds,blob);
-                if(this.ncv===1){
-                    var ind1=inds[0];
+                if(ncv===1){
+                    ind1=inds[0];
                     if(divis[0]){space.add([ind1-1],blob);}
                     if(divis[1]){space.add([ind1+1],blob);}
-                }else if(this.ncv===2){
+                }else if(ncv===2){
                     if(!control.settings.webgl()){
                         if(divis[0]){
                             inds[0]+=1;
@@ -236,14 +229,13 @@ $.extend(compute.sum_hill,{
                             }
                         }
                     }
-                }else if(this.ncv===3){
-                    manage.console.warning("Sum_hills:","Add3","not implemented");
                 }else{
+                    manage.console.warning("Sum_hills:","Add3 and more","not implemented");
                 }
             }
         }else{
-            for(var i=last;i<to;i++){
-                var inds=this.toIndices(i,hei);
+            for(i=last;i<to;i+=1){
+                inds=this.toIndices(i,hei);
                 space.add(inds,blob);
             }
         }
@@ -253,59 +245,57 @@ $.extend(compute.sum_hill,{
         return space;
     },
     isPeriodic:function(){   // data
-        var ret=[];
-        for(var i=0;i<this.ncv;i++){
+        var ret=[],i;
+        for(i=0;i<this.ncv;i+=1){
             ret.push(this.params.cvs[i].periodic);
         }
         return ret;
     },
     locate:function(rat){    // data
+        var t0,t1,tr,lower=0,higher,middle;
         if(rat<=0){return 0;}
-        var t0=this.artime[0];
-        var t1=this.artime[this.nbody-1];
-        var tr=t0+rat*(t1-t0);
-        var lower=0;
+        t0=this.artime[0];
+        t1=this.artime[this.nbody-1];
+        tr=t0+rat*(t1-t0);
         //manage.console.debug("Locate from "+t0+" to "+t1+" through "+tr);
-        var higher=this.nbody;
+        higher=this.nbody;
         while (lower+1!==higher){
             //manage.console.debug("Locate from "+lower+" to "+higher);
-            var middle=Math.floor((lower+higher)/2);
+            middle=Math.floor((lower+higher)/2);
             if(tr>=this.artime[middle]){lower=middle;}else{higher=middle;}
         }
         return higher;
-        
     },
     haveData:function(){return this.loaded;},   // data
     findClosestHills:function(cvs,num){
+        var wins,dists,ld=10000000000,arcvs,distance2,dist,j,i,w;
         if(!this.loaded){return [];}
-        var wins=[];
-        var dists=[];
-        var ld=10000000000;
-        var arcvs=this.norcvs;
+        wins=[];
+        dists=[];
+        arcvs=this.norcvs;
         if(this.ncv===1){
-            var distance2=function(pos,ihill){
+            distance2=function(pos,ihill){
                 return Math.pow(pos[0]-arcvs[0][ihill],2);
             };
         }else if(this.ncv===2){
-            var distance2=function(pos,ihill){
+            distance2=function(pos,ihill){
                 return Math.pow(pos[0]-arcvs[0][ihill],2)+Math.pow(pos[1]-arcvs[1][ihill],2);
             };
         }else{
             manage.console.error("Sum_hill:","3 and more CVs","not implemented");
             return [];
         }
-        var dist;
-        for(var j=0;j<num;j++){
+        for(j=0;j<num;j+=1){
             if(j===this.nbody){return wins;}
             dist=distance2(cvs,j);
             wins.push(j);
             dists.push(dist);
         }
         ld=Math.max.apply("",dists);
-        for(var i=j;i<this.nbody;i++){
+        for(i=j;i<this.nbody;i+=1){
             dist=distance2(cvs,i);
             if(dist<ld){
-                for(var w=0;w<dists.length;w++){
+                for(w=0;w<dists.length;w+=1){
                     if(dists[w]===ld){
                         wins[w]=i;
                         dists[w]=dist;

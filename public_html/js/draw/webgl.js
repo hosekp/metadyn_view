@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof draw==="undefined"){draw={};}
-if(typeof draw.gl==="undefined"){draw.gl={};}
+if(window.draw===undefined){var draw={};}
+if(draw.gl===undefined){draw.gl={};}
 $.extend(draw.gl,{
     g1:null,
     vertex:null,
@@ -10,12 +10,17 @@ $.extend(draw.gl,{
     inited:false,
     engine:"gl",
     $can:null,
+    needUpdCoord:false,
     program:null,
     init:function(){
+        var sett=control.settings;
         if(this.inited){return true;}
         if(!this.initGL()){return false;}
         this.getShader("2d-vertex","vertex");
         this.getShader("2d-fragment","fragment");
+        sett.zoom.subscribe(this,"upco");
+        sett.frameposx.subscribe(this,"upco");
+        sett.frameposy.subscribe(this,"upco");
         return false;
         //if(!this.initShaders()){return false;}
         //this.initBuffers();
@@ -33,12 +38,13 @@ $.extend(draw.gl,{
         }
     },
     initGL:function(){
-        var can=$("<canvas>").attr({id:"main_can_gl"}).addClass("main_can");
+        var can,params,gl;
+        can=$("<canvas>").attr({id:"main_can_gl"}).addClass("main_can");
         this.$can=can;
         //draw.drawer.appendCanvas();
         try {
-            var params={premultipliedAlpha:false,preserveDrawingBuffer:true};
-            var gl = can[0].getContext("webgl",params) 
+            params={premultipliedAlpha:false,preserveDrawingBuffer:true};
+            gl = can[0].getContext("webgl",params) 
                   || can[0].getContext("experimental-webgl",params);
             //var gl = can[0].getContext("webgl");
             //gl = getWebGLContext(main.div.canvas[0]);
@@ -53,8 +59,8 @@ $.extend(draw.gl,{
         return true;
     },
     initProgram:function(){
-        var gl=this.g1;
-        var progr = gl.createProgram();
+        var gl=this.g1,
+        progr = gl.createProgram();
         this.program=progr;
         gl.attachShader(progr,this.vertex);
         gl.attachShader(progr,this.fragment);
@@ -70,8 +76,8 @@ $.extend(draw.gl,{
         return true;
     },
     initParam:function(){
-        var gl=this.g1;
-        var progr=this.program;
+        var gl=this.g1,
+        progr=this.program;
         progr.positionLocation = gl.getAttribLocation(progr, "a_position");
         gl.enableVertexAttribArray(progr.positionLocation);
 
@@ -100,11 +106,9 @@ $.extend(draw.gl,{
         this.initTextures();
     },
     initTextures:function(){
-        var gl=this.g1;
-        //var textureSizeLocation = gl.getUniformLocation(this.program, "u_textureSize");
-        //gl.uniform2f(textureSizeLocation, main.width, main.height);
+        var gl=this.g1,
+        texture = gl.createTexture();
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -114,13 +118,12 @@ $.extend(draw.gl,{
         this.inited=true;
     },
     draw:function(array,zmax){
-        //if(!this.inited){this.init();}
-        var gl=this.g1;
-        var nat=view.axi.natureRange(0,zmax,10,false);
+        var gl=this.g1,nat,resol;
+        nat=view.axi.natureRange(0,zmax,10,false);
         //manage.console.debug("step="+nat[2]);
         //manage.console.debug("drawing");
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordBuffer);
-        this.updateCoord(this.coordarr);
+        //this.updateCoord();
         gl.bufferData(gl.ARRAY_BUFFER,this.coordarr, gl.STATIC_DRAW);
         gl.vertexAttribPointer(this.program.positionLocation,2,gl.FLOAT,false,0,0);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
@@ -134,7 +137,7 @@ $.extend(draw.gl,{
         gl.vertexAttribPointer(this.program.arrBuffLocation,1,gl.FLOAT,false,0,0);*/
         //graf.compArr();
         //main.cons(graf.bytearr.length);
-        var resol=control.settings.resol.get();
+        resol=control.settings.resol.get();
         
         if(resol*resol*4!==array.length){
             manage.console.error("WebGL:","Wrong length of texture array");
@@ -148,22 +151,21 @@ $.extend(draw.gl,{
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         //var err=gl.getError();if(err!==gl.NO_ERROR){manage.console.error("WebGL draw error: ",err);}
     },
-    updateCoord:function(arr){
-        var zoom=control.settings.zoom.get();
-        var posx=control.settings.frameposx.get();
-        var posy=control.settings.frameposy.get();
-        var zoomcoef=control.settings.zoomcoef.get();
-        var zoompow=Math.pow(zoomcoef,zoom);
-        var xlow=posx*zoompow;
-        var xhigh=zoompow+posx*zoompow;
-        var ylow=posy*zoompow;
-        var yhigh=zoompow+posy*zoompow;
-        arr[0]=xlow;
-        var mustr=[xlow,ylow, xhigh,ylow, xlow,yhigh, xlow,yhigh, xhigh,ylow, xhigh,yhigh];
-        for(var i=0;i<12;i++){
+    updateCoord:function(){
+        var zoompow,posx,posy,xlow,xhigh,ylow,yhigh,mustr,i,arr;
+        posx=control.settings.frameposx.get();
+        posy=control.settings.frameposy.get();
+        zoompow=control.settings.zoompow();
+        xlow=posx*zoompow;
+        xhigh=zoompow+posx*zoompow;
+        ylow=posy*zoompow;
+        yhigh=zoompow+posy*zoompow;
+        //arr[0]=xlow;
+        arr=this.coordarr;
+        mustr=[xlow,ylow, xhigh,ylow, xlow,yhigh, xlow,yhigh, xhigh,ylow, xhigh,yhigh];
+        for(i=0;i<12;i+=1){
             arr[i]=mustr[i];
         }
-        return arr;
         //[0,0, 1,0, 0,1, 0,1, 1,0, 1,1]
         
     },
@@ -173,9 +175,9 @@ $.extend(draw.gl,{
         },this),"text");
     },
     initShader:function(str,typ){
-        var gl=this.g1;
+        var gl=this.g1,shader;
         if(typ==="vertex"){
-            var shader=gl.createShader(gl.VERTEX_SHADER); 
+            shader=gl.createShader(gl.VERTEX_SHADER); 
         }else if(typ==="fragment"){
             shader=gl.createShader(gl.FRAGMENT_SHADER);
         }else{return null;}
@@ -198,6 +200,9 @@ $.extend(draw.gl,{
     loadFailed:function(){
         control.settings.glcan.set(false);
         draw.drawer.switchTo("raster");
+    },
+    notify:function(args){
+        if(args==="upco"){this.updateCoord();}
     }
 });
 // @license-end

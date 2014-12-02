@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof manage==="undefined"){manage={};}
-if(typeof manage.tests==="undefined"){manage.tests={};}
+if(window.manage===undefined){var manage={};}
+if(manage.tests===undefined){manage.tests={};}
 $.extend(manage.tests,{
     active:0,
     tests:[],
@@ -19,11 +19,11 @@ $.extend(manage.tests,{
         this.tests[this.active].start();
     },
     nextTest:function(){
-        this.active++;
+        this.active+=1;
         this.run();
     },
     createTests:function(){
-        var testnames=[];
+        var testnames=[],i,testname;
         testnames=["langReader","loopHash","raster_ala_exp","1d_hills","webgl_amber_exp"];
         if(control.settings.tests.get()>1){
             testnames=["webgl_bench","raster_bench","bugus"];
@@ -33,8 +33,8 @@ $.extend(manage.tests,{
         //testnames=["bugus"];
         if(testnames.length===0){return;}
         control.settings.loglvl.set(2.5);
-        for(var i=0;i<testnames.length;i++){
-            var testname=testnames[i];
+        for(i=0;i<testnames.length;i+=1){
+            testname=testnames[i];
             this.tests.push($.extend({name:testname},manage.tests.prototest));
             this.getTest(testname,i);
         }
@@ -45,12 +45,13 @@ $.extend(manage.tests,{
         },this),"text");
     },
     notify:function(args){
-      if(args==="run"){
-          var istest=control.settings.tests.get();
-        if(istest>0){
-          this.run();
+        var istest;
+        if(args==="run"){
+            istest=control.settings.tests.get();
+            if(istest>0){
+                this.run();
+            }
         }
-      }
     }
 });
 manage.tests.perf={
@@ -61,7 +62,7 @@ manage.tests.perf={
             this.last=window.performance.now();
         },
         end:function(){
-            this.ncyc++;
+            this.ncyc+=1;
             this.suma+=window.performance.now()-this.last;
         },
         reset:function(){
@@ -73,20 +74,20 @@ manage.tests.prototest={
     inited:false,
     lines:null,
     active:0,
-    sleeping:0,
     bench:null,
     vars:null,
     start:function(){
         manage.console.log(this.name,"executed");
         control.control.everysec(this,"run");
-        this.vars={};
+        this.vars={sleeping:0,goto:0};
     },
     run:function(){
+        var ret;
         while(this.active<this.lines.length){
-            var ret=this.executeLine(this.lines[this.active]); // 0=unknown 1=fail 2=pass
+            ret=this.executeLine(this.lines[this.active]); // 0=unknown 1=fail 2=pass
             if(ret===0){return;}
             if(ret===1){this.finish(false);return;}
-            if(ret===2){this.active++;}else{
+            if(ret===2){this.active+=1;}else{
                 manage.console.error("Tests:","Unknown result",ret);
             }
         }
@@ -102,75 +103,74 @@ manage.tests.prototest={
         manage.tests.nextTest();
     },
     executeLine:function(line){
+        var cmd,val,actual,should,varis;
         if(line.length===0){return 2;}
-        var cmd=line[0];
+        cmd=line[0];
         if(cmd.length===0){return 2;}
         //manage.console.debug(line.join(" "),"executed");
+        varis=this.vars;
         try{
             if(cmd.indexOf("#")===0){return 2;}
-            else if(cmd==="do"){
+            if(cmd==="do"){
                 if(line.length===1){this.error("no command to evaluate");return 1;}
                 this.evaluate(line[1]);
                 return 2;
-            }else if(cmd==="var"){
+            }if(cmd==="var"){
                 if(line.length<3){this.error("too few arguments");return 1;}
-                var val1=this.evaluate(line[2]);
-                this.vars[line[1]]=val1;
+                val=this.evaluate(line[2]);
+                varis[line[1]]=val;
                 return 2;
-            }else if(cmd==="!="||cmd==="=="||cmd===">"||cmd==="<"||cmd==="<="||cmd===">="){
+            }if(cmd==="!="||cmd==="=="||cmd===">"||cmd==="<"||cmd==="<="||cmd===">="){
                 if(line.length<3){this.error("too few arguments");return 1;}
-                var res=this.evaluate(line[1]+cmd+line[2]);
-                var var1=this.evaluate(line[1]);
-                var var2=this.evaluate(line[2]);
-                if(!res){this.error(var1,cmd,var2);}
-                return res?2:1;
-            }else if(cmd==="is"||cmd==="not"){
+                val=this.evaluate(line[1]+cmd+line[2]);
+                if(!val){
+                    actual=this.evaluate(line[1]);
+                    should=this.evaluate(line[2]);
+                    this.error(actual,cmd,should);
+                }
+                return val?2:1;
+            }if(cmd==="is"||cmd==="not"){
                 if(line.length<2){this.error("too few arguments");return 1;}
-                var res=this.evaluate(line[1]);
-                var should=cmd==="is";
-                if(res!==should){this.error(res,"should be",should);}
-                return res===should?2:1;
-            }else if(cmd==="sleep"){
+                val=this.evaluate(line[1]);
+                should=cmd==="is";
+                if(val!==should){this.error(val,"should be",should);}
+                return val===should?2:1;
+            }if(cmd==="sleep"){
                 if(line.length<2){
                     this.error("too few arguments");return 1;
                 }
-                var num=parseInt(line[1]);
-                if(this.sleeping>=num){
-                    this.sleeping=0;
+                val=parseInt(line[1],10);
+                if(varis.sleeping>=val){
+                    varis.sleeping=0;
                     return 2;
-                }else{
-                    this.sleeping++;
-                    return 0;
                 }
-            }else if(cmd==="wait"){
+                varis.sleeping+=1;
+                return 0;
+            }if(cmd==="wait"){
                 if(line.length<2){this.error("too few arguments");return 1;}
-                var val=this.evaluate(line[1]);
+                val=this.evaluate(line[1]);
                 return val?2:0;
-            }else if(cmd==="goto"){
+            }if(cmd==="goto"){
                 if(line.length<2){this.error("too few arguments");return 1;}
                 if(line[1]==="target"){return 2;}
-                if(!this.vars.goto){this.vars.goto=0;}
-                this.vars.goto++;
-                if(this.vars.goto>200){this.error("Goto","too many iteration");return 1;}
-                var val=this.evaluate(line[1]);
+                varis.goto+=1;
+                if(varis.goto>200){this.error("Goto","too many iteration");return 1;}
+                val=this.evaluate(line[1]);
                 if(val){
-                    var act=parseInt(line[2])-1;
-                    if(this.lines[act][1]==="target"){
-                        this.active=act;
-                        return 2;
-                    }else{
-                        this.error("Goto not pointing to target at",act);return 1;
+                    actual=parseInt(line[2],10)-1;
+                    if(this.lines[actual][1]!=="target"){
+                        this.error("Goto not pointing to target at",actual);return 1;
                     }
-                }else{
-                    return 2;
+                    this.active=actual;
                 }
-            }else if(cmd==="bench"){
+                return 2;
+            }if(cmd==="bench"){
                 if(line.length<3){this.error("too few arguments");return 1;}
-                var now=window.performance.now();
+                actual=window.performance.now();
                 if(line[1]==="start"){
-                    this.bench={start:now,finish:now+parseFloat(line[2])};
+                    this.bench={start:actual,finish:actual+parseFloat(line[2])};
                     return 2;
-                }else if(line[1]==="perf"){
+                }if(line[1]==="perf"){
                     if(!this.bench){
                         this.bench=$.extend({},manage.tests.perf);
                     }
@@ -182,18 +182,17 @@ manage.tests.prototest={
                 
                 //manage.console.debug("now",now,"finish",this.bench.finish);
                 if(this.bench.finish){
-                    if(now<this.bench.finish){return 0;}
-                    var val=this.evaluate(line[1]);
-                    val/=(now-this.bench.start)/parseFloat(line[2]);
+                    if(actual<this.bench.finish){return 0;}
+                    val=this.evaluate(line[1]);
+                    val/=(actual-this.bench.start)/parseFloat(line[2]);
                 }else{
                     val=this.bench.ncyc/this.bench.suma*parseFloat(line[2]);
                 }
                 manage.console.success("Benchmark",this.name,":",val.toFixed(1),"points");
                 return 2;
-            }else{
-                this.error("Unknown command");
-                return 1;
             }
+            this.error("Unknown command");
+            return 1;
         }catch(err){
             this.error(err.toString());
             return 1;
@@ -204,8 +203,9 @@ manage.tests.prototest={
         return eval(replaced);
     },
     compileTest:function(data){
+        var i;
         this.lines=data.split("\r\n");
-        for(var i=0;i<this.lines.length;i++){
+        for(i=0;i<this.lines.length;i+=1){
             this.lines[i]=this.split(this.lines[i]);
         }
         this.inited=true;
@@ -214,24 +214,24 @@ manage.tests.prototest={
         }
     },
     split:function(line){
-        var strspl=line.split('"');
-        var even=false;
-        for(var i=0;i<strspl.length;i++){
+        var strspl=line.split('"'),
+        even=false,i,spcspl;
+        for(i=0;i<strspl.length;i+=1){
             if(even){
                 strspl[i]=strspl[i].replace(" ","__");
             }
             even=!even;
         }
         line=strspl.join("'");
-        var spcspl=line.split(" ");
-        for(var i=0;i<spcspl.length;i++){
+        spcspl=line.split(" ");
+        for(i=0;i<spcspl.length;i+=1){
             spcspl[i]=spcspl[i].replace("__"," ");
         }
         return spcspl;
     },
     error:function(){
-        var msg=[(this.active+1)+")",'"'+this.lines[this.active].join(" ")+'"',"-"];
-        for(var i=0;i<arguments.length;i++){
+        var i,msg=[(this.active+1)+")",'"'+this.lines[this.active].join(" ")+'"',"-"];
+        for(i=0;i<arguments.length;i+=1){
             msg.push(arguments[i]);
         }
         manage.console.error.apply(manage.console,msg);

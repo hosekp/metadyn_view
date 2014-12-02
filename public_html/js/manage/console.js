@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof manage==="undefined"){manage={};}
-if(typeof manage.console==="undefined"){manage.console={};}
+if(window.manage===undefined){var manage={};}
+if(manage.console===undefined){manage.console={};}
 $.extend(manage.console,{
     $console:null,
     constext:[],
@@ -18,16 +18,17 @@ $.extend(manage.console,{
         this.$console=$("#cons").show();
     },
     addText:function(string,loglvl){
+        var txt,colors,str,i;
         if(control.settings.loglvl.get()<loglvl){return;}
         if(this.$console===null){this.init();}
-        var txt=this.constext;
-        var colors={1:"red",2:"orange",3:"black",4:"blue",2.5:"green"};
+        txt=this.constext;
+        colors={1:"red",2:"orange",3:"black",4:"blue",2.5:"green"};
         txt.push("<span style='color:"+colors[loglvl]+"'>"+string+"</span>");
         if(txt.length>20){
             txt.shift();
         }
-        var str="";
-        for(var i=0;i<txt.length;i++){
+        str="";
+        for(i=0;i<txt.length;i++){
             str=txt[i]+"<br>"+str;
         }
         this.$console.html(str);

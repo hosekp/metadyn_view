@@ -1,15 +1,15 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof draw==="undefined"){draw={};}
-if(typeof draw.drawer==="undefined"){draw.drawer={};}
+if(window.draw===undefined){var draw={};}
+if(draw.drawer===undefined){draw.drawer={};}
 $.extend(draw.drawer,{
     $can:null,
     engine:null,
     inited:false,
     appendCanvas:function(){
-        var newcan=this.getCan();
-        var oldcan=this.$can;
+        var newcan=this.getCan(),
+        oldcan=this.$can;
         if(newcan===oldcan){return;}
         this.$can_cont=$("#canvas_cont");
         if(oldcan!==null){
@@ -29,9 +29,10 @@ $.extend(draw.drawer,{
         return false;
     },
     switchTo:function(eng){
+        var ncv,webgl;
         if(!eng){
-            var ncv=control.settings.ncv.get();
-            var webgl=control.settings.webgl();
+            ncv=control.settings.ncv.get();
+            webgl=control.settings.webgl();
             if(ncv===1){eng="liner";}else
             if(webgl){eng="gl";}else{eng="raster";}
         }
@@ -54,12 +55,13 @@ $.extend(draw.drawer,{
         return this.engine.$can;
     },
     resize:function(){
+        var $can,width,height;
         if(!this.$can_cont){return;}
         if(!this.engine){return;}
-        var $can=this.getCan();
+        $can=this.getCan();
         if(!$can){return;}
-        var width=this.$can_cont.width();
-        var height=this.$can_cont.height();
+        width=this.$can_cont.width();
+        height=this.$can_cont.height();
         $can.width(width);
         $can.height(height);
         $can.attr({width:width,height:height});
@@ -74,7 +76,7 @@ $.extend(draw.drawer,{
     },
     draw:function(drawable,zmax){
         if(zmax===0){zmax=1;}
-        if(this.engine)this.engine.draw(drawable,zmax);
+        if(this.engine){this.engine.draw(drawable,zmax);}
         //manage.console.debug("Drawer: draw");
     },
     reset:function(){

@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof control==="undefined"){control={};}
-if(typeof control.settings==="undefined"){control.settings={};}
+if(window.control===undefined){var control={};}
+if(control.settings===undefined){control.settings={};}
 $.extend(control.settings,{
     hashRequested:false,
     lastHash:false,
@@ -48,18 +48,18 @@ $.extend(control.settings,{
         control.control.everysec(this,"newHash");
     },
     readHash:function(){
-        var hashstr=window.location.hash;
+        var hashstr=window.location.hash,i,hash,hashspl,hsspl,key;
         if(hashstr){
-            var hash={};
+            hash={};
             hashstr=hashstr.substring(1);
-            var hashspl=hashstr.split("&");
-            for(var i=0;i<hashspl.length;i++){
-                var hsspl=hashspl[i].split("=");
+            hashspl=hashstr.split("&");
+            for(i=0;i<hashspl.length;i+=1){
+                hsspl=hashspl[i].split("=");
                 if(hsspl.length>1){
                     hash[hsspl[0]]=hsspl[1];
                 }
             }
-            for( var key in hash){
+            for(key in hash){
                 if(this.shortdict[key]){
                     this.shortdict[key].parse(hash[key]);
                 }
@@ -68,6 +68,7 @@ $.extend(control.settings,{
         }
     },
     newHash:function(){
+        var ret,s;
         //compute.axi.profiler.init();
         if(window.location.hash!=="#"+this.lastHash){
             this.readHash();
@@ -75,10 +76,10 @@ $.extend(control.settings,{
         if(!this.hashRequested){return;}
         //compute.axi.profiler.time(1);
         view.ctrl.redraw();
-        var ret="";
+        ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
-        for(var s in this.shortdict){
+        for(s in this.shortdict){
             ret=this.shortdict[s].printout(ret);
         }
         //compute.axi.profiler.time(1);
@@ -146,7 +147,7 @@ control.settings.template={
         return this.value;
     },
     cycle:function(n){
-        this.value++;
+        this.value+=1;
         if(this.value===n){
             this.value=0;
         }
@@ -158,16 +159,17 @@ control.settings.template={
         return this.value;
     },
     subscribe:function(ctx,args){
-        var list=this.listeners;
-        for(var i=0;i<list.length;i++){
+        var list=this.listeners,i;
+        for(i=0;i<list.length;i+=1){
             if(list[i]===ctx){return;}
         }
         list.push({ctx:ctx,args:args});
     },
     call:function(){
-        var list=this.listeners;
-        for(var i=0;i<list.length;i++){
-            var lis=list[i];
+        var list=this.listeners,
+        i,lis;
+        for(i=0;i<list.length;i+=1){
+            lis=list[i];
             lis.ctx.notify(lis.args);
         }
     },
@@ -175,11 +177,12 @@ control.settings.template={
         return this.value===this.def;
     },
     parse:function(str){
+        var parsed;
         if(str==="true" ||str==="false"){
             this.set(str==="true");
             return;
         }
-        var parsed=parseFloat(str);
+        parsed=parseFloat(str);
         if(! isNaN(parsed)){
             this.set(parsed);
             return;
@@ -195,11 +198,10 @@ control.settings.template={
             }
         }
         if(this.lastprintout===""){return string;}
-        if(string!==""){
-            return string+("&"+this.lastprintout);
-        }else{
+        if(string===""){
             return this.lastprintout;
         }
+        return string+("&"+this.lastprintout);
     }
 };
 // @license-end

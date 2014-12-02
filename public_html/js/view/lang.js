@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof view==="undefined"){view={};}
-if(typeof view.lang==="undefined"){view.lang={};}
+if(window.view===undefined){var view={};}
+if(view.lang===undefined){view.lang={};}
 $.extend(view.lang,{
     cze:{
         "Nothing to draw":"Nic k vykreslení",
@@ -40,20 +40,21 @@ $.extend(view.lang,{
         "Drop your HILLS files here":"Přesuňte sem HILLS soubory"
     }
 });
-Lang=function(){
-    var lan=control.settings.lang.get();
+var Lang=function(){
+    var args,dict,ret,i,nel,
+    lan=control.settings.lang.get();
     if(lan==="eng"){
         //if(!args.pop){
         //}
-        var args=Array.prototype.slice.call(arguments);
+        args=Array.prototype.slice.call(arguments);
         return args.join(" ");
     }
-    var args=arguments;
-    var dict=view.lang[lan];
-    var ret=[];var nel;
-    for(var i=0;i<args.length;i++){
+    args=arguments;
+    dict=view.lang[lan];
+    ret=[];
+    for(i=0;i<args.length;i+=1){
         nel=dict[args[i]];
-        if(typeof nel==="undefined"){
+        if(nel===undefined){
             nel=args[i];
         }
         ret.push(nel);

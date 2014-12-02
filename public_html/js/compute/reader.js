@@ -1,7 +1,7 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof compute==="undefined"){compute={};}
+if(window.compute===undefined){var compute={};}
 compute.reader={
     template:null,
     seltempl:null,
@@ -12,25 +12,20 @@ compute.reader={
     needRender:2,
     $filecont:null,
     read:function(files){
-        if(!files){
-            manage.console.error("Reader: není files property");
-            return;
-        }else if(!files[0]){
-            manage.console.error("Reader: No file");
-            return;
-        }else{
-            manage.manager.purge();var text;
-            if(files.length>1){text=files.length+" files";}
-            else{text=files[0].name;}
-            compute.reader.setChosed(text);
-            for(var f=0;f<files.length;f++){
-                var file=files[f];
-                var fr=new FileReader();
-                //fr.onload = compute.reader.readed;
-                fr.onload = compute.reader.readed;
-                fr.onerror = function(){manage.console.error("Reader: Reading failed");};
-                fr.readAsText(file);
-            }
+        var text,f,fr,file,onerror;
+        if(!files){manage.console.error("Reader: není files property");return;}
+        if(!files[0]){manage.console.error("Reader: No file");return;}
+        manage.manager.purge();
+        if(files.length>1){text=files.length+" files";}
+        else{text=files[0].name;}
+        compute.reader.setChosed(text);
+        onerror=function(){manage.console.error("Reader: Reading failed");};
+        for(f=0;f<files.length;f+=1){
+            file=files[f];
+            fr=new FileReader();
+            fr.onload = compute.reader.readed;
+            fr.onerror = onerror;
+            fr.readAsText(file);
         }
     },
     readed:function(event){
@@ -42,8 +37,8 @@ compute.reader={
     initEvents:function(){
         $("#main_cont")
         .on("drop",function(event){
-            var dt    = event.originalEvent.dataTransfer;
-            var files = dt.files;
+            var dt=event.originalEvent.dataTransfer,
+            files=dt.files;
             compute.reader.read(files);
             event.preventDefault();
             event.stopPropagation();
@@ -55,11 +50,12 @@ compute.reader={
         this.$filecont
         .on("click","#file_but",function(){$("#file").click();})
         .on("change","#file",$.proxy(function(event){
-            var $filer=$(event.target);
-            var files=$filer[0].files;
+            var $filer=$(event.target),
+            files=$filer[0].files;
+            if(!files){manage.console.warning("Reader:","no files to read");return;}
             compute.reader.read(files);
         },this))
-        .on("click","#examples_button",$.proxy(function(event){
+        .on("click","#examples_button",$.proxy(function(){
             this.exaopen=!this.exaopen;
             if(!this.exaopen){
                 this.$exasel.hide();
@@ -71,19 +67,18 @@ compute.reader={
             }
         },this))
         .on("click","#lang_sel",function(){
-            var langs=["eng","cze"];
-            var lang=control.settings.lang.get();
-            for(var i=0;i<langs.length;i++){
+            var langs=["eng","cze"],i,
+            lang=control.settings.lang.get();
+            for(i=0;i<langs.length;i+=1){
                 if(lang===langs[i]){break;}
             }
             if(i>=langs.length){i=0;manage.console.warning("Unknown language");}
-            i++;
+            i+=1;
             if(i>=langs.length){i=0;}
             control.settings.lang.set(langs[i]);
         })
         .on("click",".example",$.proxy(function(event){
-            var tar=event.currentTarget;
-            var path=tar.getAttribute("data-path");
+            var path=event.currentTarget.getAttribute("data-path");
             manage.manager.purge();
             $.get(path,function(data){
                 compute.parser.parse(data);
@@ -120,8 +115,8 @@ compute.reader={
         control.control.everysec(this,"render");
     },
     render:function(){
-        if(this.needRender===0){return;};
-        var obj;
+        var obj,rendered;
+        if(this.needRender===0){return;}
         if(this.needRender===2){
             obj={examples:[
                 {id:"HILLS.amber03",name:"2D HILLS v2.0"},
@@ -129,7 +124,7 @@ compute.reader={
                 //{id:"HILLS_2.0",name:"HILLS_2.0 krátký"},
                 {id:"HILLS_1.3",name:"2D HILLS v1.3"}
             ]};
-            var rendered=Mustache.render(this.seltempl,obj);
+            rendered=Mustache.render(this.seltempl,obj);
             this.$exasel=$(rendered);
             //$("#file_cont").append(this.$exasel);
         }

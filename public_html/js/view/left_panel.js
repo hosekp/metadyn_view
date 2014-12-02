@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof view==="undefined"){view={};}
-if(typeof view.panel==="undefined"){view.panel={};}
+if(window.view===undefined){var view={};}
+if(view.panel===undefined){view.panel={};}
 $.extend(view.panel,{
     templates:{
         eng:null,
@@ -22,9 +22,10 @@ $.extend(view.panel,{
         this.needRender=true;
     },
     render:function(){
+        var lang,template,obj,rendered;
         if(!this.needRender){return;}
-        var lang=control.settings.lang.get();
-        var template=this.templates[lang];
+        lang=control.settings.lang.get();
+        template=this.templates[lang];
         if(template===null){
             $.get("templates/panel_"+lang+".html",$.proxy(function(data){
                 this.templates[lang]=data;
@@ -37,8 +38,8 @@ $.extend(view.panel,{
             return;
         }
         if(template===""){return;}
-        var obj={count:2561};
-        var rendered=Mustache.render(template,obj);
+        obj={count:2561};
+        rendered=Mustache.render(template,obj);
         this.$left.html(rendered);
         
         

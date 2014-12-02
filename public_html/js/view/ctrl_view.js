@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof view==="undefined"){view={};}
-if(typeof view.ctrl==="undefined"){view.ctrl={};}
+if(window.view===undefined){var view={};}
+if(view.ctrl===undefined){view.ctrl={};}
 $.extend(view.ctrl,{
     template:"",
     div:null,
@@ -49,8 +49,8 @@ $.extend(view.ctrl,{
     },
     render:function(){
         if(this.ctrlRequested){
-            var vars={sett:this.getSettings()};
-            var rendered=Mustache.render(this.template,vars);
+            var vars={sett:this.getSettings()},
+            rendered=Mustache.render(this.template,vars);
             this.div.html(rendered);
             //manage.console.debug("CTRL redrawed");
             this.ctrlRequested=false;
@@ -64,51 +64,48 @@ $.extend(view.ctrl,{
         //var thisctrl=this;
         this.div
         .on("click","div.ctrl",$.proxy(function(event){
-            var ctrl=event.currentTarget.getAttribute("data-ctrl");
+            var ctrl,ctrlSel,val,template,data,obj,rendered,sett;
+            sett=control.settings;
+            ctrl=event.currentTarget.getAttribute("data-ctrl");
             //alert(ctrl);
-            if(ctrl==="resol"){
-                var ctrlSel=$("#ctrl_select");
+            if(ctrl==="resol" ||ctrl ==="speed"){
+                ctrlSel=$("#ctrl_select");
                 if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
                 this.temp.$ctrlSel=ctrlSel;
-                var val=control.settings.resol.get();
-                var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
-                var resoldata=this.preMustache(this.temp.resoldata,val);
-                //var resoldata=$.extend({},this.temp.resoldata);
-                var rendered=Mustache.render(template,{poss:resoldata});
+                if(ctrl==="resol"){
+                    val=sett.resol.get();
+                    template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
+                    data=this.temp.resoldata;
+                }else{
+                    val=sett.speed.get();
+                    template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
+                    data=this.temp.speeddata;
+                }
+                obj=this.preMustache(data,val);
+                //resoldata=$.extend({},this.temp.resoldata);
+                rendered=Mustache.render(template,{poss:obj});
                 //$(rendered).val(val);
                 this.summonSelect(event.currentTarget,rendered,function(event){
-                    control.settings.resol.set(parseInt(event.target.getAttribute("data-val")));
+                    sett[ctrl].set(parseInt(event.target.getAttribute("data-val"),10));
                     $("#ctrl_select").hide();
                 });
+                return;
                 //control.settings.resol.set((val)%500+100);
-            }else if(ctrl==="speed"){
-                var ctrlSel=$("#ctrl_select");
-                if(ctrlSel.is(":visible")){ctrlSel.hide();return;}
-                this.temp.$ctrlSel=ctrlSel;
-                var val=control.settings.speed.get();
-                var template='{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
-                var speeddata=this.preMustache(this.temp.speeddata,val);
-                //var resoldata=$.extend({},this.temp.resoldata);
-                var rendered=Mustache.render(template,{poss:speeddata});
-                //$(rendered).val(val);
-                this.summonSelect(event.currentTarget,rendered,function(event){
-                    control.settings.speed.set(parseFloat(event.target.getAttribute("data-val")));
-                    $("#ctrl_select").hide();
-                });
-            }else if(ctrl==="resize"){
-                
-            }else if(ctrl==="loop" || ctrl==="measure" || ctrl==="play" || ctrl==="glwant"){
-                control.settings[ctrl].toggle();
-            }else if(ctrl==="reset"){
-                control.control.reset();
-            }else if(ctrl==="pict"){
-                control.settings["png"].toggle();
+            }if(ctrl==="resize"){
+                return;
+            }if(ctrl==="loop" || ctrl==="measure" || ctrl==="play" || ctrl==="glwant"){
+                sett[ctrl].toggle();return;
+            }if(ctrl==="reset"){
+                control.control.reset();return;
+            }if(ctrl==="pict"){
+                sett.png.toggle();return;
             }
+            
         },this))
         .on("mousedown","#resize_ctrl",$.proxy(function(event){
             //this.settings.resize=true;
-            this.stopTip();
             var div=$("#main_cont");
+            this.stopTip();
             this.temp.resizepos={x:event.pageX-div.width(),y:event.pageY-div.height()};
             $("body").on("mousemove",$.proxy(function(event){
                 this.resizing=event;
@@ -138,33 +135,34 @@ $.extend(view.ctrl,{
         this.bindTips(this.div,this.tips);
     },
     preMustache:function(arr,val){
-        var data=[];
-        for(var i=0;i<arr.length;i++){
+        var data=[],i;
+        for(i=0;i<arr.length;i+=1){
             data.push({val:arr[i],sel:val===arr[i]?"on":""});
         }
         return data;
     },
     summonSelect:function(ctrl,rendered,callback){
-        var div=this.temp.$ctrlSel;
-        var off = $(ctrl).position();
+        var div=this.temp.$ctrlSel,
+        off = $(ctrl).position();
         div.css({"left":off.left+"px"});
         div.html(rendered);
         div.show();
         div.children("div").click(callback);
     },
     resize:function(optWid,optHei){
+        var wid,hei,sqdif;
         /*$("#cont").css({width:Math.max(400,event.pageX-this.temp.resizepos.x)+"px"});
         $("#main_cont").css({height:Math.max(300,event.pageY-this.temp.resizepos.y)+"px"});
         view.axi.arrange();*/
-        if(typeof optHei === "undefined"){
+        if(optHei === undefined){
             if(this.resizing===false){return;}
-            var wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x);
-            var hei=Math.max(300,this.resizing.pageY-this.temp.resizepos.y);
+            wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x);
+            hei=Math.max(300,this.resizing.pageY-this.temp.resizepos.y);
         }else{
             wid=optWid;
             hei=optHei;
         }
-        var sqdif=view.axi.isSquare(wid,hei);
+        sqdif=view.axi.isSquare(wid,hei);
         if(sqdif!==0){
             wid-=sqdif;
             hei+=sqdif;
@@ -193,13 +191,14 @@ $.extend(view.ctrl,{
         
     },
     showTooltip:function(ctrldiv,tips){
-        var $ctrl=$(ctrldiv);
+        var ctrl,off,
+        $ctrl=$(ctrldiv);
         if($ctrl.is(":hidden")){return;}
         if(!tips){tips=this.tips;}
         //manage.console.debug("caller is " + arguments.callee.caller.toString());
         //manage.console.debug("CTRL="+$(ctrldiv).attr("id"));
-        var ctrl=$ctrl.attr("data-ctrl");
-        var off = $ctrl.offset();
+        ctrl=$ctrl.attr("data-ctrl");
+        off = $ctrl.offset();
         this.tooltipdiv.css({"left":(off.left)+"px","top":(off.top+25)+"px"});
         this.tooltipdiv.html(Lang(tips[ctrl]));
         this.tooltipdiv.show();
@@ -226,8 +225,8 @@ view.ctrl.slide={
     ratio:0.0,
     init:function(){
         $.get("templates/slide.html",$.proxy(function(data){
+            var rendered=Mustache.render(data,{left:this.left()});
             this.template=data;
-            var rendered=Mustache.render(this.template,{left:this.left()});
             $("#slide_cont").html(rendered);
             //this.render();
             this.slider=$("#slider");
@@ -258,8 +257,8 @@ view.ctrl.slide={
             $("body").on("mousemove",$.proxy(function(event){
                 //manage.console.debug("mouse.which="+event.which);
                 //if(event.which!==1){this.mouseup(event);}
-                var lft=event.pageX-this.eventpos;
-                var ratio=this.toratio(lft);
+                var lft=event.pageX-this.eventpos,
+                ratio=this.toratio(lft);
                 this.byratio(ratio);
                 //control.control.set(ratio);
                 //this.move(lft);

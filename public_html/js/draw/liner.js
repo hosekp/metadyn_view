@@ -1,8 +1,8 @@
 /** @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
 * Copyright (C) 2014  Petr Hošek
 */
-if(typeof draw==="undefined"){draw={};}
-if(typeof draw.liner==="undefined"){draw.liner={};}
+if(window.draw===undefined){var draw={};}
+if(draw.liner===undefined){draw.liner={};}
 $.extend(draw.liner,{
     $can:null,
     engine:"liner",
@@ -20,21 +20,19 @@ $.extend(draw.liner,{
         return this.inited;
     },
     draw:function(drawable,zmax){
-        /*if(!this.inited){
-            this.init();
-        }*/
+        var height,width,ctx,resol,step,i;
         if(!zmax){zmax=1;}
-        var height=this.$can.height();
-        var width=this.$can.width();
-        var ctx=this.ctx;
+        height=this.$can.height();
+        width=this.$can.width();
+        ctx=this.ctx;
         ctx.clearRect(0,0,width,height);
         ctx.beginPath();
         ctx.moveTo(0,height);
         ctx.strokeStyle="black";
         ctx.fillStyle="red";
-        var resol=control.settings.resol.get();
-        var step=width/resol;
-        for(var i=0;i<resol;i++){
+        resol=control.settings.resol.get();
+        step=width/resol;
+        for(i=0;i<resol;i+=1){
             ctx.lineTo(i*step,1+drawable[i]*(height-5)/zmax);
         }
         ctx.lineTo(width,0);
