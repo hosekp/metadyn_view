@@ -19,7 +19,8 @@ control.measure={
         control.settings.measure.subscribe(this,"on");
     },
     init:function(){
-        var cont=$('<div id="measure_cont"></div>');
+        var cont=$('<div id="measure_cont"></div>'),
+        sett=control.settings;
         this.div.$cont=cont;
         $("#side").append(cont);
         /*cont.on("click",".button",$.proxy(function(e){
@@ -50,9 +51,9 @@ control.measure={
     {{/chillsOn}}\
 ';
         control.control.everysec(this,"render");
-        control.settings.ncv.subscribe(this,"draw");
-        control.settings.enunit.subscribe(this,"draw");
-        control.settings.lang.subscribe(this,"draw");
+        sett.ncv.subscribe(this,"draw");
+        sett.enunit.subscribe(this,"draw");
+        sett.lang.subscribe(this,"draw");
         this.inited=true;
     },
     div:{},

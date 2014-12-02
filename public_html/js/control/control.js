@@ -15,17 +15,18 @@ $.extend(control.control,{
     RAFprefix:null,
     lastSlow:1000000,
     init:function(){
-        var stt=new Stats();
+        var stt=new Stats(),
+        sett=control.settings;
         stt.setMode(0);
         $("#all").append(stt.domElement);
         this.stats=stt;
         this.findRAF();
         this.cycle(this.lasttime);
-        control.settings.zoom.subscribe(this,null);
-        control.settings.frameposx.subscribe(this,null);
-        control.settings.frameposy.subscribe(this,null);
-        control.settings.resol.subscribe(this,null);
-        control.settings.play.subscribe(this,"toggle");
+        sett.zoom.subscribe(this,null);
+        sett.frameposx.subscribe(this,null);
+        sett.frameposy.subscribe(this,null);
+        sett.resol.subscribe(this,null);
+        sett.play.subscribe(this,"toggle");
     },
     start:function(){
         if(this.actratio>=1){this.reset();}

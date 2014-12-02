@@ -94,13 +94,14 @@ $.extend(control.gestures,{
         control.measure.unsetDiff();
     },
     mousewheel:function(event){
-        var wheelup,newzoom,zoomcoef,oldpow,pos,pow,frameposx,frameposy,delta;
+        var wheelup,newzoom,zoomcoef,oldpow,pos,pow,frameposx,frameposy,delta,sett;
+        sett=control.settings;
         this.recompute();
         event.preventDefault();
         wheelup=event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
         //manage.console.debug("Wheeling: "+(wheelup?"up":"down"));
-        newzoom=control.settings.zoom.get();
-        zoomcoef=control.settings.zoomcoef.get();
+        newzoom=sett.zoom.get();
+        zoomcoef=sett.zoomcoef.get();
         oldpow=Math.pow(zoomcoef,newzoom);
         if(wheelup){
             newzoom=Math.min(newzoom+1,6);
@@ -110,11 +111,11 @@ $.extend(control.gestures,{
         pos=this.nowPos;
         if(!pos){return;}
         pow=Math.pow(zoomcoef,newzoom);
-        frameposx=control.settings.frameposx.get();
-        frameposy=control.settings.frameposy.get();
+        frameposx=sett.frameposx.get();
+        frameposy=sett.frameposy.get();
         delta=1/oldpow-1/pow;
         //manage.console.debug("Wheeling: ["+pos.x+","+pos.y+"] delta="+delta);
-        control.settings.zoom.set(newzoom);
+        sett.zoom.set(newzoom);
         this.setFramepos(frameposx-delta*pos.x,frameposy-delta*pos.y);
         //control.settings.frameposx.set(frameposx-delta*pos.x);
         //control.settings.frameposy.set(frameposy-delta*pos.y);
@@ -125,13 +126,14 @@ $.extend(control.gestures,{
         control.measure.click(coord);
     },
     setFramepos:function(nposx,nposy){
-        var pow=control.settings.zoompow();
+        var sett=control.settings,
+        pow=sett.zoompow();
         nposx=Math.min(nposx,0);
         nposx=Math.max(nposx,-1+1/pow);
         nposy=Math.min(nposy,0);
         nposy=Math.max(nposy,-1+1/pow);
-        control.settings.frameposx.set(Math.floor(nposx*1000)/1000);
-        control.settings.frameposy.set(Math.floor(nposy*1000)/1000);
+        sett.frameposx.set(Math.floor(nposx*1000)/1000);
+        sett.frameposy.set(Math.floor(nposy*1000)/1000);
     },
     recompute:function(){
         var off;
@@ -145,10 +147,11 @@ $.extend(control.gestures,{
         }
     },
     getCoord:function(pos){
-        var zoompow,frameposx,frameposy,ret={};
-        zoompow=control.settings.zoompow();
-        frameposx=control.settings.frameposx.get();
-        frameposy=control.settings.frameposy.get();
+        var zoompow,frameposx,frameposy,ret={},
+        sett=control.settings;
+        zoompow=sett.zoompow();
+        frameposx=sett.frameposx.get();
+        frameposy=sett.frameposy.get();
         ret.x=-frameposx+pos.x/zoompow;
         ret.y=-frameposy+pos.y/zoompow;
         return ret;

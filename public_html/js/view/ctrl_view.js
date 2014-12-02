@@ -16,6 +16,7 @@ $.extend(view.ctrl,{
     tips:{play:"Play",stop:"Stop",measure:"Measure",loop:"Loop",resize:"Resize",glwant:"WebGL",resol:"Resolution",reset:"Reset",pict:"Picture",slider:"Slider",speed:"Speed"},
     //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
     init:function(){
+        var sett=control.settings;
         this.div=$("#ctrl_cont");
         this.tooltipdiv=$("#tooltip");
         this.slide.init();
@@ -27,12 +28,12 @@ $.extend(view.ctrl,{
         },this),"text");
         control.control.everytick(this,"render");
         control.control.everytick(this,"resize");
-        control.settings.play.subscribe(this,"draw");
-        control.settings.loop.subscribe(this,"draw");
-        control.settings.glwant.subscribe(this,"draw");
-        control.settings.measure.subscribe(this,"draw");
-        control.settings.resol.subscribe(this,"draw");
-        control.settings.speed.subscribe(this,"draw");
+        sett.play.subscribe(this,"draw");
+        sett.loop.subscribe(this,"draw");
+        sett.glwant.subscribe(this,"draw");
+        sett.measure.subscribe(this,"draw");
+        sett.resol.subscribe(this,"draw");
+        sett.speed.subscribe(this,"draw");
 
     },
     getSettings:function(){

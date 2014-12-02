@@ -137,19 +137,20 @@ $.extend(compute.axi,{
         }
     },*/
     getLimits:function(xaxi,visible){
-        var cv,max,min,diff,pow,posx,posy;
+        var cv,max,min,diff,pow,posx,posy,sett;
         cv=this.getCVindex(xaxi);
+        sett=control.settings;
         if(visible){
             max=compute.sum_hill.maxs[cv];
             min=compute.sum_hill.mins[cv];
             diff=max-min;
-            pow=control.settings.zoompow();
+            pow=sett.zoompow();
             if(xaxi){
-                posx=control.settings.frameposx.get();
+                posx=sett.frameposx.get();
                 max=min+diff*(-posx)+diff/pow;
                 min=min+diff*(-posx);
             }else{
-                posy=control.settings.frameposy.get();
+                posy=sett.frameposy.get();
                 min=max+diff*(+posy)-diff/pow;
                 max=max+diff*(+posy);
             }

@@ -152,10 +152,11 @@ $.extend(draw.gl,{
         //var err=gl.getError();if(err!==gl.NO_ERROR){manage.console.error("WebGL draw error: ",err);}
     },
     updateCoord:function(){
-        var zoompow,posx,posy,xlow,xhigh,ylow,yhigh,mustr,i,arr;
-        posx=control.settings.frameposx.get();
-        posy=control.settings.frameposy.get();
-        zoompow=control.settings.zoompow();
+        var zoompow,posx,posy,xlow,xhigh,ylow,yhigh,mustr,i,arr,
+        sett=control.settings;
+        posx=sett.frameposx.get();
+        posy=sett.frameposy.get();
+        zoompow=sett.zoompow();
         xlow=posx*zoompow;
         xhigh=zoompow+posx*zoompow;
         ylow=posy*zoompow;

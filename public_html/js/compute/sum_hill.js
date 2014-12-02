@@ -155,8 +155,9 @@ $.extend(compute.sum_hill,{
         return inds;
     },
     add:function(space,torat){    // sum
-        var ncv=this.ncv,last,to,hei,blob,periods,anyperiod,i,inds,divis,ind1;
+        var ncv=this.ncv,last,to,hei,blob,periods,anyperiod,i,inds,divis,ind1,webgl;
         //var resol=control.settings.resol.get();
+        webgl=control.settings.webgl();
         last=this.locate(space.ratio);
         to=this.locate(torat);
         hei=this.checkHeights(last,to);
@@ -190,7 +191,7 @@ $.extend(compute.sum_hill,{
                     if(divis[0]){space.add([ind1-1],blob);}
                     if(divis[1]){space.add([ind1+1],blob);}
                 }else if(ncv===2){
-                    if(!control.settings.webgl()){
+                    if(!webgl){
                         if(divis[0]){
                             inds[0]+=1;
                             space.add(inds,blob);
