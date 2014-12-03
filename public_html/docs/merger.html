@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <script>
+            var tree={
+                compute:["axi","gl_summer","parser","reader","sum_hill","tspace","tspace1","tspace2"],
+                control:["control","feedback","gestures","measure","settings"],
+                draw:["drawer","liner","raster","webgl"],
+                manage:["console","manager","storage","tests"],
+                view:["axi_view","ctrl_view","exporter","lang","left_panel"]
+            };
+            function construct(){
+                var ret="";
+                for(var grp in tree){
+                    var arr=tree[grp];
+                    for(var i=0;i<arr.length;i++){
+                        var fil=arr[i];
+                        ret+='\
+            <tr>\n\
+                <td><a href="js/'+grp+'/'+fil+'.js">'+grp+'/'+fil+'.js</a></td>\n\
+                <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a></td>\n\
+                <td><a href="js/'+grp+'/'+fil+'.js">source</a></td>\n\
+            </tr>\n';
+                    }
+                }
+                return document.createTextNode(ret);
+            }
+            document.body.appendChild(construct());
+        </script>
+    </body>
+</html>
