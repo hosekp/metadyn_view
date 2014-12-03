@@ -75,7 +75,7 @@ $.extend(control.feedback,{
         for(var i=0;i<data.length;i++){
             data[i].color=this.getColor(data[i].author);
             data[i].id=i;
-            if(data[i].short){data[i].long="long";}else{}
+            if(data[i].shrt){data[i].long="long";}else{}
         }
         return {notes:data};
     },

@@ -98,12 +98,12 @@ $.extend(control.settings,{
         this.hashRequested=true;
         //setTimeout($.proxy(this.newHash,this),100);
     },
-    create:function(def,short){
-        var s=$.extend({},this.template,{def:def,short:short});
+    create:function(def,shrt){
+        var s=$.extend({},this.template,{def:def,shrt:shrt});
         s.listeners=[];
         s.set(def);
-        if(short){
-            this.shortdict[short]=s;
+        if(shrt){
+            this.shortdict[shrt]=s;
         }
         return s;
     },
@@ -114,7 +114,7 @@ $.extend(control.settings,{
 control.settings.template={
     value:false,
     def:false,
-    short:"tmpl",
+    shrt:"tmpl",
     lastprintout:"",
     listeners:null,
     set:function(val){
@@ -192,7 +192,7 @@ control.settings.template={
     },
     printout:function(string){
         if(this.lastprintout===false){
-            if(!this.isdef()){this.lastprintout= /*"&"+*/this.short+"="+this.value;}else{
+            if(!this.isdef()){this.lastprintout= /*"&"+*/this.shrt+"="+this.value;}else{
                 this.lastprintout="";
                 return string;
             }
