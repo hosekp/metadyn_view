@@ -79,7 +79,7 @@ manage.tests.prototest={
     start:function(){
         manage.console.log(this.name,"executed");
         control.control.everysec(this,"run");
-        this.vars={sleeping:0,goto:0};
+        this.vars={sleeping:0,counting:0};
     },
     run:function(){
         var ret;
@@ -148,13 +148,15 @@ manage.tests.prototest={
                 return 0;
             }if(cmd==="wait"){
                 if(line.length<2){this.error("too few arguments");return 1;}
+                varis.counting+=1;
+                if(varis.counting>200){this.error("Wait","too many iteration");return 1;}
                 val=this.evaluate(line[1]);
                 return val?2:0;
             }if(cmd==="goto"){
                 if(line.length<2){this.error("too few arguments");return 1;}
                 if(line[1]==="target"){return 2;}
-                varis.goto+=1;
-                if(varis.goto>200){this.error("Goto","too many iteration");return 1;}
+                varis.counting+=1;
+                if(varis.counting>200){this.error("Goto","too many iteration");return 1;}
                 val=this.evaluate(line[1]);
                 if(val){
                     actual=parseInt(line[2],10)-1;
