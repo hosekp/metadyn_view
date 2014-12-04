@@ -10,6 +10,7 @@ $.extend(view.ctrl,{
     tooldelay:false,
     ctrlRequested:false,
     width:600,
+    listeners:[],
     inited:false,
     resizing:false,  // event 
     temp:{resizepos:false,resoldata:[16,64,128,256,512],speeddata:[0.01,0.03,0.1,0.3,1,3,10,30,100]},
@@ -152,9 +153,6 @@ $.extend(view.ctrl,{
     },
     resize:function(optWid,optHei){
         var wid,hei,sqdif;
-        /*$("#cont").css({width:Math.max(400,event.pageX-this.temp.resizepos.x)+"px"});
-        $("#main_cont").css({height:Math.max(300,event.pageY-this.temp.resizepos.y)+"px"});
-        view.axi.arrange();*/
         if(optHei === undefined){
             if(this.resizing===false){return;}
             wid=Math.max(400,this.resizing.pageX-this.temp.resizepos.x);
@@ -171,10 +169,11 @@ $.extend(view.ctrl,{
         this.width=wid;
         $("#cont").css({width:wid+"px"});
         $("#main_cont").css({height:hei+"px"});
-        view.axi.needArrange=true;
+        this.call("resize");
+        /*view.axi.needArrange=true;
         view.ctrl.slide.render();
         control.gestures.needRecompute=true;
-        control.control.needRedraw=true;
+        control.control.needRedraw=true;*/
         this.resizing=false;
     },
     bindTips:function(div,tips){
@@ -215,8 +214,24 @@ $.extend(view.ctrl,{
         if(args==="draw"){this.ctrlRequested=true;}
         if(args==="render"){this.render();}
         if(args==="resize"){this.resize();}
-        
-    }
+    },
+    subscribe:function(ctx,args){
+        var list=this.listeners,i;
+        for(i=0;i<list.length;i+=1){
+            if(list[i]===ctx){return;}
+        }
+        list.push({ctx:ctx,args:args});
+    },
+    call:function(args){
+        var list=this.listeners,
+        i,lis;
+        for(i=0;i<list.length;i+=1){
+            lis=list[i];
+            if(lis.args===args){
+                lis.ctx.notify(args);
+            }
+        }
+    },
 });
 view.ctrl.slide={
     eventpos:null,
@@ -234,6 +249,7 @@ view.ctrl.slide={
             this.cont=$("#slide_cont");
             this.bind();
         },this),"text");
+        view.ctrl.subscribe(this,"resize");
     },
     left:function(){
         return Math.round((this.ctrl.width-20)*this.ratio);
@@ -283,6 +299,9 @@ view.ctrl.slide={
         lft=Math.max(Math.min(lft,this.ctrl.width-20),0);
         //manage.console.debug("left="+lft);
         this.slider.css("left",lft);
+    },
+    notify:function(args){
+        if(args==="resize"){this.render();}
     }
 };
 // @license-end

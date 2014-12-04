@@ -21,6 +21,7 @@ $.extend(view.axi,{
         var sett=control.settings;
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
         control.control.everytick(this,"drawAxes");
+        view.ctrl.subscribe(this,"resize");
         sett.zoom.subscribe(this,"draw");
         sett.frameposx.subscribe(this,"draw");
         sett.frameposy.subscribe(this,"draw");
@@ -371,10 +372,11 @@ $.extend(view.axi,{
         return val.toFixed(dec);
     },
     notify:function(args){
-        if(args==="draw"){this.needRedraw=true;}
-        if(args==="drawAxes"){this.drawAxes();}
-        if(args==="arrange"){this.needArrange=true;}
-        if(args==="labels"){this.setTextFrames();}
+        if(args==="draw"){this.needRedraw=true;return;}
+        if(args==="drawAxes"){this.drawAxes();return;}
+        if(args==="arrange"){this.needArrange=true;return;}
+        if(args==="resize"){this.needArrange=true;return;}
+        if(args==="labels"){this.setTextFrames();return;}
     },
     isSquare:function(wid,hei){
         hei-=this.xwidth;

@@ -18,6 +18,7 @@ $.extend(control.gestures,{
     init:function(){
         this.$cancont=$("#canvas_cont");
         this.bind();
+        view.ctrl.subscribe(this,"resize");
     },
     bind:function(){
         //manage.console.debug("Measure: binded");
@@ -135,9 +136,9 @@ $.extend(control.gestures,{
         sett.frameposx.set(Math.floor(nposx*1000)/1000);
         sett.frameposy.set(Math.floor(nposy*1000)/1000);
     },
-    recompute:function(){
+    recompute:function(force){
         var off;
-        if(this.needRecompute){
+        if(this.needRecompute||force){
             off=this.$cancont.offset();
             this.top=off.top;
             this.left=off.left;
@@ -156,6 +157,9 @@ $.extend(control.gestures,{
         ret.y=-frameposy+pos.y/zoompow;
         return ret;
         //manage.console.debug("Coord=["+ret.x+","+ret.y+"]");
+    },
+    notify:function(args){
+        if(args==="resize"){return this.recompute(true);}
     }
 });
 // @license-end

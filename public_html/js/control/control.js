@@ -27,6 +27,7 @@ $.extend(control.control,{
         sett.frameposy.subscribe(this,null);
         sett.resol.subscribe(this,null);
         sett.play.subscribe(this,"toggle");
+        view.ctrl.subscribe(this,"resize");
     },
     start:function(){
         if(this.actratio>=1){this.reset();}
@@ -162,6 +163,7 @@ $.extend(control.control,{
     },
     notify:function(args){
         if(args==="toggle"){return this.toggle();}
+        //if(args==="resize"){}
         this.needRedraw=true;
     }
 });
