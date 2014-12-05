@@ -54,6 +54,7 @@ control.measure={
         sett.ncv.subscribe(this,"draw");
         sett.enunit.subscribe(this,"draw");
         sett.lang.subscribe(this,"draw");
+        draw.path.init();
         this.inited=true;
     },
     div:{},
@@ -106,18 +107,31 @@ control.measure={
         this.needRedraw=true;
     },
     measure:function(pos){
-        var val,data,override;
+        var val,data,override,ncv,x;
         if(!control.settings.measure.get()){return false;}
-        pos.y=1-pos.y;
-        val=-this.getValueAt(pos);
+        val=this.getValueAt(pos);
+        if(val===null){return false;}
+        ncv=control.settings.ncv.get();
         data=this.data;
         override=false;
         if(this.diffOn){
             val-=data.src;override=true;
+            if(ncv===1){
+                x=data.start[0];
+                draw.path.setPath([[x,0],[x,1],[pos.x,1],[pos.x,0],[x,0]]);
+            }else{
+                draw.path.setPath([data.start,[pos.x,pos.y]]);
+            }
+        }else{
+            if(ncv===1){
+                draw.path.setPath([[pos.x,-val/compute.axi.zmax]]);
+            }else{
+                draw.path.setPath([[pos.x,pos.y]]);
+            }
         }
         data.xaxi=compute.axi.getCVval(true,pos.x).toPrecision(3);
-        if(control.settings.ncv.get()>1){
-            data.yaxi=compute.axi.getCVval(false,pos.y).toPrecision(3);
+        if(ncv>1){
+            data.yaxi=compute.axi.getCVval(false,1-pos.y).toPrecision(3);
         }
         data.ene=val.toFixed(1);
         this.needRedraw=true;
@@ -127,33 +141,38 @@ control.measure={
     setDiff:function(pos){
         var val;
         if(!control.settings.measure.get()){return;}
-        pos.y=1-pos.y;
-        val=-this.getValueAt(pos);
+        val=this.getValueAt(pos);
+        draw.path.setPath([[pos.x,pos.y]]);
+        if(val===null){return false;}
         this.data.src=val;
         this.data.ene=0;
+        this.data.start=[pos.x,pos.y];
         this.diffOn=true;
         this.needRedraw=true;
+        //manage.console.debug("diff","on");
     },
     unsetDiff:function(){
         if(!control.settings.measure.get()){return;}
         this.diffOn=false;
         this.needRedraw=true;
+        draw.path.setPath([]);
+        //manage.console.debug("diff","off");
     },
     getValueAt:function(pos){
         var trans,resol,ncv,x,y=0,val;
         trans=manage.manager.getTransformed();
-        if(trans===null){return 0;}
+        if(trans===null){return null;}
         resol=control.settings.resol.get();
         ncv=control.settings.ncv.get();
         if(ncv===2){
             x=Math.floor(pos.x*resol);
-            y=Math.floor(pos.y*resol);
+            y=Math.floor((1-pos.y)*resol);
         }else if(ncv===1){
             x=Math.floor(pos.x*resol);
         }
         val=trans[x+y*resol];
         if(!val){return 0;}
-        return val;
+        return -val;
     },
     findChills:function(cvs){
         var ihills,ret,i;

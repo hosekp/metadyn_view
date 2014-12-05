@@ -173,3 +173,14 @@ body{
 .nomargin{
     margin:0px;
 }
+.main_can{
+    position:absolute;
+    left:0px;
+    top:0px;
+}
+.aux_can{
+    position:absolute;
+    left:0px;
+    top:0px;
+    z-index:5;
+}
