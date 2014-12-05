@@ -27,7 +27,7 @@ $.extend(control.control,{
         sett.frameposy.subscribe(this,null);
         sett.resol.subscribe(this,null);
         sett.play.subscribe(this,"toggle");
-        view.ctrl.subscribe(this,"resize");
+        view.axi.subscribe(this,"resize");
     },
     start:function(){
         if(this.actratio>=1){this.reset();}

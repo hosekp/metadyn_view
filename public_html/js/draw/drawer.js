@@ -7,6 +7,9 @@ $.extend(draw.drawer,{
     $can:null,
     engine:null,
     inited:false,
+    onload:function(){
+        view.axi.subscribe(this,"resize");
+    },
     appendCanvas:function(){
         var newcan=this.getCan(),
         oldcan=this.$can;
@@ -41,8 +44,10 @@ $.extend(draw.drawer,{
         if(!this.getCan()){
             this.engine.init();
         }
+        view.axi.arrange();
         this.appendCanvas();
-        control.gestures.needRecompute=true;
+        //control.gestures.needRecompute=true;
+        
     },
     /*getCan:function(){
         if(!this.$can){
@@ -71,7 +76,6 @@ $.extend(draw.drawer,{
 //        this.g1.viewportWidth = resol;
 //        this.g1.viewportHeight = resol;
         if(this.engine.resize){this.engine.resize(width,height);}
-        control.control.needRedraw=true;
         
     },
     draw:function(drawable,zmax){
@@ -84,6 +88,7 @@ $.extend(draw.drawer,{
     },
     notify:function(args){
         if(args==="switch"){this.switchTo();}
+        if(args==="resize"){this.resize();}
     }
     
     /*,

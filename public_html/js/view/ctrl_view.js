@@ -169,7 +169,8 @@ $.extend(view.ctrl,{
         this.width=wid;
         $("#cont").css({width:wid+"px"});
         $("#main_cont").css({height:hei+"px"});
-        this.call("resize");
+        view.axi.arrange();
+        //this.call("resize");
         /*view.axi.needArrange=true;
         view.ctrl.slide.render();
         control.gestures.needRecompute=true;
@@ -214,24 +215,7 @@ $.extend(view.ctrl,{
         if(args==="draw"){this.ctrlRequested=true;}
         if(args==="render"){this.render();}
         if(args==="resize"){this.resize();}
-    },
-    subscribe:function(ctx,args){
-        var list=this.listeners,i;
-        for(i=0;i<list.length;i+=1){
-            if(list[i]===ctx){return;}
-        }
-        list.push({ctx:ctx,args:args});
-    },
-    call:function(args){
-        var list=this.listeners,
-        i,lis;
-        for(i=0;i<list.length;i+=1){
-            lis=list[i];
-            if(lis.args===args){
-                lis.ctx.notify(args);
-            }
-        }
-    },
+    }
 });
 view.ctrl.slide={
     eventpos:null,
@@ -249,7 +233,7 @@ view.ctrl.slide={
             this.cont=$("#slide_cont");
             this.bind();
         },this),"text");
-        view.ctrl.subscribe(this,"resize");
+        view.axi.subscribe(this,"resize");
     },
     left:function(){
         return Math.round((this.ctrl.width-20)*this.ratio);

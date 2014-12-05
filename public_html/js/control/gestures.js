@@ -18,7 +18,7 @@ $.extend(control.gestures,{
     init:function(){
         this.$cancont=$("#canvas_cont");
         this.bind();
-        view.ctrl.subscribe(this,"resize");
+        view.axi.subscribe(this,"resize");
     },
     bind:function(){
         //manage.console.debug("Measure: binded");

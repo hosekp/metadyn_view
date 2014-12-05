@@ -17,11 +17,12 @@ $.extend(view.axi,{
     needRedraw:true,
     needArrange:true,
     rendered:false,
+    listeners:[],
     init:function(){
         var sett=control.settings;
         $.get("templates/axi.html",$.proxy(this.loaded,this),"text");
         control.control.everytick(this,"drawAxes");
-        view.ctrl.subscribe(this,"resize");
+        //view.ctrl.subscribe(this,"resize");
         sett.zoom.subscribe(this,"draw");
         sett.frameposx.subscribe(this,"draw");
         sett.frameposy.subscribe(this,"draw");
@@ -33,6 +34,7 @@ $.extend(view.axi,{
             this.template=template;
         }
         this.render();
+        this.arrange();
         this.bind();
     },
     render:function(){
@@ -63,7 +65,7 @@ $.extend(view.axi,{
         //if(ldiv.$cancont.children().length <= 0){draw.drawer.appendCans();}
         this.rendered=true;
     },
-    arrange:function(zaxi){
+    arrange:function(){
         var zwidth,xwidth,zheight,ywidth,ldiv;
         if(!this.rendered){return;}
         zwidth=this.zwidth;
@@ -71,7 +73,7 @@ $.extend(view.axi,{
         zheight=this.zheight;
         ywidth=this.ywidth;
         ldiv=this.div;
-        if(!zaxi){
+        if(control.settings.ncv.get()===1){
             zwidth=0;
             ywidth=this.zwidth;
             ldiv.$y_cont.hide();
@@ -100,9 +102,9 @@ $.extend(view.axi,{
         ldiv.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
         //ldiv.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
         this.setTextFrames();
-        draw.drawer.resize();
         this.needRedraw=true;
         this.needArrange=false;
+        this.call("resize");
         //manage.console.debug("Axis resized");
     },
     setTextFrames:function(){
@@ -117,10 +119,10 @@ $.extend(view.axi,{
     },
     drawAxes:function(){
         var ncv;
-        if(this.needArrange){
-            this.arrange(control.settings.ncv.get()>1);
+        /*if(this.needArrange){
+            this.arrange();
         }
-        if(!this.needRedraw){return;}
+        if(!this.needRedraw){return;}*/
         if(!compute.sum_hill.haveData()){
             return false;
         }
@@ -383,6 +385,23 @@ $.extend(view.axi,{
         wid-=this.ywidth+this.zwidth;
         if(Math.abs(wid-hei)<25){return (wid-hei)/2;}
         return 0;
+    },
+    subscribe:function(ctx,args){
+        var list=this.listeners,i;
+        for(i=0;i<list.length;i+=1){
+            if(list[i]===ctx){return;}
+        }
+        list.push({ctx:ctx,args:args});
+    },
+    call:function(args){
+        var list=this.listeners,
+        i,lis;
+        for(i=0;i<list.length;i+=1){
+            lis=list[i];
+            if(lis.args===args){
+                lis.ctx.notify(args);
+            }
+        }
     }
 });
 view.axi.renamer={

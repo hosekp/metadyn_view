@@ -152,5 +152,6 @@ $(function(){
     manage.tests.onload();
     control.settings.init();
     view.panel.init();
+    draw.drawer.onload();
 }); 
 // @license-end
