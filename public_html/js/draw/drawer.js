@@ -18,7 +18,8 @@ $.extend(draw.drawer,{
         if(oldcan!==null){
             oldcan.replaceWith(newcan);
         }else{
-            this.$can_cont.empty().append(newcan);
+            this.$can_cont.children("div").remove();
+            this.$can_cont.append(newcan);
         }
         this.$can=newcan;
         //this.engine.$can=$can;

@@ -46,7 +46,7 @@ $.extend(control.gestures,{
             if(this.lease===false){
                 if(Math.abs(mousepos.x-this.lastMousepos.x)>5/this.width||Math.abs(mousepos.y-this.lastMousepos.y)>5/this.height){
                     this.mouselease(event);
-                    manage.console.debug("Gestures:","Released");
+                    //manage.console.debug("Gestures:","Released");
                 }else{
                     return;
                 }
@@ -84,7 +84,7 @@ $.extend(control.gestures,{
     },
     mouseend:function(event){
         event.preventDefault();
-        //manage.console.debug("Mouseup");
+        //manage.console.debug("Gestures:",event.type);
         this.lastMousepos=null;
         this.lastPos=null;
         this.button=0;
