@@ -140,6 +140,7 @@ $.extend(compute.parser,{
         pcvs=params.cvs,ncv=params.ncv,fulllen=params.fulllen,len=0;
         //manage.console.debug("length: "+nbody);
         for(i=0;i<nbody;i+=1){
+            if(body[i].startsWith("#!")){continue;}
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
             time[len]=parseFloat(line[timepos]);
