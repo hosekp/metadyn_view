@@ -79,12 +79,16 @@
                     <p class="p3">By holding left mousebutton over this button it is possible to change size of the program screen. If size of the plot area is close to square dimensions, size will be adjusted to exactly square one.</p>
                     <h3 class="h3 li">Slider</h3>
                     <p class="p3">Control element above the bottom control strip. It displays the current progress throught the visualization and also the progress can be changed by moving the slider to either side.</p>
+                <div class="h2">Zoom</div>
+                    <div class="h3 li">Zoom</div>
+                    <p class="p3">Zooming of the plot is done by mousewheel. Position of mouse over plot matters, because zoom is focused on that point.</p>
+                    <div class="h3 li">Panning</div>
+                    <p class="p3">When zoom in, focused area can be moved by pressing right mousebutton and draging. It is impossible to move outside area with ploted data.</p>
                 <div class="h2">Axis adjustment</div>
                     <div class="h3 li">CV rename</div>
                     <p class="p3">Collective variables can be renamed by clicking on them and by writing the new name.</p>
                     <div class="h3 li">Energy axi units</div>
-                    <p class="p3">
-                        Energy units on axi title can be changed by clicking on them. Two possibilities are there: kJ/mol and kcal/mol. The program cannot recognize appropriate units from HILLS file, so it has to be set manually.</p>
+                    <p class="p3">Energy units on axi title can be changed by clicking on them. Two possibilities are there: kJ/mol and kcal/mol. The program cannot recognize appropriate units from HILLS file, so it has to be set manually.</p>
                 <div class="h2">Image export</div>
                     <div class="h3 li">Save image</div>
                     <p class="p3">After click on Export button, whole visualization is replaced with an image which can be downloaded through right click and SaveAs.. action.</p>
@@ -92,7 +96,25 @@
                     <p class="p3">It is not possible to select dpi value for created image but you can increase the resolution by increasing the size of plot (Resize button).</p>
                     <p class="p2">Exported image is exactly the same as the visualized plot, so any change which you like do (as axi name change or others) must be done before the export.</p>
                 <div class="h2">Measuring</div>
+                <p class="p2">All of this options are accessible when Measure button is on (see above).</p>
+                    <div class="h3 li">Free energy and CV coordinates</div>
+                    <p class="p3">Pointing with mouse curson on any point on plot will display free energy of that state and its CV coordinates.</p>
+                    <div class="h3 li">Free energy difference</div>
+                    <p class="p3">Pressing left mouse button and drawing it to another point will display energy difference between these two points.</p>
+                    <div class="h3 li">Closest hills</div>
+                    <p class="p3">Licing on any point of interest on plot will display three hills which are closest to selected point. Hills are displayed in form of time records, so thay can be used to find related frames in trajectory file.</p>
                 <div class="h2">Advanced control</div>
+                <p class="p2">
+                    Lot of settings can be control through respective buttons. But all of them can be changed by modification of URL (in address line).
+                    Each non-default settings is written there and joined with "&" character. Only non-standart setting will be described further.
+                </p>
+                    <div class="h3 li">Tests</div>
+                    <p class="p3 li">tst=1 - runs prepared tests for evaluation of the program. Every test should pass, but failing in any of them do neccesary mean that the visualization won't work.</p>
+                    <p class="p3 li">tst=2 - runs prepared benchmarks for evaluation of the program. Benchmarks was prepared in such way that all produces 100 points on author's PC. Values less than 20 points could mean that visualization performace is severy hindered.</p>
+                    <!--<div class="h3 li">Sorting</div>
+                    <p class="p3 li">sort=false - turn off automatic sorting of hills according time. </p>-->
+                    <div class="h3 li">Log level</div>
+                    <p class="p3 li">log=X - There are several levels of importance for logs starting from level 4 (debug information) to level 1 (error messages). But only messages whose level is less or equal to log level settings will be displayed. So log=1 will display only error messages.</p>
         </div>
     </body>
 </html>
