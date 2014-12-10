@@ -4,23 +4,95 @@
         <title>User manual</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="text.css" rel="stylesheet" type="text/css" media="screen" />
     </head>
     <body>
         <div id="all">
             <h1>User manual</h1>
-            <h2>File upload</h2>
-            <p>
-                There are two posibilities, how to load HILLS files from Plumed into this tool.<br>
-                You can choose files by File picker accesible by "Choose files" button. 
-                More than one file can be picked with usage of Ctrl or Shift key.
-                Another possibility is to drag and drop chosed files into the empty center of the program area.
-            </p>
-            <p>
-                The program accepts HILLS files produced by Plumed 1.3 or Plumed 2. Syntax of files are recognised automatically, nothing has to be manually adjusted.
-                Gaussians written in HILLS files are being sorted according time (in the case of Plumed 1.3 files) or timestamp (Plumed 2.x). 
-                For disabling sorting, "sort=false" has to be written into the address line (see further).
-                
-            </p>
+                <div class="h2">File upload</div>
+                    <h3 class="h3 li">File Picker</h3>
+                    <p class="p3">Press "Choose files" and select appropriate HILLS files. Multiple files can be selected with usage of Ctrl or Shift key.</p>
+                    <h3 class="h3 li">Drag and drop</h3>
+                    <p class="p3">Drag and drop chosed files into the empty center of the program area. Multiple files can also be used.</p>
+                    <h3 class="h3 li">Examples</h3>
+                    <p class="p3">
+                        For educational purposes several example HILLS files are included in the program. Any of them can be picked by clicking on "Examples" button and selecting an example. More information
+                        about the simulations are in the accompanied article.</p>
+                <p class="p2">
+                    The program accepts HILLS files produced by Plumed 1.3 or Plumed 2. Syntax of files are recognised automatically, nothing has to be manually adjusted.
+                    Gaussians written in HILLS files are being sorted according time (in the case of Plumed 1.3 files) or timestamp (Plumed 2.x). 
+                    For disabling sorting, "sort=false" has to be written into the address line (see further).
+                </p>
+                <div class="h2">Controls buttons</div>
+                    <h3 class="h3 li">
+                        Languages
+                        <img alt="English" src="../img/eng.png" />
+                        <img alt="Czech" src="../img/cze.png" />
+                    </h3>
+                    <p class="p3">Button located at right top corner controls a selection of languages. At current version of the program only English and Czech languages are supported.</p>
+                    <h3 class="h3 li">
+                        Play/Stop
+                        <img class="red" alt="Play" src="../img/play.png" />
+                        <img class="red" alt="Stop" src="../img/stop.png" />
+                    </h3>
+                    <p class="p3">Button located at left bottom corner starts or suspends visualization of the data.</p>
+                    <h3 class="h3 li">
+                        Reset
+                        <img class="red" alt="Reset" src="../img/reset.png" />
+                    </h3>
+                    <p class="p3">Returns the vizualization on the beginning.</p>
+                    <h3 class="h3 li">
+                        Measure
+                        <img class="red" alt="Measure" src="../img/measure.png" />
+                    </h3>
+                    <p class="p3">Opens window with tools for measuring of energy and other quantities (see further).</p>
+                    <div class="h3 li">
+                        Speed
+                        <div class="box red nodecor">0.3 x</div>
+                    </div>
+                    <p class="p3">Sets speed of visualization. Normal speed (1x) is adjusted to make whole visualization last 10 seconds.</p>
+                    <div class="h3 li">
+                        Resolution
+                        <div class="box red nodecor">128px</div>
+                    </div>
+                    <p class="p3">Sets size od computational matrix, where potential is deposited. This resolution doesn't affect the resolution of image, but it improve quality of the energy surface.</p>
+                    <h3 class="h3 li">
+                        Export
+                        <img class="red" alt="Export" src="../img/pict.png" />
+                    </h3>
+                    <p class="p3">Opens new window for exporting images. For more information see "Image Export" category</p>
+                    <h3 class="h3 li">
+                        Loop
+                        <img class="red" alt="Loop" src="../img/loop.png" />
+                    </h3>
+                    <p class="p3">If it is turned on, the visualization will not stop at the end but loop back to the beginning.</p>
+                    <h3 class="h3 li">
+                        WebGL
+                        <img class="red" alt="WebGL" src="../img/webgl.png" />
+                    </h3>
+                    <p class="p3">Turns off or turns on the usage of WebGL technology. WebGL is much more effective for visualization, but it may not work properly on some devices.
+                        Devices without WebGL support have WebGL disabled no matter of this button.</p>
+                    <h3 class="h3 li">
+                        Resize
+                        <img class="red" alt="Resize" src="../img/resize.png" />
+                    </h3>
+                    <p class="p3">By holding left mousebutton over this button it is possible to change size of the program screen. If size of the plot area is close to square dimensions, size will be adjusted to exactly square one.</p>
+                    <h3 class="h3 li">Slider</h3>
+                    <p class="p3">Control element above the bottom control strip. It displays the current progress throught the visualization and also the progress can be changed by moving the slider to either side.</p>
+                <div class="h2">Axis adjustment</div>
+                    <div class="h3 li">CV rename</div>
+                    <p class="p3">Collective variables can be renamed by clicking on them and by writing the new name.</p>
+                    <div class="h3 li">Energy axi units</div>
+                    <p class="p3">
+                        Energy units on axi title can be changed by clicking on them. Two possibilities are there: kJ/mol and kcal/mol. The program cannot recognize appropriate units from HILLS file, so it has to be set manually.</p>
+                <div class="h2">Image export</div>
+                    <div class="h3 li">Save image</div>
+                    <p class="p3">After click on Export button, whole visualization is replaced with an image which can be downloaded through right click and SaveAs.. action.</p>
+                    <div class="h3 li">Image resolution</div>
+                    <p class="p3">It is not possible to select dpi value for created image but you can increase the resolution by increasing the size of plot (Resize button).</p>
+                    <p class="p2">Exported image is exactly the same as the visualized plot, so any change which you like do (as axi name change or others) must be done before the export.</p>
+                <div class="h2">Measuring</div>
+                <div class="h2">Advanced control</div>
         </div>
     </body>
 </html>
