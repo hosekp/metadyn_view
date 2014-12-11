@@ -58,19 +58,33 @@ $.extend(draw.path,{
         ctx.lineCap="round";
         ctx.lineJoin="round";
         ctx.beginPath();
-        dato=datas[0];
+        dato=this.getCoord(datas[0]);
         ctx.moveTo(dato[0]*wid,(dato[1])*hei);
         len=datas.length;
         if(len===1){
             ctx.strokeRect(dato[0]*wid-1,(dato[1])*hei-1,2,2);
         }else{
             for(i=1;i<len;i+=1){
-                dato=datas[i];
+                dato=this.getCoord(datas[i]);
                 ctx.lineTo(dato[0]*wid,(dato[1])*hei);
             }
         }
         ctx.stroke();
         this.needRedraw=false;
+    },
+    getCoord:function(pos){
+        var zoompow,frameposx,frameposy,ret,
+        sett=control.settings;
+        if(sett.ncv.get()===1){return pos;}
+        ret=[];
+        zoompow=sett.zoompow();
+        frameposx=sett.frameposx.get();
+        frameposy=sett.frameposy.get();
+//        ret[0]=-frameposx+pos[0]/zoompow;
+//        ret[1]=-frameposy+pos[1]/zoompow;
+        ret[0]=zoompow*(pos[0]+frameposx);
+        ret[1]=zoompow*(pos[1]+frameposy);
+        return ret;
     },
     resize:function(){
         var cont=this.$cont,can=this.$can,
