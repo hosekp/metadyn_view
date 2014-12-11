@@ -282,6 +282,7 @@ view.ctrl.slide={
         //div.css("left",lft);
         lft=Math.max(Math.min(lft,this.ctrl.width-20),0);
         //manage.console.debug("left="+lft);
+        if(this.slider===null){this.slider=$("#slider");}
         this.slider.css("left",lft);
     },
     notify:function(args){
