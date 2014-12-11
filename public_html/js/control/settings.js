@@ -6,6 +6,7 @@ if(control.settings===undefined){control.settings={};}
 $.extend(control.settings,{
     hashRequested:false,
     lastHash:false,
+    zmpw:1,
     shortdict:{},
     onload:function(){
         this.play=this.create(false);
@@ -37,15 +38,15 @@ $.extend(control.settings,{
             if(this.ncv.get()===1){return false;}
             return true;
         };
-        this.zoompow=function(){
-            if(this.zoom.value===0){return 1;}
-            return Math.pow(this.zoomcoef.value,this.zoom.value);
-        };
-        this.maxresol=function(){return 512;};
     },
+    zoompow:function(){
+        return this.zmpw;
+    },
+    maxresol:function(){return 512;},
     init:function(){
         this.readHash();
         control.control.everysec(this,"newHash");
+        this.zoom.subscribe(this,"zoompow");
     },
     readHash:function(){
         var hashstr=window.location.hash,i,hash,hashspl,hsspl,key;
@@ -109,6 +110,7 @@ $.extend(control.settings,{
     },
     notify:function(args){
         if(args==="newHash"){this.newHash();}
+        if(args==="zoompow"){if(this.zoom.value===0){this.zmpw=1;return;} this.zmpw=Math.pow(this.zoomcoef.value,this.zoom.value);}
     }
 });
 control.settings.template={
