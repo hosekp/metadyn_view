@@ -31,11 +31,10 @@ $.extend(draw.liner,{
         ctx.strokeStyle="black";
         ctx.fillStyle="red";
         resol=control.settings.resol.get();
-        step=width/resol;
+        step=width/(resol-1);
         for(i=0;i<resol;i+=1){
             ctx.lineTo(i*step,1+drawable[i]*(height-5)/zmax);
         }
-        ctx.lineTo(width,0);
         ctx.lineTo(width,height);
         ctx.closePath();
         ctx.stroke();
