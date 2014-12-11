@@ -175,7 +175,7 @@ $.extend(compute.sum_hill,{
         }
         blob=this.blobs[hei];
         periods=this.isPeriodic();
-        //manage.console.debug("Add from "+last+" to "+to);
+        //manage.console.debug("Add from",last,"(",space.ratio,")","to",to,"(",torat,")");
         anyperiod=false;
         for(i=0;i<ncv;i+=1){
             if(periods[i]){
@@ -187,9 +187,8 @@ $.extend(compute.sum_hill,{
                 inds=this.toIndices(i,hei);
                 divis=space.add(inds,blob);
                 if(ncv===1){
-                    ind1=inds[0];
-                    if(divis[0]){space.add([ind1-1],blob);}
-                    if(divis[1]){space.add([ind1+1],blob);}
+                    if(divis[0]){inds[0]+=1;space.add(inds,blob);}
+                    if(divis[1]){inds[0]-=1;space.add(inds,blob);}
                 }else if(ncv===2){
                     if(!webgl){
                         if(divis[0]){
@@ -255,15 +254,16 @@ $.extend(compute.sum_hill,{
     locate:function(rat){    // data
         var t0,t1,tr,lower=0,higher,middle;
         if(rat<=0){return 0;}
-        t0=this.artime[0];
-        t1=this.artime[this.nbody-1];
+        t0=this.arclock[0];
+        t1=this.arclock[this.nbody-1];
         tr=t0+rat*(t1-t0);
         //manage.console.debug("Locate from "+t0+" to "+t1+" through "+tr);
+        if(isNaN(tr)){manage.console.error("Sum_hills:","middlepoint is",tr);}
         higher=this.nbody;
         while (lower+1!==higher){
             //manage.console.debug("Locate from "+lower+" to "+higher);
             middle=Math.floor((lower+higher)/2);
-            if(tr>=this.artime[middle]){lower=middle;}else{higher=middle;}
+            if(tr>=this.arclock[middle]){lower=middle;}else{higher=middle;}
         }
         return higher;
     },
