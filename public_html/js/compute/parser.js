@@ -4,7 +4,7 @@
 if(window.compute===undefined){var compute={};}
 if(compute.parser===undefined){compute.parser={};}
 $.extend(compute.parser,{
-    mintime:null,
+    mintime:0,
     parse:function(toparse){
         var lines,i,params,header,body,data;
         if (typeof String.prototype.startsWith !== 'function') {
@@ -139,15 +139,30 @@ $.extend(compute.parser,{
         var line,timepos=params.timepos,heipos=params.heipos,clockpos=params.clockpos,
         pcvs=params.cvs,ncv=params.ncv,fulllen=params.fulllen,len=0;
         //manage.console.debug("length: "+nbody);
+        var clockstepsum=0;
+        var deltaclock=0;
+        var lastclock=0;
+        var nowclock;
         for(i=0;i<nbody;i+=1){
-            if(body[i].startsWith("#!")){continue;}
-            line=body[i].match(/[^ ]+/g);
-            if(!line||line.length<fulllen){manage.console.debug("Line: "+body[i]);continue;}
-            time[len]=parseFloat(line[timepos]);
-            if(this.mintime===null){
-                this.mintime=line[clockpos];
+            if(body[i].startsWith("#!")){
+                analline=true;
+                continue;
             }
-            clock[len]=parseFloat(line[clockpos]-this.mintime);
+            line=body[i].match(/[^ ]+/g);
+            if(!line||line.length<fulllen){manage.console.debug("Line:",body[i]);continue;}
+            time[len]=parseFloat(line[timepos]);
+            nowclock=parseFloat(line[clockpos]);
+            if(nowclock<lastclock){
+                deltaclock-=lastclock-nowclock+1;
+                manage.console.debug("Parser:","delta decreased by",lastclock-nowclock+1,"now=",nowclock,"last=",lastclock);
+            }
+            if(nowclock>lastclock+clockstepsum/len*5){
+                deltaclock+=nowclock-lastclock;
+                manage.console.debug("Parser:","delta increased by",nowclock-lastclock,"now=",nowclock,"last=",lastclock);
+            }
+            clockstepsum+=nowclock-deltaclock-lastclock;
+            clock[len]=nowclock-deltaclock;
+            lastclock=nowclock;
             hei[len]=parseFloat(line[heipos]);
             for(j=0;j<ncv;j+=1){
                 pcv=pcvs[j];
@@ -177,11 +192,7 @@ $.extend(compute.parser,{
         if(control.settings.sort.get()){
             var sorter=$.extend({},this.TAsorter),
             sorted;
-            if(isNaN(clock[0])){
-                sorted=sorter.sort(time);
-            }else{
-                sorted=sorter.sort(clock);
-            }
+            sorted=sorter.sort(clock);
             for(i=0;i<ncv;i+=1){
                 cvs[i]=sorter.rearrange(cvs[i],sorted);
                 sigma[i]=sorter.rearrange(sigma[i],sorted);
@@ -288,6 +299,7 @@ compute.parser.TAsorter={
     split:function(start,end){
         var middle=this.findSplitPoint(start,end);
         if(middle===-1){return [start,end];}
+        this.nsplits+=1;
         manage.console.debug("Split: ["+start+":"+middle+":"+end+"]");
         //manage.console.log("Split on "+splpoint);
         return this.merge(this.split(start,middle),this.split(middle,end));
@@ -304,7 +316,7 @@ compute.parser.TAsorter={
         //manage.console.log("array2="+array2);
         i1=start;i2=middle;nsum=end-start;
         for(i=0;i<nsum;i+=1){
-            if( (i2 === end || i1 !== middle) && this.compare(array[i1],array[i2]) ){
+            if( i2 === end || ( i1 !== middle && this.compare(array[i1],array[i2])) ){
                 narray[i]=(array[i1]);i1+=1;
             }else{
                 narray[i]=(array[i2]);i2+=1;
