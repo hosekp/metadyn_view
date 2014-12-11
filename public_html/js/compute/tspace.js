@@ -67,7 +67,7 @@ compute.tspacer.tspace[2]={
     ratio:0,
     init:function(nbins){
         var ncv=this.ncv,nwh=1,i;
-        this.id=this.lastid++;
+        this.id=compute.tspacer.lastId++;
         this.coefs=new Int32Array(ncv);
         this.dims=new Int32Array(ncv);
         for(i=0;i<ncv;i+=1){
