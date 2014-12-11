@@ -80,6 +80,7 @@ $.extend(compute.sum_hill,{
         this.loaded=false;
         compute.parser.mintime=null;
     },
+    purgeBlobs:function(){this.blobs={};},
     setRealLimits:function(){   // data
         var params=this.params,i,norcv,arcv,min,diff,j,lmins=[],lmaxs=[],ldiffs=[],lncv=this.ncv; 
         for(i=0;i<lncv;i+=1){

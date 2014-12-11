@@ -122,6 +122,7 @@ $.extend(manage.manager,{
         this.lastDrawable=null;
         control.settings.ncv.set(compute.sum_hill.ncv);
         this.reset();
+        compute.sum_hill.purgeBlobs();
         draw.drawer.switchTo();
     },
     estimate1sec:function(){
