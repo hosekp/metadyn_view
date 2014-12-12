@@ -19,104 +19,102 @@
                         Na ukázku byly do programu přidáno několik HILLS souborů. Kterýkoliv lze vybrat klikem na Příklady a vybráním příslušného příkladu. Dodatečné informace o simulacích, které vyprodukovaly dané HILLS soubory jsou obsaženy v článku.
                     </p>
                 <p class="p2">
-                    The program accepts HILLS files produced by Plumed 1.3 or Plumed 2. Syntax of files are recognised automatically, nothing has to be manually adjusted.
-                    Gaussians written in HILLS files are being sorted according time (in the case of Plumed 1.3 files) or timestamp (Plumed 2.x). 
-                    For disabling sorting, "sort=false" has to be written into the address line (see further).
+                    Tento program podporuje HILLS soubory vytvořené v Plumedu 1.3 i Plumedu 2. Potenciálové kopce jsou programem řazeny podle času vytvoření, aby byl potenciál po spuštění vizualizace přidáván stejně jako pro simulaci. 
+                    Automatické řazení lze vypnout (viz dále). 
                 </p>
-                <div class="h2">Controls buttons</div>
+                <div class="h2">Ovládací tlačítka</div>
                     <h3 class="h3 li">
-                        Languages
+                        Jazyky
                         <img alt="English" src="../img/eng.png" />
                         <img alt="Czech" src="../img/cze.png" />
                     </h3>
-                    <p class="p3">Button located at right top corner controls a selection of languages. At current version of the program only English and Czech languages are supported.</p>
+                    <p class="p3">Tlačítko v horním pravém rohu ovládá výběr jazyků. V současné verzi jsou podporovány pouze čeština a angličtina.</p>
                     <h3 class="h3 li">
-                        Play/Stop
-                        <img class="red" alt="Play" src="../img/play.png" />
-                        <img class="red" alt="Stop" src="../img/stop.png" />
+                        Spustit/Zastavit
+                        <img class="red" alt="Spustit" src="../img/play.png" />
+                        <img class="red" alt="Zastavit" src="../img/stop.png" />
                     </h3>
-                    <p class="p3">Button located at left bottom corner starts or suspends visualization of the data.</p>
+                    <p class="p3">Spustí či zastaví vizualizaci dat.</p>
                     <h3 class="h3 li">
                         Reset
                         <img class="red" alt="Reset" src="../img/reset.png" />
                     </h3>
-                    <p class="p3">Returns the vizualization on the beginning.</p>
+                    <p class="p3">Vrátí vizualizaci na začátek.</p>
                     <h3 class="h3 li">
-                        Measure
-                        <img class="red" alt="Measure" src="../img/measure.png" />
+                        Meření
+                        <img class="red" alt="Měření" src="../img/measure.png" />
                     </h3>
-                    <p class="p3">Opens window with tools for measuring of energy and other quantities (see further).</p>
+                    <p class="p3">Otevře okno s nástroji pro měření energií a jiných veličin (viz dále).</p>
                     <div class="h3 li">
-                        Speed
+                        Rychlost
                         <div class="box red nodecor">0.3 x</div>
                     </div>
-                    <p class="p3">Sets speed of visualization. Normal speed (1x) is adjusted to make whole visualization last 10 seconds.</p>
+                    <p class="p3">Nastaví rychlost vizualizace. Střední rychlost (1x) je nastavena tak, aby celá vizualizace běžela 10 sekund. Pokud počítač nestíhá vizualizaci propočítávat, rychlost vizualizace se sníží.</p>
                     <div class="h3 li">
-                        Resolution
+                        Rozlišení
                         <div class="box red nodecor">128px</div>
                     </div>
-                    <p class="p3">Sets size od computational matrix, where potential is deposited. This resolution doesn't affect the resolution of image, but it improve quality of the energy surface.</p>
+                    <p class="p3">Nastaví velikost výpočetní matice, do které je přidáván potenciál. Toto rozlišení neovlivňuje rozlišení výsledného obrázku, ale určuje kvalitu plochy volné energie.</p>
                     <h3 class="h3 li">
                         Export
                         <img class="red" alt="Export" src="../img/pict.png" />
                     </h3>
-                    <p class="p3">Opens new window for exporting images. For more information see "Image Export" category</p>
+                    <p class="p3">Otevře okno pro export výsledného obrázku. Více informací naleznete v sekci "Export obrázku"</p>
                     <h3 class="h3 li">
                         Loop
                         <img class="red" alt="Loop" src="../img/loop.png" />
                     </h3>
-                    <p class="p3">If it is turned on, the visualization will not stop at the end but loop back to the beginning.</p>
+                    <p class="p3">Když je tato volba vybrána, tak se vizualizace nezastaví na konci, ale bude opět pokračovat od začátku.</p>
                     <h3 class="h3 li">
                         WebGL
                         <img class="red" alt="WebGL" src="../img/webgl.png" />
                     </h3>
-                    <p class="p3">Turns off or turns on the usage of WebGL technology. WebGL is much more effective for visualization, but it may not work properly on some devices.
-                        Devices without WebGL support have WebGL disabled no matter of this button.</p>
+                    <p class="p3">Nastavuje použití technologie WebGL. WebGL je lepší pro vizualizaci, ale nemusí na některých zařízeních fungovat. Pokud zařízení WebGL nepodporuje, WebGL je vypnuto nehledě na toto tlačítko.</p>
                     <h3 class="h3 li">
-                        Resize
+                        Změna velikosti
                         <img class="red" alt="Resize" src="../img/resize.png" />
                     </h3>
-                    <p class="p3">By holding left mousebutton over this button it is possible to change size of the program screen. If size of the plot area is close to square dimensions, size will be adjusted to exactly square one.</p>
-                    <h3 class="h3 li">Slider</h3>
-                    <p class="p3">Control element above the bottom control strip. It displays the current progress throught the visualization and also the progress can be changed by moving the slider to either side.</p>
-                <div class="h2">Zoom</div>
-                    <div class="h3 li">Zoom</div>
-                    <p class="p3">Zooming of the plot is done by mousewheel. Position of mouse over plot matters, because zoom is focused on that point.</p>
-                    <div class="h3 li">Panning</div>
-                    <p class="p3">When zoom in, focused area can be moved by pressing right mousebutton and draging. It is impossible to move outside area with ploted data.</p>
-                <div class="h2">Axis adjustment</div>
-                    <div class="h3 li">CV rename</div>
-                    <p class="p3">Collective variables can be renamed by clicking on them and by writing the new name.</p>
-                    <div class="h3 li">Energy axi units</div>
-                    <p class="p3">Energy units on axi title can be changed by clicking on them. Two possibilities are there: kJ/mol and kcal/mol. The program cannot recognize appropriate units from HILLS file, so it has to be set manually.</p>
-                <div class="h2">Image export</div>
-                    <div class="h3 li">Save image</div>
-                    <p class="p3">After click on Export button, whole visualization is replaced with an image which can be downloaded through right click and SaveAs.. action.</p>
-                    <div class="h3 li">Image resolution</div>
-                    <p class="p3">It is not possible to select dpi value for created image but you can increase the resolution by increasing the size of plot (Resize button).</p>
-                    <p class="p2">Exported image is exactly the same as the visualized plot, so any change which you like do (as axi name change or others) must be done before the export.</p>
-                <div class="h2">Measuring</div>
-                <p class="p2">All of this options are accessible when Measure button is on (see above).</p>
-                    <div class="h3 li">Free energy and CV coordinates</div>
-                    <p class="p3">Pointing with mouse curson on any point on plot will display free energy of that state and its CV coordinates.</p>
-                    <div class="h3 li">Free energy difference</div>
-                    <p class="p3">Pressing left mouse button and drawing it to another point will display energy difference between these two points.</p>
-                    <div class="h3 li">Closest hills</div>
-                    <p class="p3">Licing on any point of interest on plot will display three hills which are closest to selected point. Hills are displayed in form of time records, so thay can be used to find related frames in trajectory file.</p>
-                <div class="h2">Advanced control</div>
+                    <p class="p3">Zmáčknutí a držením levého tlačítka myši je monžé měnit velikost zobrazované plochy. Pokud je velikost plochy téměř čtvercová, na přesně čtvercovou se upraví.</p>
+                    <h3 class="h3 li">Jezdec</h3>
+                    <p class="p3">Ovládací prvek nad spodními kontrolními tlačítky. Zobrazuje průběh vizualizace a také umožňuje tento průběh měnit posunutím jezdce na libovolnou stranu.</p>
+                <div class="h2">Přiblížení</div>
+                    <div class="h3 li">Přiblížení</div>
+                    <p class="p3">Kolečkem myši se přibližuje a oddaluje pohled. Pohled je přibližován k aktuální pozici myši.</p>
+                    <div class="h3 li">Posun</div>
+                    <p class="p3">Pokud je pohled přiblížen, je možné posunovat přiblíženou oblast držením pravého plačítka myši.</p>
+                <div class="h2">Úprava os</div>
+                    <div class="h3 li">Přejmenování CV</div>
+                    <p class="p3">Přejmenování kolektivní souřadnice lze provést klikem na její popisek a napsání nového jména.</p>
+                    <div class="h3 li">Jednotky energie</div>
+                    <p class="p3">Jednotky energie lze měnit klikem na popisek. Dvě možnosti jsou: kJ/mol and kcal/mol. Program nedokáže rozeznat správné jednotky energie z HILLS souboru, proto je nutné toto nastavit ručně.</p>
+                <div class="h2">Export obrázku</div>
+                    <div class="h3 li">Uložení obrázku</div>
+                    <p class="p3">Po kliknutí na tlačítko "Export" se celá vizualizace nahradí obrázkem, který je možné stáhnout pomocí kliknutí pravým tlačítkem a vybrání "Uložit jako ...".</p>
+                    <div class="h3 li">Rozlišení obrázku</div>
+                    <p class="p3">Bohužel není možné nastavit dpi obrázku, ale je možné zvětšit rozlišení zvětšením obrázku před exportem.</p>
+                    <p class="p2">Exportovaný obrázek bude stejný jako vizualizace, takže je nutné všechny změny (změna názvů os apod.) provést ještě před exportem.</p>
+                <div class="h2">Měření</div>
+                <p class="p2">Měření je přístupné po otevření okna tlačítkem "Měření" (viz výše)</p>
+                    <div class="h3 li">Volná energie a CV souřadnice</div>
+                    <p class="p3">Umístěním kurzoru na libovolné místo grafu se zobrazí příslušná volná energie a CV souřadnice.</p>
+                    <div class="h3 li">Rozdíl energií</div>
+                    <p class="p3">Stisknutím levého tlačítka myši a tažením v grafu se zobrazuje energetický rozdíl mezi původním a aktuálním místem.</p>
+                    <div class="h3 li">Nejbližší kopce</div>
+                    <p class="p3">Klikem na libovolné místo grafu se zobrazí tři kopce, které jsou k danému místu nejblíž. Kopce jsou zobrazeny jako časový údaj, aby je bylo možné vyhledat v trajektorii.</p>
+                <div class="h2">Pokročilá kontrola</div>
                 <p class="p2">
-                    Lot of settings can be control through respective buttons. But all of them can be changed by modification of URL (in address line).
-                    Each non-default settings is written there and joined with "&" character. Only non-standart setting will be described further.
+                    Každé nastavení, které bylo změněno, je zapsáno do URL (adresní řádek) a odděleno znakem "&".
+                    Většina nastavení lze měnit díky příslušným tlačítkům, ale některé nastavení tlačítka nemají. Tyto nastavení, které lze měnit pouze pomocí URL, budou popsány zde. 
                 </p>
-                    <div class="h3 li">Tests</div>
-                    <p class="p3 li">tst=1 - runs prepared tests for evaluation of the program. Every test should pass, but failing in any of them do neccesary mean that the visualization won't work.</p>
-                    <p class="p3 li">tst=2 - runs prepared benchmarks for evaluation of the program. Benchmarks was prepared in such way that all produces 100 points on author's PC. Values less than 20 points could mean that visualization performace is severy hindered.</p>
+                    <div class="h3 li">Testy</div>
+                    <p class="p3 li">tst=1 - spustí testy pro kontrolu programu. Každý z testů by měl projít, ale neúspěch v některém testu nemusí znamenat, že program nebude fungovat.</p>
+                    <p class="p3 li">tst=2 - spustí testy pro ohodnocení výkonu. Každý test je připraven tak, aby na autorově počítači dosáhl 100 bodů. Počet bodů nižší než 20 v kterémkoliv testu znamená, že vizualizace bude značné zpomalena.</p>
                     <!--<div class="h3 li">Sorting</div>
                     <p class="p3 li">sort=false - turn off automatic sorting of hills according time. </p>-->
-                    <div class="h3 li">Log level</div>
-                    <p class="p3 li">log=X - There are several levels of importance for logs starting from level 4 (debug information) to level 1 (error messages). But only messages whose level is less or equal to log level settings will be displayed. So log=1 will display only error messages.</p>
-                    <div class="h3 li">HILLS sorting</div>
-                    <p class="p3 li">sort=false - Turns off automatic hills sorting by timestamps in HILLS file. Automatic sorting should handle variety of situation (multiple walkers, restarts,...), but in case of the fail, turning off sorting could help.</p>
+                    <div class="h3 li">Úroveň zpráv</div>
+                    <p class="p3 li">log=X - každá zpráva z programu má určitou úroveň od úrovně 4 (debugovací informace) do úrovně 1 (chybové hlášky). Ale pouze zprávy, které mají nižší či stejnou úroveň jako X budou zobrazeny. Takže při log=1 budou zobrazeny pouze chybové hlášky.</p>
+                    <div class="h3 li">HILLS řazení</div>
+                    <p class="p3 li">sort=false - Vypne řazení kopců podle času v HILLS souborech. Automatické řazení by mělo zvládat mnoho situací (multiple walker, restarty, ...), ale někdy vypnutí řazení může pomoci.</p>
         </div>
     </body>
 </html>
