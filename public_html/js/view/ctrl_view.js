@@ -88,7 +88,7 @@ $.extend(view.ctrl,{
                 rendered=Mustache.render(template,{poss:obj});
                 //$(rendered).val(val);
                 this.summonSelect(event.currentTarget,rendered,function(event){
-                    sett[ctrl].set(parseInt(event.target.getAttribute("data-val"),10));
+                    sett[ctrl].set(parseFloat(event.target.getAttribute("data-val"),10));
                     $("#ctrl_select").hide();
                 });
                 return;
