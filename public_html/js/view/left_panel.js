@@ -22,7 +22,7 @@ $.extend(view.panel,{
         this.needRender=true;
     },
     render:function(){
-        var lang,template,obj,rendered;
+        var lang,template,obj,rendered,millis;
         if(!this.needRender){return;}
         lang=control.settings.lang.get();
         template=this.templates[lang];
@@ -38,7 +38,8 @@ $.extend(view.panel,{
             return;
         }
         if(template===""){return;}
-        obj={count:2561};
+        millis=new Date().getTime()-new Date(2014,12-1,11).getTime();
+        obj={count:Math.round(millis/(24*60*60*1000)*12)};
         rendered=Mustache.render(template,obj);
         this.$left.html(rendered);
         
