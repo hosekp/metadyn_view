@@ -26,19 +26,30 @@ $.extend(compute.sum_hill,{
             //this.nbins=this.multibin(50);
             this.params=params;
         }else{
-            var ncv=this.ncv,sorter,nartime,sorted,i;
+            var ncv=this.ncv,sorter,narclock,sorted,i;
             if(ncv!==arrs.cvs.length){
                 manage.console.error("Sum_hill:","Wrong number of CV");
                 return;
             }
             sorter=$.extend({},compute.parser.TAsorter);
-            nartime=this.join(this.artime,arrs.clock);
-            sorted=sorter.sort(nartime);
-            this.artime=sorter.rearrange(nartime,sorted);
-            this.arhei=sorter.rearrange(this.join(this.arhei,arrs.height),sorted);
-            for(i=0;i<ncv;i+=1){
-                this.arcvs[i]=sorter.rearrange(this.join(this.arcvs[i],arrs.cvs[i]),sorted);
-                this.arsigma[i]=sorter.rearrange(this.join(this.arsigma[i],arrs.sigma[i]),sorted);
+            if(control.settings.sort.get()){
+                narclock=this.join(this.arclock,arrs.clock);
+                sorted=sorter.sort(narclock);
+                this.arclock=sorter.rearrange(narclock,sorted);
+                this.arhei=sorter.rearrange(this.join(this.arhei,arrs.height),sorted);
+                this.artime=sorter.rearrange(this.join(this.artime,arrs.time),sorted);
+                for(i=0;i<ncv;i+=1){
+                    this.arcvs[i]=sorter.rearrange(this.join(this.arcvs[i],arrs.cvs[i]),sorted);
+                    this.arsigma[i]=sorter.rearrange(this.join(this.arsigma[i],arrs.sigma[i]),sorted);
+                }
+            }else{
+                this.arclock=this.join(this.arclock,arrs.clock,123);
+                this.arhei=this.join(this.arhei,arrs.height);
+                this.artime=this.join(this.artime,arrs.time);
+                for(i=0;i<ncv;i+=1){
+                    this.arcvs[i]=this.join(this.arcvs[i],arrs.cvs[i]);
+                    this.arsigma[i]=this.join(this.arsigma[i],arrs.sigma[i]);
+                }
             }
             this.nbody+=params.nbody;
             this.params=this.joinParams(this.params,params);
@@ -49,14 +60,20 @@ $.extend(compute.sum_hill,{
         //this.blob=this.createBlob();
         //manage.console.log("Sum_hills:","loaded");
     },
-    join:function(TA1,TA2){    // data
+    join:function(TA1,TA2,special){    // data
         var lenTA1=TA1.length,lenTA2=TA2.length,nar,i;
         nar=new Float32Array(lenTA1+lenTA2);
-        for(i=0;i<lenTA1;i+=1){
-            nar[i]=TA1[i];
-        }
-        for(i=0;i<lenTA2;i+=1){
-            nar[i+lenTA1]=TA2[i];
+        if(special===123){
+            for(i=0;i<lenTA1+lenTA2;i+=1){
+                nar[i]=i+1;
+            }
+        }else{
+            for(i=0;i<lenTA1;i+=1){
+                nar[i]=TA1[i];
+            }
+            for(i=0;i<lenTA2;i+=1){
+                nar[i+lenTA1]=TA2[i];
+            }
         }
         return nar;
     },

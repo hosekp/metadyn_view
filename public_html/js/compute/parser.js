@@ -143,26 +143,28 @@ $.extend(compute.parser,{
         var deltaclock=0;
         var lastclock=0;
         var nowclock;
+        var sorting=control.settings.sort.get();
         for(i=0;i<nbody;i+=1){
-            if(body[i].startsWith("#!")){
-                analline=true;
-                continue;
-            }
+            if(body[i].startsWith("#!")){continue;}
             line=body[i].match(/[^ ]+/g);
             if(!line||line.length<fulllen){manage.console.debug("Line:",body[i]);continue;}
             time[len]=parseFloat(line[timepos]);
-            nowclock=parseFloat(line[clockpos]);
-            if(nowclock<lastclock){
-                deltaclock-=lastclock-nowclock+1;
-                manage.console.debug("Parser:","delta decreased by",lastclock-nowclock+1,"now=",nowclock,"last=",lastclock);
+            if(sorting){
+                nowclock=parseFloat(line[clockpos]);
+                if(nowclock<lastclock/2){
+                    deltaclock-=lastclock-nowclock+1;
+                    manage.console.debug("Parser:","delta decreased by",lastclock-nowclock+1,"now=",nowclock,"last=",lastclock);
+                }
+                if(nowclock>lastclock+clockstepsum/len*5){
+                    deltaclock+=nowclock-lastclock;
+                    manage.console.debug("Parser:","delta increased by",nowclock-lastclock,"now=",nowclock,"last=",lastclock);
+                }
+                clockstepsum+=nowclock-deltaclock-lastclock;
+                clock[len]=nowclock-deltaclock;
+                lastclock=nowclock;
+            }else{
+                clock[len]=len;
             }
-            if(nowclock>lastclock+clockstepsum/len*5){
-                deltaclock+=nowclock-lastclock;
-                manage.console.debug("Parser:","delta increased by",nowclock-lastclock,"now=",nowclock,"last=",lastclock);
-            }
-            clockstepsum+=nowclock-deltaclock-lastclock;
-            clock[len]=nowclock-deltaclock;
-            lastclock=nowclock;
             hei[len]=parseFloat(line[heipos]);
             for(j=0;j<ncv;j+=1){
                 pcv=pcvs[j];
@@ -189,7 +191,7 @@ $.extend(compute.parser,{
         for(i=0;i<cvs.length;i+=1){
             this.findLimits(cvs[i],pcvs[i]);
         }
-        if(control.settings.sort.get()){
+        if(sorting){
             var sorter=$.extend({},this.TAsorter),
             sorted;
             sorted=sorter.sort(clock);
