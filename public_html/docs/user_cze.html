@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Uživatelský manuál</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="text.css" rel="stylesheet" type="text/css" media="screen" />
+    </head>
+    <body>
+        <div id="all">
+            <h1>Uživatelský manuál</h1>
+                <div class="h2">Nahrání souborů</div>
+                    <h3 class="h3 li">Vyber soubory</h3>
+                    <p class="p3">Zmáčknutím na  "Vyber soubory" se otevře okno, kde lze vybrat požadované HILLS soubory. Lze vybrat i více souorů pomocí Ctrl nebo Shift klávesy.</p>
+                    <h3 class="h3 li">Přetažení souborů</h3>
+                    <p class="p3">Navíc je možné soubory nahrát jejich přetažením do bílé plochy ve středu programu. Lze přetáhnout i více než jeden soubor.</p>
+                    <h3 class="h3 li">Příklady</h3>
+                    <p class="p3">
+                        Na ukázku byly do programu přidáno několik HILLS souborů. Kterýkoliv lze vybrat klikem na Příklady a vybráním příslušného příkladu. Dodatečné informace o simulacích, které vyprodukovaly dané HILLS soubory jsou obsaženy v článku.
+                    </p>
+                <p class="p2">
+                    The program accepts HILLS files produced by Plumed 1.3 or Plumed 2. Syntax of files are recognised automatically, nothing has to be manually adjusted.
+                    Gaussians written in HILLS files are being sorted according time (in the case of Plumed 1.3 files) or timestamp (Plumed 2.x). 
+                    For disabling sorting, "sort=false" has to be written into the address line (see further).
+                </p>
+                <div class="h2">Controls buttons</div>
+                    <h3 class="h3 li">
+                        Languages
+                        <img alt="English" src="../img/eng.png" />
+                        <img alt="Czech" src="../img/cze.png" />
+                    </h3>
+                    <p class="p3">Button located at right top corner controls a selection of languages. At current version of the program only English and Czech languages are supported.</p>
+                    <h3 class="h3 li">
+                        Play/Stop
+                        <img class="red" alt="Play" src="../img/play.png" />
+                        <img class="red" alt="Stop" src="../img/stop.png" />
+                    </h3>
+                    <p class="p3">Button located at left bottom corner starts or suspends visualization of the data.</p>
+                    <h3 class="h3 li">
+                        Reset
+                        <img class="red" alt="Reset" src="../img/reset.png" />
+                    </h3>
+                    <p class="p3">Returns the vizualization on the beginning.</p>
+                    <h3 class="h3 li">
+                        Measure
+                        <img class="red" alt="Measure" src="../img/measure.png" />
+                    </h3>
+                    <p class="p3">Opens window with tools for measuring of energy and other quantities (see further).</p>
+                    <div class="h3 li">
+                        Speed
+                        <div class="box red nodecor">0.3 x</div>
+                    </div>
+                    <p class="p3">Sets speed of visualization. Normal speed (1x) is adjusted to make whole visualization last 10 seconds.</p>
+                    <div class="h3 li">
+                        Resolution
+                        <div class="box red nodecor">128px</div>
+                    </div>
+                    <p class="p3">Sets size od computational matrix, where potential is deposited. This resolution doesn't affect the resolution of image, but it improve quality of the energy surface.</p>
+                    <h3 class="h3 li">
+                        Export
+                        <img class="red" alt="Export" src="../img/pict.png" />
+                    </h3>
+                    <p class="p3">Opens new window for exporting images. For more information see "Image Export" category</p>
+                    <h3 class="h3 li">
+                        Loop
+                        <img class="red" alt="Loop" src="../img/loop.png" />
+                    </h3>
+                    <p class="p3">If it is turned on, the visualization will not stop at the end but loop back to the beginning.</p>
+                    <h3 class="h3 li">
+                        WebGL
+                        <img class="red" alt="WebGL" src="../img/webgl.png" />
+                    </h3>
+                    <p class="p3">Turns off or turns on the usage of WebGL technology. WebGL is much more effective for visualization, but it may not work properly on some devices.
+                        Devices without WebGL support have WebGL disabled no matter of this button.</p>
+                    <h3 class="h3 li">
+                        Resize
+                        <img class="red" alt="Resize" src="../img/resize.png" />
+                    </h3>
+                    <p class="p3">By holding left mousebutton over this button it is possible to change size of the program screen. If size of the plot area is close to square dimensions, size will be adjusted to exactly square one.</p>
+                    <h3 class="h3 li">Slider</h3>
+                    <p class="p3">Control element above the bottom control strip. It displays the current progress throught the visualization and also the progress can be changed by moving the slider to either side.</p>
+                <div class="h2">Zoom</div>
+                    <div class="h3 li">Zoom</div>
+                    <p class="p3">Zooming of the plot is done by mousewheel. Position of mouse over plot matters, because zoom is focused on that point.</p>
+                    <div class="h3 li">Panning</div>
+                    <p class="p3">When zoom in, focused area can be moved by pressing right mousebutton and draging. It is impossible to move outside area with ploted data.</p>
+                <div class="h2">Axis adjustment</div>
+                    <div class="h3 li">CV rename</div>
+                    <p class="p3">Collective variables can be renamed by clicking on them and by writing the new name.</p>
+                    <div class="h3 li">Energy axi units</div>
+                    <p class="p3">Energy units on axi title can be changed by clicking on them. Two possibilities are there: kJ/mol and kcal/mol. The program cannot recognize appropriate units from HILLS file, so it has to be set manually.</p>
+                <div class="h2">Image export</div>
+                    <div class="h3 li">Save image</div>
+                    <p class="p3">After click on Export button, whole visualization is replaced with an image which can be downloaded through right click and SaveAs.. action.</p>
+                    <div class="h3 li">Image resolution</div>
+                    <p class="p3">It is not possible to select dpi value for created image but you can increase the resolution by increasing the size of plot (Resize button).</p>
+                    <p class="p2">Exported image is exactly the same as the visualized plot, so any change which you like do (as axi name change or others) must be done before the export.</p>
+                <div class="h2">Measuring</div>
+                <p class="p2">All of this options are accessible when Measure button is on (see above).</p>
+                    <div class="h3 li">Free energy and CV coordinates</div>
+                    <p class="p3">Pointing with mouse curson on any point on plot will display free energy of that state and its CV coordinates.</p>
+                    <div class="h3 li">Free energy difference</div>
+                    <p class="p3">Pressing left mouse button and drawing it to another point will display energy difference between these two points.</p>
+                    <div class="h3 li">Closest hills</div>
+                    <p class="p3">Licing on any point of interest on plot will display three hills which are closest to selected point. Hills are displayed in form of time records, so thay can be used to find related frames in trajectory file.</p>
+                <div class="h2">Advanced control</div>
+                <p class="p2">
+                    Lot of settings can be control through respective buttons. But all of them can be changed by modification of URL (in address line).
+                    Each non-default settings is written there and joined with "&" character. Only non-standart setting will be described further.
+                </p>
+                    <div class="h3 li">Tests</div>
+                    <p class="p3 li">tst=1 - runs prepared tests for evaluation of the program. Every test should pass, but failing in any of them do neccesary mean that the visualization won't work.</p>
+                    <p class="p3 li">tst=2 - runs prepared benchmarks for evaluation of the program. Benchmarks was prepared in such way that all produces 100 points on author's PC. Values less than 20 points could mean that visualization performace is severy hindered.</p>
+                    <!--<div class="h3 li">Sorting</div>
+                    <p class="p3 li">sort=false - turn off automatic sorting of hills according time. </p>-->
+                    <div class="h3 li">Log level</div>
+                    <p class="p3 li">log=X - There are several levels of importance for logs starting from level 4 (debug information) to level 1 (error messages). But only messages whose level is less or equal to log level settings will be displayed. So log=1 will display only error messages.</p>
+                    <div class="h3 li">HILLS sorting</div>
+                    <p class="p3 li">sort=false - Turns off automatic hills sorting by timestamps in HILLS file. Automatic sorting should handle variety of situation (multiple walkers, restarts,...), but in case of the fail, turning off sorting could help.</p>
+        </div>
+    </body>
+</html>
