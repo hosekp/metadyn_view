@@ -20,16 +20,16 @@ do control.settings.resol.set(64)
 do control.settings.speed.set(0.01)
 bench start 3000
 do control.settings.play.set(true)
-bench manage.manager.counter 13000
-# resize=9000->17000 firebug(100->90)
+bench manage.manager.counter 3450
+# resize=9000->17000 firebug(100->90) JSLint(100->340)
 do control.settings.play.set(false)
 
 do control.settings.resol.set(512)
 do control.settings.speed.set(10)
 bench start 3000
 do control.settings.play.set(true)
-bench manage.manager.lastSpace.ratio 2540000
-# resize=4M->4M8 firebug(100->50)
+bench manage.manager.lastSpace.ratio 1355000
+# resize=4M->4M8 firebug(100->50)  JSLint(100->250)
 do control.settings.play.set(false)
 
 do control.control.reset()
