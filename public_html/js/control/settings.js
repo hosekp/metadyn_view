@@ -15,7 +15,7 @@ $.extend(control.settings,{
         this.resol=this.create(128,"res");
         this.loop=this.create(true,"lop");
         
-        this.height=this.create(1,"hei");
+        //this.height=this.create(1,"hei");
         this.tests=this.create(0,"tst");
         this.sort=this.create(true,"sort");
         this.ncv=this.create(0);
@@ -29,7 +29,7 @@ $.extend(control.settings,{
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
-        this.zoomcoef=this.create(2);
+        //this.zoomcoef=this.create(2);
         this.png=this.create(false);
         this.lang=this.create("eng","lan");
         this.webgl=function(){
@@ -110,7 +110,7 @@ $.extend(control.settings,{
     },
     notify:function(args){
         if(args==="newHash"){this.newHash();}
-        if(args==="zoompow"){if(this.zoom.value===0){this.zmpw=1;return;} this.zmpw=Math.pow(this.zoomcoef.value,this.zoom.value);}
+        if(args==="zoompow"){if(this.zoom.value===0){this.zmpw=1;return;} this.zmpw=Math.pow(2,this.zoom.value);}
     }
 });
 control.settings.template={

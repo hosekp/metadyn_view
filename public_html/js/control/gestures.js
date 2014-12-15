@@ -102,8 +102,8 @@ $.extend(control.gestures,{
         wheelup=event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
         //manage.console.debug("Wheeling: "+(wheelup?"up":"down"));
         newzoom=sett.zoom.get();
-        zoomcoef=sett.zoomcoef.get();
-        oldpow=Math.pow(zoomcoef,newzoom);
+        //zoomcoef=sett.zoomcoef.get();
+        oldpow=sett.zoompow();
         if(wheelup){
             newzoom=Math.min(newzoom+1,6);
         }else{
@@ -111,12 +111,12 @@ $.extend(control.gestures,{
         }
         pos=this.nowPos;
         if(!pos){return;}
-        pow=Math.pow(zoomcoef,newzoom);
+        sett.zoom.set(newzoom);
+        pow=sett.zoompow();
         frameposx=sett.frameposx.get();
         frameposy=sett.frameposy.get();
         delta=1/oldpow-1/pow;
         //manage.console.debug("Wheeling: ["+pos.x+","+pos.y+"] delta="+delta);
-        sett.zoom.set(newzoom);
         this.setFramepos(frameposx-delta*pos.x,frameposy-delta*pos.y);
         //control.settings.frameposx.set(frameposx-delta*pos.x);
         //control.settings.frameposy.set(frameposy-delta*pos.y);
