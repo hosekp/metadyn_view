@@ -52,20 +52,25 @@ $.extend(view.exporter,{
         control.settings.png.set(false);
     },
     redraw:function(){
-        var ctx=this.ctx,$axi_z,$axi_x,$main_can,ncv,$axi_y,rendered;
+        var ctx=this.ctx,$axi_z,$axi_x,$main_can,ncv,$axi_y,rendered,
+        y_width,z_width,z_height;
         $axi_z=$("#axi_z");
         $axi_x=$("#axi_x");
         $main_can=$(".main_can");
+        z_height=$axi_z.height();
+        z_width=$axi_z.width();
         ncv=control.settings.ncv.get();
-        ctx.drawImage($axi_x[0],$axi_z.width(),$axi_z.height());
         if(ncv>1){
             $axi_y=$("#axi_y");
+            y_width=$axi_y.width();
             ctx.drawImage($axi_y[0],0,0);
-            ctx.drawImage($axi_z[0],$axi_z.width()+$axi_x.width(),($axi_z.height()-$axi_z.height())/2);
+            ctx.drawImage($axi_z[0],y_width+$axi_x.width(),0);
         }else{
+            y_width=z_width;
             ctx.drawImage($axi_z[0],0,0);
         }
-        ctx.drawImage($main_can[0],$axi_z.width()+5,5);
+        ctx.drawImage($axi_x[0],y_width,z_height);
+        ctx.drawImage($main_can[0],y_width+5,5);
         
         rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
         $("#export_help_cont").html(rendered);
