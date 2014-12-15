@@ -49,7 +49,7 @@ $.extend(view.exporter,{
     close:function(){
         this.$cont.hide();
         $("#cont").show();
-        //control.settings.png.set(false);
+        control.settings.png.set(false);
     },
     redraw:function(){
         var ctx=this.ctx,$axi_z,$axi_x,$main_can,ncv,$axi_y,rendered;
