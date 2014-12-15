@@ -173,7 +173,7 @@ $.extend(compute.sum_hill,{
         return inds;
     },
     add:function(space,torat){    // sum
-        var ncv=this.ncv,last,to,hei,blob,periods,anyperiod,i,inds,divis,ind1,webgl;
+        var ncv=this.ncv,last,to,hei,blob,periods,anyperiod,i,inds,divis,webgl;
         //var resol=control.settings.resol.get();
         webgl=control.settings.webgl();
         last=this.locate(space.ratio);

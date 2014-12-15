@@ -95,7 +95,7 @@ $.extend(control.gestures,{
         control.measure.unsetDiff();
     },
     mousewheel:function(event){
-        var wheelup,newzoom,zoomcoef,oldpow,pos,pow,frameposx,frameposy,delta,sett;
+        var wheelup,newzoom,oldpow,pos,pow,frameposx,frameposy,delta,sett;
         sett=control.settings;
         this.recompute();
         event.preventDefault();

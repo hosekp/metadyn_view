@@ -80,8 +80,7 @@ $.extend(draw.drawer,{
         
     },
     draw:function(drawable,zmax){
-        if(zmax===0){zmax=1;}
-        if(this.engine){this.engine.draw(drawable,zmax);}
+        if(this.engine){this.engine.draw(drawable,zmax===0?1:zmax);}
         //manage.console.debug("Drawer: draw");
     },
     reset:function(){
