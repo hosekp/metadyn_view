@@ -73,3 +73,24 @@ img.red{
     font-style: normal;
     text-decoration: none;
 }
+span.h3{
+    margin-left: 0px;
+}
+
+.schema{
+    position: relative;
+}
+.scitem{
+    border: 1px solid black;
+    position: absolute;
+    padding: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: white;
+}
+.blueitem{
+    background-color: #99ffff;
+}
+.reditem{
+    background-color: #ff9999;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Developer's manual</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="text.css" rel="stylesheet" type="text/css" media="screen" />
+        <script type="text/javascript" src="../js/libs/mustache.js/mustache.js"></script>
+        <script type="text/javascript" src="../js/libs/jquery/jquery-2.1.1.js"></script>
+        <script type="text/javascript" src="schemas.js"></script>
+    </head>
+    <body>
+        <div id="all">
+            <h1>Developer's manual</h1>
+                <div class='h2'>Data flow</div>
+                <p class='p2'>Contains description of data flow path through the program. This schema is simplified and contains only the main paths.</p>
+                <div class="p3"><span class="h3">Blue classes</span> - responsible for modifying or storing the data.</div>
+                <div class="p3"><span class="h3">Red classes</span> - contains the data already converted into graphical representation.</div>
+                <div class="p3"><span class="h3">White classes</span> - responsible for passing the data further or controlling the data flow.</div>
+                <div id="data_flow" class='schema p3'>
+                </div>
+                <!--<p class='p2'>Contains description of how signals are handled in the program. This schema is simplified and contains only the main paths.</p>-->
+<!--                <div id="signal_flow" class='schema'></div>
+                <p class="p2">Most important classes dealing with events are:</p>
+                <div class="p3 li"><span class="h3">settings</span> - contains the most of the program control parameters</div>
+                <div class="p3 li"><span class="h3">control</span> - triggers update of program part which needs to be updated (central canvas, axis, control bar, ...)</div>
+                <div class="p3 li"><span class="h3">ctrl_view</span> - the most of the program's controllers (buttons, selects, ...) are located in this class.</div>
+                <div class="p3 li"><span class="h3">gestures</span> - responsible.</div>-->
+                <div class='h2'>Classes description</div>
+                    <h3 class='h3'>Reader</h3>
+                    <p class="p3">Class responsible for loading files. For this purpose it uses FileReader API and result is handed over to Parser.
+                        Second thing which Reader does is build up of top menu containing not only File picker but two more control buttons.</p>
+                    <h3 class='h3'>Parser</h3>
+                    <p class='p3'>HILLS file loaded by Reader is further processed by Parser. Firstly Plumed version is determined by header and after that parsing of file body begins.
+                        Parsed data are stored in TypedArrays, further informations as a number of CVs and its limits are also collected in params variable and all of these informations are transferred to Sum_hill</p>
+                    <h3 class='h3'>Sum_hill</h3>
+                    <p class='p3'>Main storage of data obtained from HILLS file. If more than one HILLS file are loaded, data from all of them are combined (sorted) here. 
+                        When the potential construction begins, Sum_hill decides which hills need to be summed and provides their positions and heights.</p>
+                    <h3 class='h3'>Tspacer</h3>
+                    <p class='p3'>Small class which acts as constructor for Tspace objects</p>
+                    <h3 class='h3'>Tspace</h3>
+                    <p class='p3'>Instancies of these three classes act as container for matrix with summed potential. These classes contains all method needed for adding new hills and creation of the blobs,
+                        but two-dimensional WebGL Tspace uses also methods from Gl_summer.</p>
+                    <h3 class='h3'>Gl_summer</h3>
+                    <p class='p3'>Class containing methods for potential summing with an usage of WebGL. Because WebGL textures, which are used for transfer of data to GPU, can hold only 32 bits per pixel,
+                        potential values are multiplied by 16384 and rounded. For improved performance, most demanding step (method readPixels responsible for data transfer from GPU to CPU) is conducted only once for several summed hills</p>
+                    <h3 class='h3'>Manager</h3>
+                    <p class='p3'>Central point of the whole program. This class is responsible for connecting a computational part of the program with a visualization part.
+                        No data transformation or other complex computations is done in this class, but Manager uses services of other classes, mainly Axi.
+                        Another responsibily of Manager is cleanup of old data before upload of new files, resolution changes or just new visualization loop.</p>
+                    <h3 class='h3'>Storage</h3>
+                    <p class='p3'>Storage class can store several Tspace objects, which can eventually be used as a new starting point for potential summing. But these Tspace objects have to be created first, so first visualization loop cannot benefit from them.
+                        Second and other loops can use them, but speed up is minor. These snapshots is significantly useful when visualization is rolled back by slider. Currently Storage is turned off, so no snapshots are saved.</p>
+                    <h3 class='h3'>Console</h3>
+                    <p class='p3'>Class which gathers and displays messages from the whole program. Messages are colored by their priority and even translated into selected language.
+                        Four main function (error,warning,log and debug) are written is such way that they accept unlimited number of arguments and they concate them with one space between them.</p>
+                    <h3 class='h3'>Control</h3>
+                    <p class='p3'>This class starts and stops visualization and control its speed.
+                        Moreover it periodically triggers other classes' redraw functions, so all part of the program is held updated.</p>
+                    <h3 class='h3'>Settings</h3>
+                    <p class='p3'>Primary class for storing the program's parameters and broadcasting notices about their changes. Also read and write into address line.</p>
+                    <h3 class='h3'>Gestures</h3>
+                    <p class='p3'>It reads mouse events over the central area and makes zooming and panning possible. Also it works closely with Measure</p>
+                    <h3 class='h3'>Measure</h3>
+                    <p class='p3'>Measure reads mouse events from Gestures and data from Manager and displays energy values in a window. This window is also generated by Measure.</p>
+                    <h3 class='h3'>Drawer</h3>
+                    <p class='p3'>Common interface for drawing classes. It is responsible for selecting and switching drawing engines and relaying data to draw.</p>
+                    <h3 class='h3'>Liner</h3>
+                    <p class='p3'>Drawing engine for one-dimensional data without WebGL.</p>
+                    <h3 class='h3'>Raster</h3>
+                    <p class='p3'>Drawing engine for two-dimensional data without WebGL.</p>
+                    <h3 class='h3'>Webgl</h3>
+                    <p class='p3'>Drawing engine for two-dimensional data with the use of WebGL. If WebGL cannot be inited, engine is replaced by Raster.</p>
+                    <h3 class='h3'>Path</h3>
+                    <p class='p3'>Drawing engine for lines over the central plot used by Measure. But its simple API can be also used for another purpose in the future.</p>
+                    <h3 class='h3'>Axi_view</h3>
+                    <p class='p3'>This class construct and update axis around the central plot area and it is responsible for renaming CVs and energy units change.
+                        Because it resizes the central area, it send resize event to several other classes.</p>
+                    <h3 class='h3'>Ctrl_view</h3>
+                    <p class='p3'>It renders bottom part of the program with lot of control buttons and slider, so it also waits for click and other events and react appropriately, mainly by changing Settings parameter.
+                        Despite clicks on the resize button is catched by this class, Ctrl_view notice only Axi_view about resize and Axi_view do the rest.
+                        Slider is a subclass of Ctrl_view responsible for rendering of slider and catching its movement by user.</p>
+                    <h3 class='h3'>Exporter</h3>
+                    <p class='p3'>This class allows getting a plot from the program. Due to restriction of JavaScript, files can be saved only through "Save as...", so multiple canvases needs to be combined in one.</p>
+                    <h3 class='h3'>Lang</h3>
+                    <p class='p3'>Nothing more than one function for translation of strings and a dictionary.</p>
+                    <h3 class='h3'>Left_panel</h3>
+                    <p class='p3'>Menu on left side could be completely written with pure HTML, but Language switch make it necessary. </p>
+        </div>
+                <div class='h2'>Signal flow</div>
+                <p class='p2'>The program is controlled through two main principles:</p>
+                    <h3 class='h3'>Observer pattern</h3>
+                    <p class='p3'>Many parameters, mainly in Settings class, needs to anounce its change to many other classes. For this purpose Observer pattern is used associated with every Settings parameter and few other events.</p>
+                    <h3 class='h3'>Periodic checks</h3>
+                    <p class='p3'>If several methods of different classes should be triggered by two or more events (very common in the case of redraw update), direct call of method is not good, because it could results in unnecessary updates or in worst scenario perpetual cyclic calls.
+                        For this purpose, all redraw demand only set needRedraw=true and later periodic function in Control call redraw functions of all of its subscribers and only if needRedraw is set, redraw takes play.</p>
+        <script type="text/javascript">
+            new schema("data_flow",{
+                reader:{suc:["parser"],pos:[0,0],css:"blueitem"},
+                parser:{suc:["sum_hill"],pos:[1,0],css:"blueitem"},
+                sum_hill:{suc:["manager","tspacer"],pos:[2,0],css:"blueitem"},
+                tspacer:{suc:["tspace"],pos:[3,0],css:"blueitem"},
+                tspace:{suc:["manager","gl_summer"],pos:[4,0],css:"blueitem"},
+                gl_summer:{suc:["tspace"],pos:[4,1],css:"blueitem"},
+                ctrl_view:{suc:["control"],pos:[0,1]},
+                control:{suc:["manager"],pos:[1,1]},
+                manager:{suc:["measure","axi","drawer","storage"],pos:[2,1]},
+                storage:{suc:["manager"],pos:[3,1],css:"blueitem"},
+                axi:{suc:["manager","axi_view"],pos:[3,2],css:"blueitem"},
+                axi_view:{suc:["exporter"],pos:[4,3],css:"reditem"},
+                measure:{suc:["path"],pos:[1,2],css:"blueitem"},
+                gestures:{suc:["measure"],pos:[0,2]},
+                path:{suc:["exporter"],pos:[0,3],css:"reditem"},
+                drawer:{suc:["webgl","liner","raster"],pos:[2,2]},
+                webgl:{suc:["exporter"],pos:[1,3],css:"reditem"},
+                liner:{suc:["exporter"],pos:[2,3],css:"reditem"},
+                raster:{suc:["exporter"],pos:[3,3],css:"reditem"},
+                exporter:{suc:[],pos:[2,4],css:"reditem"}
+            });
+            /*new schema("signal_flow",{
+                "sett.play":{suc:["control.cycle"],pos:[1,0]},
+                "sett.measure":{suc:["measure"],pos:[1,1]},
+                "sett.speed":{suc:["control.cycle"],pos:[1,2]},
+                "sett.resol":{suc:["control.redraw","manager.resol"],pos:[1,3]},
+                "sett.loop":{weak:["control"],pos:[1,4]},
+                "sett.tests":{pos:[1,5]},
+                "sett.sort":{weak:["parser","sum_hill.load"],pos:[1,6]},
+                "sett.ncv":{suc:["measure","axi_view"],pos:[1,7]},
+                "glcan":{suc:["drawer","tspace"],pos:[1,8]},
+                "glwant":{suc:["drawer","tspace"],pos:[1,9]},
+                loglvl:{suc:["console"],pos:[6,0]},
+                enunit:{suc:["measure","axi_view"],pos:[6,1]},
+                zoom:{suc:["webgl","settings","control.redraw"],weak:["raster","path"],pos:[6,2]},
+                frameposx:{suc:["webgl","settings","control.redraw"],weak:["raster","path"],pos:[6,3]},
+                frameposy:{suc:["webgl","settings","control.redraw"],weak:["raster","path"],pos:[6,4]},
+                png:{suc:["exporter"],pos:[6,5]},
+                lang:{suc:["reader","measure","left_panel"],weak:["console"],pos:[6,6]},
+                resize:{suc:["gestures","drawer.resize","path.resize","axi_view"],pos:[6,7]},
+                loaded:{suc:["control.redraw","sett.ncv","drawer"],pos:[6,8]}
+            });*/
+        </script>
+    </body>
+</html>
