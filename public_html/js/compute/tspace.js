@@ -78,10 +78,10 @@ compute.tspacer.tspace[2]={
         this.nwhole=nwh;
         this.spacearr=new Float32Array(nwh);
     },
-    copy:function(){
+    copy:function(hei){
         var space,copyInt32Array,copyFloat32Array;
         space=$.extend(true,{},this);
-        this.id=this.lastid++;
+        this.id=compute.spacer.lastid++;
         //space.init(this.nbins,this.ncv);
         copyInt32Array=function(array){
             var nar;
@@ -90,16 +90,23 @@ compute.tspacer.tspace[2]={
             nar.set(array);
             return nar;
         };
-        copyFloat32Array=function(array){
-            var nar;
+        copyFloat32Array=function(array,hei){
+            var nar,i,len;
             if(!array){return null;}
-            nar=new Float32Array(array.length);
-            nar.set(array);
+            len=array.length;
+            nar=new Float32Array(len);
+            if(hei === undefined || hei === 1){
+                nar.set(array);
+            }else{
+                for(i=0;i<len;i++){
+                    nar[i]=array[i]*hei;
+                }
+            }
             return nar;
         };
-        space.spacearr=copyFloat32Array(this.spacearr);
         space.coefs=copyInt32Array(this.coefs);
         space.dims=copyInt32Array(this.dims);
+        space.spacearr=copyFloat32Array(this.spacearr,hei);
         //if(this.spacearr===space.spacearr){manage.console.warning("Storage: Arrays are same");}
         return space;
     },

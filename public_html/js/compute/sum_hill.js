@@ -182,7 +182,7 @@ $.extend(compute.sum_hill,{
         if(hei===false){
             hei=1;
         }
-        if(!this.blobs[1]){this.blobs[1]=compute.tspacer.createBlob(512,hei);}
+        if(!this.blobs[1]){this.blobs[1]=compute.tspacer.createBlob(512,1);}
         if(!this.blobs[hei]){
             this.blobs[hei]=this.blobs[1].copy(hei);
             /*var len=0;
