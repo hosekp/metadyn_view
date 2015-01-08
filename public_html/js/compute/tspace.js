@@ -81,7 +81,7 @@ compute.tspacer.tspace[2]={
     copy:function(hei){
         var space,copyInt32Array,copyFloat32Array;
         space=$.extend(true,{},this);
-        this.id=compute.spacer.lastid++;
+        this.id=compute.tspacer.lastId++;
         //space.init(this.nbins,this.ncv);
         copyInt32Array=function(array){
             var nar;
