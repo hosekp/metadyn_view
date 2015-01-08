@@ -131,7 +131,7 @@ $.extend(draw.raster,{
     interpolate:function(h0w0,h0w1,h1w0,h1w1,w,h){
         return h0w0*(1-w)*(1-h)+h0w1*w*(1-h)+h1w0*(1-w)*h+h1w1*w*h;
     },
-    colorScale:function(d){
+    colorScaleOld:function(d){
         var sigma=1000.0,hei = 380.0;
         /*for(var i=0;i<100;i+=1){
             var f=i*i;
@@ -140,6 +140,18 @@ $.extend(draw.raster,{
             (Math.min(Math.max(hei-Math.abs(d-0.77)*sigma,0.0),255.0) << 16) |
             (Math.min(Math.max(hei-Math.abs(d-0.49)*sigma,0.0),255.0) << 8) |
              Math.min(Math.max(hei-Math.abs(d-0.23)*sigma,0.0),255.0);
+    },
+    colorScale:function(d){
+        var colorcon=[0.77,0.49,0.23];
+        var col=255;
+        for(var i=0;i<3;i++){
+            col=col<<8;
+            var dif=Math.abs(d-colorcon[i]);
+            if(dif<0.13){col=col | 255;}else
+            if(dif<0.37){col=col | Math.floor((0.37-dif)/0.24*255);}
+        }
+        return col;
+
     },
     profiler:{
         vals:[0,0,0,0,0],
