@@ -24,7 +24,8 @@ $.extend(view.exporter,{
         </div>\n\
         <div id="export_help" class="left text">{{helpmsg}}</div>\n\
         ';
-        $("#all").prepend($(template));
+        //$("#all").prepend($(template));
+        $("#cons").before($(template));
         this.$canvas=$("#export_can");
         this.$cont=$("#export_cont");
         this.$help=$("#export_help_cont");
@@ -47,7 +48,9 @@ $.extend(view.exporter,{
         this.$canvas.width(width).height(height).attr({width:width,height:height});
     },
     close:function(){
-        this.$cont.hide();
+        if(this.$cont){
+            this.$cont.hide();
+        }
         $("#cont").show();
         control.settings.png.set(false);
     },
