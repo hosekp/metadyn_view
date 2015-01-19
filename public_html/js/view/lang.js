@@ -8,7 +8,7 @@ $.extend(view.lang,{
         "Nothing to draw":"Nic k vykreslení",
         "opened":"otevřeno",
         "Close":"Zavřít",
-        "To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
+        "To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit obrázek jako ..",
         //"To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
         "Choose files":"Vyber soubory",
         "Examples":"Příklady",
