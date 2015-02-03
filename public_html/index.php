@@ -3,8 +3,17 @@
 if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
     require_once('../../counter/conn.php');
     require_once('../../counter/counter.php');
-    updateCounter("page name"); // Updates page hits
+    updateCounter("metadyn"); // Updates page hits
     updateInfo(); // Updates hit info
+    
+    #$sql = "SELECT COUNT(DISTINCT ip_address) AS alias FROM ".$GLOBALS['info_table_name'];
+    #$query = $GLOBALS['db']->prepare($sql);
+    #$query->execute();
+    #$unique_visitors = $query->fetch()['alias'];
+    $sql = "SELECT * FROM `HITS_TABLE` WHERE page='metadyn'";
+    $query = $GLOBALS['db']->prepare($sql);
+    $query->execute();
+    $visitors = $query->fetch()['count'];
 }
 ?>
 <html>
@@ -75,7 +84,9 @@ if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
         <script type="text/javascript">
             if(window.view===undefined){var view={};}
             if(view.panel===undefined){view.panel={};}
-            view.panel.count=<?php echo $unique_visitors; ?>;
+            view.panel.count=<?php 
+                echo $visitors;
+            ?>;
         </script>
     </head>
     <body>
