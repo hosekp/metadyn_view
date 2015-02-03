@@ -38,8 +38,9 @@ $.extend(view.panel,{
             return;
         }
         if(template===""){return;}
-        millis=new Date().getTime()-new Date(2014,12-1,11).getTime();
-        obj={count:Math.round(millis/(24*60*60*1000)*12)};
+        //millis=new Date().getTime()-new Date(2014,12-1,11).getTime();
+        //obj={count:Math.round(millis/(24*60*60*1000)*12)};
+        obj={count:this.count};
         rendered=Mustache.render(template,obj);
         this.$left.html(rendered);
         
