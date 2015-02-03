@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <?php
 if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
-    require_once('../counter/conn.php');
-    require_once('../counter/counter.php');
+    require_once('../../counter/conn.php');
+    require_once('../../counter/counter.php');
     updateCounter("page name"); // Updates page hits
     updateInfo(); // Updates hit info
 }
