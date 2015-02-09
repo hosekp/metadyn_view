@@ -44,7 +44,7 @@ $.extend(compute.parser,{
     },
     //parseCOLVAR:function(){},
     parseHeader:function(header,params){
-        var line,cvs=[],p=3,cv,elspl,i,val;
+        var line,cvs=[],p=3,cv,i,rest,val;
         line=header[0].match(/[^ ]+/g);
         params.timepos=0;
         params.clockpos=0;
@@ -54,8 +54,8 @@ $.extend(compute.parser,{
             p+=1;
         }
         while(line[p].startsWith("sigma")){
-            elspl=line[p].split("_");
-            cv=this.getCVByName(cvs,elspl[1]);
+            rest=line[p].slice(6);
+            cv=this.getCVByName(cvs,rest);
             cv.sigmapos=p-2;
             p+=1;
         }
@@ -74,8 +74,8 @@ $.extend(compute.parser,{
             line=header[i].match(/[^ ]+/g);
             if(line[1]==="SET"){
                 if(line[2].startsWith("min")){
-                    elspl=line[2].split("_");
-                    cv=this.getCVByName(cvs,elspl[1]);
+                    rest=line[2].slice(4);
+                    cv=this.getCVByName(cvs,rest);
                     val=line[3];
                     if(val.startsWith("-pi")){
                         cv.min=-Math.PI;cv.periodic=true;
@@ -83,8 +83,8 @@ $.extend(compute.parser,{
                         cv.min=parseFloat(val);
                     }
                 }else if(line[2].startsWith("max")){
-                    elspl=line[2].split("_");
-                    cv=this.getCVByName(cvs,elspl[1]);
+                    rest=line[2].slice(4);
+                    cv=this.getCVByName(cvs,rest);
                     val=line[3];
                     if(val.startsWith("pi")){
                         cv.max=Math.PI;cv.periodic=true;
