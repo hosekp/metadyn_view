@@ -119,10 +119,12 @@ compute.reader={
         if(this.needRender===0){return;}
         if(this.needRender===2){
             obj={examples:[
-                {id:"HILLS.amber03",name:"2D HILLS v2.0"},
-                {id:"1D_HILLS_1.3",name:"1D HILLS v1.3"},
+                //{id:"HILLS.amber03",name:"2D HILLS v2.0"},
+                //{id:"1D_HILLS_1.3",name:"1D phantom"},
+                {id:"HILLS_AceProProNH2",name:"1D AceProProNH2"},
+                {id:"HILLS_helicen.txt",name:"2D helicen"},
                 //{id:"HILLS_2.0",name:"HILLS_2.0 krátký"},
-                {id:"HILLS_1.3",name:"2D HILLS v1.3"}
+                {id:"HILLS_1.3",name:"2D AceAlaNMe"}
             ]};
             rendered=Mustache.render(this.seltempl,obj);
             this.$exasel=$(rendered);
