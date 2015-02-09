@@ -14,6 +14,8 @@ if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
     $query = $GLOBALS['db']->prepare($sql);
     $query->execute();
     $visitors = $query->fetch()['count'];
+}else{
+    $visitors = 100;
 }
 ?>
 <html>
