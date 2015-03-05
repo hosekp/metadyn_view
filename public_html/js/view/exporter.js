@@ -14,9 +14,8 @@ $.extend(view.exporter,{
         var template='\
 <div id="export_cont">\n\
     <canvas id="export_can" width="600px" height="400px"></canvas>\n\
-    <div id="export_help_cont">\n\
-        \
-    </div>\n\
+    <div id="export_help_cont"></div>\n\
+    <div id="export_text" class="left text"></div>\n\
 </div>';
         this.help_template='\n\
         <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
@@ -29,6 +28,7 @@ $.extend(view.exporter,{
         this.$canvas=$("#export_can");
         this.$cont=$("#export_cont");
         this.$help=$("#export_help_cont");
+        this.$output=$("#export_text");
         this.inited=true;
     },
     open:function(){
@@ -75,8 +75,48 @@ $.extend(view.exporter,{
         ctx.drawImage($axi_x[0],y_width,z_height);
         ctx.drawImage($main_can[0],y_width+5,5);
         
-        rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
-        $("#export_help_cont").html(rendered);
+        if(this.$help){
+            rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
+            this.$help.html(rendered);
+        }
+        if(this.$output){
+            if(control.settings.ncv.get()===2){
+                var space=manage.manager.getTransformed();
+                if(space.join){
+                    var text=space.join(",");
+                    this.$output.html(text);
+                    
+                }else{
+                    var arr=[];
+                    var xs=[];
+                    var ys=[];
+                    var resol=control.settings.resol.get();
+                    //var resol1=resol-1;
+                    for(var i=0;i<resol;i++){
+                        xs.push(compute.axi.getCVval(true,i/resol));
+                    }
+                    for(var i=0;i<resol;i++){
+                        ys.push(compute.axi.getCVval(false,i/resol));
+                    }
+                    var len=space.length;
+                    var iy=0;
+                    var ix=0;
+                    for(var i=0;i<len;i++){
+                        arr.push(xs[ix].toPrecision(5)+" "+ys[iy].toPrecision(5)+" "+space[i].toPrecision(5));
+                        ix++;
+                        if(ix===xs.length){
+                            ix=0;
+                            iy++;
+                        }
+                    }
+                    //var arr=Array.prototype.slice.call(space);
+                    //var text=arr.join(", ");
+                    this.$output.html("<textarea>"+arr.join("\n")+"</textarea>");
+                    //manage.console.warning("Exporter:","missing","TypedArray.join()");
+                }
+            }
+        }
+        
     },
     notify:function(args){
         if(args==="toggle"){
