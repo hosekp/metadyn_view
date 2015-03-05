@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <?php
-if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
+if(!file_exists('../../counter/counter.php')){
+    $visitors = 100;
+}else{
     require_once('../../counter/conn.php');
     require_once('../../counter/counter.php');
     updateCounter("metadyn"); // Updates page hits
@@ -14,8 +16,6 @@ if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
     $query = $GLOBALS['db']->prepare($sql);
     $query->execute();
     $visitors = $query->fetch()['count'];
-}else{
-    $visitors = 100;
 }
 ?>
 <html>
