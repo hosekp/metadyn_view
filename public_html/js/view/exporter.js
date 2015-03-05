@@ -15,7 +15,7 @@ $.extend(view.exporter,{
 <div id="export_cont">\n\
     <canvas id="export_can" width="600px" height="400px"></canvas>\n\
     <div id="export_help_cont"></div>\n\
-    <div id="export_text" class="left text"></div>\n\
+    <div id="export_text" class="export_txt left text"></div>\n\
 </div>';
         this.help_template='\n\
         <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left" onclick="view.exporter.download(this)">\n\
@@ -23,6 +23,9 @@ $.extend(view.exporter,{
         <a/>\n\
         <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
             <img alt="{{close}}" src="img/close.png">\n\
+        </div>\n\
+        <div id="export_txtbutton" class="ctrl button left" onclick="view.exporter.txtgen()">\n\
+            <img alt="{{text}}" src="img/pict.png">\n\
         </div>\n\
         <div id="export_help" class="left text">{{helpmsg}}</div>\n\
         ';
@@ -59,7 +62,6 @@ $.extend(view.exporter,{
     },
     download:function(el){
         var dataURL = this.$canvas[0].toDataURL('image/png');
-        //alert("click");
         el.href = dataURL;
     },
     redraw:function(){
@@ -84,9 +86,11 @@ $.extend(view.exporter,{
         ctx.drawImage($main_can[0],y_width+5,5);
         
         if(this.$help){
-            rendered=Mustache.render(this.help_template,{download:Lang("Download"),close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
+            rendered=Mustache.render(this.help_template,{text:Lang("Data matrix"),download:Lang("Download"),close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
             this.$help.html(rendered);
         }
+    },
+    txtgen:function(){
         if(this.$output){
             if(control.settings.ncv.get()===2){
                 var space=manage.manager.getTransformed();
@@ -119,7 +123,7 @@ $.extend(view.exporter,{
                     }
                     //var arr=Array.prototype.slice.call(space);
                     //var text=arr.join(", ");
-                    this.$output.html("<textarea>"+arr.join("\n")+"</textarea>");
+                    this.$output.html("<textarea class=\"export_txt\">"+arr.join("\n")+"</textarea>");
                     //manage.console.warning("Exporter:","missing","TypedArray.join()");
                 }
             }
