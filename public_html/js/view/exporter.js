@@ -19,6 +19,9 @@ $.extend(view.exporter,{
     </div>\n\
 </div>';
         this.help_template='\n\
+        <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left" onclick="view.exporter.download(this)">\n\
+            <img alt="{{download}}" src="img/down.png">\n\
+        <a/>\n\
         <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
             <img alt="{{close}}" src="img/close.png">\n\
         </div>\n\
@@ -54,6 +57,11 @@ $.extend(view.exporter,{
         $("#cont").show();
         control.settings.png.set(false);
     },
+    download:function(el){
+        var dataURL = this.$canvas[0].toDataURL('image/png');
+        //alert("click");
+        el.href = dataURL;
+    },
     redraw:function(){
         var ctx=this.ctx,$axi_z,$axi_x,$main_can,ncv,$axi_y,rendered,
         y_width,z_width,z_height;
@@ -75,7 +83,7 @@ $.extend(view.exporter,{
         ctx.drawImage($axi_x[0],y_width,z_height);
         ctx.drawImage($main_can[0],y_width+5,5);
         
-        rendered=Mustache.render(this.help_template,{close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
+        rendered=Mustache.render(this.help_template,{download:Lang("Download"),close:Lang("Close"),helpmsg:Lang("To get the picture, just press right mouse button over it and select Save image as..")});
         $("#export_help_cont").html(rendered);
     },
     notify:function(args){
