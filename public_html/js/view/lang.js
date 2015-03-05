@@ -5,6 +5,7 @@ if(window.view===undefined){var view={};}
 if(view.lang===undefined){view.lang={};}
 $.extend(view.lang,{
     cze:{
+        "Download":"Stáhnout",
         "Nothing to draw":"Nic k vykreslení",
         "opened":"otevřeno",
         "Close":"Zavřít",
