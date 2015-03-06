@@ -317,7 +317,7 @@ $.extend(view.axi,{
                 this.renamer.put(pos.left,pos.top,false);
             }
         },this));
-        view.ctrl.bindTips(this.div.$main_cont,this.tips);
+        view.ctrl.bindTips(this.div.$main_cont);
     },
     natureRange:function(start,end,nopti,allin){
         var coefs=[2,2.5,2],rising,

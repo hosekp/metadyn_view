@@ -1,30 +1,30 @@
-<div id="play_ctrl" class="ctrl left button" data-ctrl="play">
+<div id="play_ctrl" class="ctrl left button tip" data-ctrl="play">
     {{^sett.play}}<img alt="Play" src="img/play.png" />{{/sett.play}}
     {{#sett.play}}<img alt="Stop" src="img/stop.png" />{{/sett.play}}
 </div>
-<div id="reset_ctrl" class="ctrl left button" data-ctrl="reset">
+<div id="reset_ctrl" class="ctrl left button tip" data-ctrl="reset">
     <img alt="Reset" src="img/reset.png" />
 </div>
-<div id="resize_ctrl" class="ctrl right button {{sett.resize}}" data-ctrl="resize">
+<div id="resize_ctrl" class="ctrl right button {{sett.resize}} tip" data-ctrl="resize">
     <img alt="Resize" src="img/resize.png" />
 </div>
-<div id="webgl_ctrl" class="ctrl right button {{sett.webgl}}" data-ctrl="glwant">
+<div id="webgl_ctrl" class="ctrl right button {{sett.webgl}} tip" data-ctrl="glwant">
     <img alt="Webgl" src="img/webgl.png" />
 </div>
-<div id="loop_ctrl" class="ctrl right button {{sett.loop}}" data-ctrl="loop">
+<div id="loop_ctrl" class="ctrl right button {{sett.loop}} tip" data-ctrl="loop">
     <img alt="Loop" src="img/loop.png" />
 </div>
 
-<div id="pict_ctrl" class="ctrl right button" data-ctrl="pict">
+<div id="pict_ctrl" class="ctrl right button tip" data-ctrl="pict">
     <img alt="Picture" src="img/pict.png" />
 </div>
-<div id="resol_ctrl" class="ctrl right text button unselect" data-ctrl="resol">
+<div id="resol_ctrl" class="ctrl right text button unselect tip" data-ctrl="resol">
     {{sett.resol}}px
 </div>
-<div id="speed_ctrl" class="ctrl right text button unselect" data-ctrl="speed">
+<div id="speed_ctrl" class="ctrl right text button unselect tip" data-ctrl="speed">
     {{sett.speed}} x
 </div>
-<div id="measure_ctrl" class="ctrl right button {{sett.measure}}" data-ctrl="measure">
+<div id="measure_ctrl" class="ctrl right button {{sett.measure}} tip" data-ctrl="measure">
     <img alt="Measure" src="img/measure.png" />
 </div>
 <div id="ctrl_select"></div>

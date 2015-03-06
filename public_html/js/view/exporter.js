@@ -7,6 +7,7 @@ $.extend(view.exporter,{
     inited:false,
     $canvas:null,
     ctx:null,
+    tips:{close:"Close",dwnld:"Download plot",text:"Data matrix"},
     onload:function(){
         control.settings.png.subscribe(this,"toggle");
     },
@@ -17,15 +18,15 @@ $.extend(view.exporter,{
     <div id="export_help_cont"></div>\n\
     <div id="export_text" class="export_txt left text"></div>\n\
 </div>';
-        this.help_template='\n\
-        <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left" onclick="view.exporter.download(this)">\n\
-            <img alt="{{download}}" src="img/down.png">\n\
-        <a/>\n\
-        <div id="export_close" class="ctrl button left" onclick="view.exporter.close()">\n\
+        this.help_template='\
+        <div id="export_close" class="ctrl button left tip" onclick="view.exporter.close()" data-ctrl="close">\n\
             <img alt="{{close}}" src="img/close.png">\n\
         </div>\n\
-        <div id="export_txtbutton" class="ctrl button left" onclick="view.exporter.txtgen()">\n\
-            <img alt="{{text}}" src="img/pict.png">\n\
+        <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left tip" onclick="view.exporter.download(this)" data-ctrl="dwnld">\n\
+            <img alt="{{download}}" src="img/dwnld.png">\n\
+        <a/>\n\
+        <div id="export_txtbutton" class="ctrl button left tip" onclick="view.exporter.txtgen()" data-ctrl="text">\n\
+            <img alt="{{text}}" src="img/txt.png">\n\
         </div>\n\
         <div id="export_help" class="left text">{{helpmsg}}</div>\n\
         ';
@@ -35,6 +36,7 @@ $.extend(view.exporter,{
         this.$cont=$("#export_cont");
         this.$help=$("#export_help_cont");
         this.$output=$("#export_text");
+        view.ctrl.bindTips(this.$cont,this.tips);
         this.inited=true;
     },
     open:function(){

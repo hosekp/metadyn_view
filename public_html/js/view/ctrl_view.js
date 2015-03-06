@@ -179,12 +179,10 @@ $.extend(view.ctrl,{
     },
     bindTips:function(div,tips){
         div
-        .on("mouseover","div.ctrl:not(.notip)",$.proxy(function(event){
+        .on("mouseover",".tip",$.proxy(function(event){
             //var ctrl=$(event.currentTarget).attr("data-ctrl");
             var tar=event.currentTarget;
-            //manage.console.debug("CTRL="+$(tar).attr("id"));
             this.tooldelay=setTimeout(function(){
-                //manage.console.debug("showtip="+$(div).attr("id"));
                 view.ctrl.showTooltip(tar,tips);
             },1500);
         },this))
@@ -195,12 +193,10 @@ $.extend(view.ctrl,{
         var ctrl,off,
         $ctrl=$(ctrldiv);
         if($ctrl.is(":hidden")){return;}
-        if(!tips){tips=this.tips;}
-        //manage.console.debug("caller is " + arguments.callee.caller.toString());
-        //manage.console.debug("CTRL="+$(ctrldiv).attr("id"));
         ctrl=$ctrl.attr("data-ctrl");
         off = $ctrl.offset();
-        this.tooltipdiv.css({"left":(off.left)+"px","top":(off.top+25)+"px"});
+        //manage.console.debug(ctrl,"offset=",off.left,off.top);
+        this.tooltipdiv.css({"left":Math.floor(off.left)+"px","top":Math.floor(off.top+25)+"px"});
         this.tooltipdiv.html(Lang(tips[ctrl]));
         this.tooltipdiv.show();
     },

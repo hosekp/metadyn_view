@@ -111,8 +111,8 @@ if(!file_exists('../../counter/counter.php')){
                 </div>
                 <div id="slide_cont" class="incont"></div>
                 <div id="ctrl_cont" class="incont"></div>
-                <div id="tooltip"></div>
             </div>
+            <div id="tooltip"></div>
             <div id="side"></div>
             <!--<div style="width:100%;height:1px;"></div>-->
             <div id="cons"></div>
