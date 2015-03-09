@@ -220,14 +220,14 @@ $.extend(compute.parser,{
             }
             time=sorter.rearrange(time,sorted);
             clock=sorter.rearrange(clock,sorted);
-            var textarea=$("<textarea>");
+            /*var textarea=$("<textarea>");
             var outArr=[];
             for(var i=0;i<len;i++){
                 outArr.push(clock[i]+" "+sorted[i]);
             }
             textarea.html(outArr.join("\n"));
             
-            $("body").append(textarea);
+            $("body").append(textarea);*/
             hei=sorter.rearrange(hei,sorted);
         }
         return {time:time,cvs:cvs,height:hei,sigma:sigma,clock:clock}; // data
