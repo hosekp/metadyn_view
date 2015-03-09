@@ -139,10 +139,14 @@ $.extend(compute.parser,{
         var line,timepos=params.timepos,heipos=params.heipos,clockpos=params.clockpos,
         pcvs=params.cvs,ncv=params.ncv,fulllen=params.fulllen,len=0;
         //manage.console.debug("length: "+nbody);
-        var clockstepsum=0;
+        var clockslope=0;
         var deltaclock=0;
         var lastclock=0;
         var nowclock;
+        var step;
+        var chunklen=0;
+        var deltanum=0;
+        var ratio;
         var sorting=control.settings.sort.get();
         for(i=0;i<nbody;i+=1){
             if(body[i].startsWith("#!")){continue;}
@@ -151,17 +155,29 @@ $.extend(compute.parser,{
             time[len]=parseFloat(line[timepos]);
             if(sorting){
                 nowclock=parseFloat(line[clockpos]);
-                if(nowclock<lastclock/2){
-                    deltaclock-=lastclock-nowclock+1;
-                    manage.console.debug("Parser:","delta decreased by",lastclock-nowclock+1,"now=",nowclock,"last=",lastclock);
+                step=nowclock-lastclock;
+                chunklen+=1;
+                if(chunklen<11){
+                    clockslope+=step*0.1;
+                    //if(chunklen===10){manage.console.warning("clockslope="+clockslope);}
+                }else{
+                    ratio=nowclock/(lastclock+clockslope);
+                    if(ratio>1.5){
+                        deltaclock+=step;
+                        //manage.console.debug("Parser:","delta increased by",step,"at i="+i,nowclock+">1.5*"+(lastclock+clockslope));
+                        chunklen=0;clockslope=0;
+                        deltanum++;
+                    }else if(ratio<0.5){
+                        deltaclock+=step;
+                        //manage.console.debug("Parser:","delta decreased by",-step,"at i="+i,nowclock+"<0.5*"+(lastclock+clockslope));
+                        chunklen=0;clockslope=0;
+                        deltanum++;
+                    }else{
+                        clockslope=clockslope*0.9+step*0.1;
+                        //manage.console.debug("Parser:","at i="+i,"clockslope=",clockslope);
+                    }
                 }
-                if(nowclock>lastclock+clockstepsum/len*5){
-                    deltaclock+=nowclock-lastclock;
-                    manage.console.debug("Parser:","delta increased by",nowclock-lastclock,"now=",nowclock,"last=",lastclock);
-                }
-                clockstepsum+=nowclock-deltaclock-lastclock;
                 clock[len]=nowclock-deltaclock;
-                lastclock=nowclock;
             }else{
                 clock[len]=len;
             }
@@ -171,8 +187,12 @@ $.extend(compute.parser,{
                 cvs[j][len]=parseFloat(line[pcv.pos]);
                 sigma[j][len]=parseFloat(line[pcv.sigmapos]);
             }
+            lastclock=nowclock;
             len+=1;
             //manage.console.debug("Line: "+body[i]);
+        }
+        if(deltanum>0){
+            manage.console.debug("Parser:","number of delta jumps =",deltanum);
         }
         params.nbody=len;
         //manage.console.debug("length: "+len);
@@ -193,7 +213,6 @@ $.extend(compute.parser,{
         }
         if(sorting){
             var sorter=$.extend({},this.TAsorter),
-            sorted;
             sorted=sorter.sort(clock);
             for(i=0;i<ncv;i+=1){
                 cvs[i]=sorter.rearrange(cvs[i],sorted);
@@ -201,6 +220,14 @@ $.extend(compute.parser,{
             }
             time=sorter.rearrange(time,sorted);
             clock=sorter.rearrange(clock,sorted);
+            var textarea=$("<textarea>");
+            var outArr=[];
+            for(var i=0;i<len;i++){
+                outArr.push(clock[i]+" "+sorted[i]);
+            }
+            textarea.html(outArr.join("\n"));
+            
+            $("body").append(textarea);
             hei=sorter.rearrange(hei,sorted);
         }
         return {time:time,cvs:cvs,height:hei,sigma:sigma,clock:clock}; // data
@@ -261,6 +288,7 @@ compute.parser.TAsorter={
     arraytosort:null,
     array:null,
     nsplits:0,
+    nshortsplits:0,
     workarray:null,
 //    issorted:function(start,end){
 //        var array=this.array;
@@ -279,30 +307,48 @@ compute.parser.TAsorter={
         var array,span,middle,i,len=end-start;
         if (len>2){
             array=this.array;
-            span=Math.floor((len-1)/2);
+            span=Math.floor((len-2)/2);
             middle=start+span;
             //manage.console.log("SplitPoint at "+middle);
+            if(!this.compare(array[middle],array[middle+1])){
+                return middle+1;
+            }
             for(i=0;i<span;i+=1){
-                if(!this.compare(array[middle+i],array[middle+i+1])){
-                    return middle+i+1;
+                if(!this.compare(array[middle+i+1],array[middle+i+2])){
+                    return middle+i+2;
                 }
                 if(!this.compare(array[middle-i-1],array[middle-i])){
-                    return middle-i+1;
+                    return middle-i;
                 }
             }
-            if(span*2===len-1){
-                if(!this.compare(array[end-2],array[end-1])){return end-1;}
+            if(span*2!==len-2){
+                if(!this.compare(array[end-2],array[end-1])){
+                    return end-1;
+                }
             }
             //manage.console.error("Error: no SplitPoint");
+        }else if(len===2){
+            if(!this.compare(this.array[start],this.array[start+1])){
+                return start+1;
+            }
         }
         //manage.console.debug("Sorter:","Array["+start+":"+end+"] is sorted");
         return -1;
     },
     split:function(start,end){
         var middle=this.findSplitPoint(start,end);
+        //if(middle===-1&&!this.issorted(start,end)){manage.console.error("Pole","["+start+":"+end+"]","neuspořádáno");}
         if(middle===-1){return [start,end];}
+        if(end-start===2){
+            var temp=this.array[start];
+            this.array[start]=this.array[start+1];
+            this.array[start+1]=temp;
+            this.nshortsplits+=1;
+            return [start,end];
+        }
         this.nsplits+=1;
-        manage.console.debug("Split: ["+start+":"+middle+":"+end+"]");
+        //manage.console.debug("Split: ["+start+":"+middle+":"+end+"]");
+        //console.log("Split: ["+start+":"+middle+":"+end+"]");
         //manage.console.log("Split on "+splpoint);
         return this.merge(this.split(start,middle),this.split(middle,end));
     },
@@ -327,6 +373,8 @@ compute.parser.TAsorter={
         for(i=0;i<nsum;i+=1){
             array[start+i]=narray[i];
         }
+        //manage.console.debug("Merge: ["+start+":"+middle+":"+end+"]");
+        //console.log("Merge: ["+start+":"+middle+":"+end+"]");
         return [start,end];
     },
     sort:function(array){
@@ -342,7 +390,7 @@ compute.parser.TAsorter={
         //this.array=array;
         this.workarray=new Float32Array(arlen);
         this.split(0,arlen);
-        manage.console.log("Sorter:","Data sorted,",this.nsplits,"reorderings");
+        manage.console.log("Sorter:","Data sorted,",this.nsplits+"+"+this.nshortsplits,"reorderings");
         return this.array;
     },
     rearrange:function(array,mustr){
