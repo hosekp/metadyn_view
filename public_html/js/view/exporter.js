@@ -93,43 +93,36 @@ $.extend(view.exporter,{
         }
     },
     txtgen:function(){
-        if(this.$output){
-            if(control.settings.ncv.get()===2){
-                var space=manage.manager.getTransformed();
-                if(space.join){
-                    var text=space.join(",");
-                    this.$output.html(text);
-                    
-                }else{
-                    var arr=[];
-                    var xs=[];
-                    var ys=[];
-                    var resol=control.settings.resol.get();
-                    //var resol1=resol-1;
-                    for(var i=0;i<resol;i++){
-                        xs.push(compute.axi.getCVval(true,i/resol));
-                    }
-                    for(var i=0;i<resol;i++){
-                        ys.push(compute.axi.getCVval(false,i/resol));
-                    }
-                    var len=space.length;
-                    var iy=0;
-                    var ix=0;
-                    for(var i=0;i<len;i++){
-                        arr.push(xs[ix].toPrecision(5)+" "+ys[iy].toPrecision(5)+" "+space[i].toPrecision(5));
-                        ix++;
-                        if(ix===xs.length){
-                            ix=0;
-                            iy++;
-                        }
-                    }
-                    //var arr=Array.prototype.slice.call(space);
-                    //var text=arr.join(", ");
-                    this.$output.html("<textarea class=\"export_txt\">"+arr.join("\n")+"</textarea>");
-                    //manage.console.warning("Exporter:","missing","TypedArray.join()");
+        if(!this.$output){return false;}
+        var space=manage.manager.getTransformed();
+        var resol=control.settings.resol.get();
+        var arr=[];
+        var xs=[];
+        for(var i=0;i<resol;i++){
+            xs.push(compute.axi.getCVval(true,i/resol));
+        }
+        var len=space.length;
+        if(control.settings.ncv.get()===2){
+            var ys=[];
+            for(var i=0;i<resol;i++){
+                ys.push(compute.axi.getCVval(false,i/resol));
+            }
+            var iy=0;
+            var ix=0;
+            for(var i=0;i<len;i++){
+                arr.push(xs[ix].toPrecision(5)+" "+ys[iy].toPrecision(5)+" "+space[i].toPrecision(5));
+                ix++;
+                if(ix===xs.length){
+                    ix=0;
+                    iy++;
                 }
             }
+        }else{
+            for(var i=0;i<len;i++){
+                arr.push(xs[i].toPrecision(5)+" "+space[i].toPrecision(5));
+            }
         }
+        this.$output.html("<textarea class=\"export_txt\">"+arr.join("\n")+"</textarea>");
     },
     notify:function(args){
         if(args==="toggle"){
