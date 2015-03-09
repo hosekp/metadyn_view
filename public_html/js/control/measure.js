@@ -133,7 +133,7 @@ control.measure={
         if(ncv>1){
             data.yaxi=compute.axi.getCVval(false,1-pos.y).toPrecision(3);
         }
-        data.ene=val.toFixed(1);
+        data.ene=val.toFixed(2);
         this.needRedraw=true;
         //$("#measure_ctrl_value").html(val.toFixed(1)+" kJ/mol");
         return override;
