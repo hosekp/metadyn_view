@@ -22,7 +22,7 @@ $.extend(view.exporter,{
         <div id="export_close" class="ctrl button left tip" onclick="view.exporter.close()" data-ctrl="close">\n\
             <img alt="{{close}}" src="img/close.png">\n\
         </div>\n\
-        <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left tip" onclick="view.exporter.download(this)" data-ctrl="dwnld">\n\
+        <a href="#" target="_blank" download="plot.png" id="export_download" class="ctrl button left tip" onclick="view.exporter.imgDownload(this)" data-ctrl="dwnld">\n\
             <img alt="{{download}}" src="img/dwnld.png">\n\
         <a/>\n\
         <div id="export_txtbutton" class="ctrl button left tip" onclick="view.exporter.txtgen()" data-ctrl="text">\n\
@@ -62,7 +62,7 @@ $.extend(view.exporter,{
         $("#cont").show();
         control.settings.png.set(false);
     },
-    download:function(el){
+    imgDownload:function(el){
         var dataURL = this.$canvas[0].toDataURL('image/png');
         el.href = dataURL;
     },
@@ -122,7 +122,17 @@ $.extend(view.exporter,{
                 arr.push(xs[i].toPrecision(5)+" "+space[i].toPrecision(5));
             }
         }
-        this.$output.html("<textarea class=\"export_txt\">"+arr.join("\n")+"</textarea>");
+        var link = document.createElement("a");
+        if (link.download === undefined) {
+            this.$output.html("<textarea class=\"export_txt\">"+arr.join("\n")+"</textarea>");
+        }else{
+            var blob = new Blob([arr.join("\n")], { type: 'text;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            this.$output.append(link);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "bias.txt");
+            link.click();
+        }
     },
     notify:function(args){
         if(args==="toggle"){
