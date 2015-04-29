@@ -111,10 +111,10 @@ $.extend(view.exporter,{
             var ix=0;
             for(var i=0;i<len;i++){
                 arr.push(xs[ix].toPrecision(5)+" "+ys[iy].toPrecision(5)+" "+space[i].toPrecision(5));
-                ix++;
-                if(ix===xs.length){
-                    ix=0;
-                    iy++;
+                iy++;
+                if(iy===ys.length){
+                    iy=0;
+                    ix++;
                 }
             }
         }else{
