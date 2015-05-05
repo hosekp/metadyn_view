@@ -24,12 +24,13 @@
                         ret+='\
             <tr>\n\
                 <td><a href="../js/'+grp+'/'+fil+'.js">'+grp+'/'+fil+'.js</a></td>\n\
-                <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a></td>\n\
+                <td><a href="../COPYING">GNU GPL v3</a></td>\n\
                 <td><a href="../js/'+grp+'/'+fil+'.js">source</a></td>\n\
             </tr>\n';
                     }
                 }
                 return document.createTextNode(ret);
+                //  <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a></td>\n\
             }
             document.body.appendChild(construct());
         </script>
