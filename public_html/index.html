@@ -1,23 +1,4 @@
 <!DOCTYPE html>
-<?php
-if(!file_exists('../../counter/counter.php')){
-    $visitors = 100;
-}else{
-    require_once('../../counter/conn.php');
-    require_once('../../counter/counter.php');
-    updateCounter("metadyn"); // Updates page hits
-    updateInfo(); // Updates hit info
-    
-    #$sql = "SELECT COUNT(DISTINCT ip_address) AS alias FROM ".$GLOBALS['info_table_name'];
-    #$query = $GLOBALS['db']->prepare($sql);
-    #$query->execute();
-    #$unique_visitors = $query->fetch()['alias'];
-    $sql = "SELECT * FROM `HITS_TABLE` WHERE page='metadyn'";
-    $query = $GLOBALS['db']->prepare($sql);
-    $query->execute();
-    $visitors = $query->fetch()['count'];
-}
-?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -83,13 +64,6 @@ if(!file_exists('../../counter/counter.php')){
         <script type="text/javascript" src="js/draw/raster.js"></script>
         <script type="text/javascript" src="js/draw/drawer.js"></script>
         <script type="text/javascript" src="js/draw/path.js"></script>
-        <script type="text/javascript">
-            if(window.view===undefined){var view={};}
-            if(view.panel===undefined){view.panel={};}
-            view.panel.count=<?php 
-                echo $visitors;
-            ?>;
-        </script>
     </head>
     <body>
         <div id="all">
