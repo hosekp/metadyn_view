@@ -296,6 +296,7 @@ $.extend(compute.sum_hill,{
       return lower;
     },
     getClockByRatio:function(ratio){
+      if(!this.arclock) return 0;
       return this.arclock[this.locate(ratio)-1] || 0;
     },
     haveData:function(){return this.loaded;},   // data
