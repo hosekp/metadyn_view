@@ -285,6 +285,19 @@ $.extend(compute.sum_hill,{
         }
         return higher;
     },
+    getRatioByClock:function(clock){
+      var lower=0,higher=this.nbody-1,middle=Math.floor(this.nbody/2);
+      if(this.arclock[0]>clock) return this.arclock[0];
+      if(this.arclock[higher]<clock) return this.arclock[higher];
+      while (lower+1!==higher){
+        middle=Math.floor((lower+higher)/2);
+        if(clock>=this.arclock[middle]){lower=middle;}else{higher=middle;}
+      }
+      return lower;
+    },
+    getClockByRatio:function(ratio){
+      return this.arclock[this.locate(ratio)-1] || 0;
+    },
     haveData:function(){return this.loaded;},   // data
     findClosestHills:function(cvs,num){
         var wins,dists,ld=10000000000,arcvs,distance2,dist,j,i,w;
