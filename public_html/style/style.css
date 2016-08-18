@@ -8,12 +8,12 @@ body{
 }
 #all{
     width:auto;
-    height:600px;
+    /*height:1000px;*/
     position:relative;
     min-width: 1100px;
 }
 #cont{
-    width:600px;
+    width:1000px;
     border: 1px solid black;
     margin-bottom: 200px;
     float:left;
@@ -42,7 +42,7 @@ body{
     background-color: black;
 }
 #main_cont{
-    height:450px;
+    height:750px;
     width:100%;
     position:relative;
 }
@@ -190,4 +190,9 @@ body{
     left:0px;
     top:0px;
     z-index:5;
+}
+.elixir-logo{
+    width: 186px;
+    margin: 7px;
+    margin-top: 40px;
 }
