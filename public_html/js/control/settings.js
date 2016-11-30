@@ -13,7 +13,7 @@ $.extend(control.settings,{
         this.measure=this.create(false,"mes");
         this.speed=this.create(0.3,"spd");
         this.resol=this.create(128,"res");
-        this.loop=this.create(true,"lop");
+        this.loop=this.create(false,"lop");
         
         //this.height=this.create(1,"hei");
         this.tests=this.create(0,"tst");

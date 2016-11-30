@@ -19,6 +19,7 @@ $.extend(control.gestures, {
   nowPos: null,
   button: 0,
   lease: true,
+  measureOverride: false,
   init: function () {
     this.$cancont = $("#canvas_cont");
     this.bind();
@@ -45,11 +46,11 @@ $.extend(control.gestures, {
     this.recompute();
     mousepos = {x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height};
     //manage.console.debug("Pos ["+pos.x+","+pos.y+"]");
-    if (this.button === 0) {
+    if (this.button === 0 && this.measureOverride) {
       coord = this.getCoord(mousepos);
       control.measure.measure(coord);
     }
-    if (this.button === 1) {
+    if (this.button === 1 && this.measureOverride) {
       if (this.lease === false) {
         if (Math.abs(mousepos.x - this.lastMousepos.x) > 5 / this.width || Math.abs(mousepos.y - this.lastMousepos.y) > 5 / this.height) {
           this.mouselease(event);
@@ -61,7 +62,7 @@ $.extend(control.gestures, {
       coord = this.getCoord(mousepos);
       control.measure.measure(coord);
     }
-    if (this.button === 3) {
+    if (this.button === 3 || this.button === 1 && !this.measureOverride) {
       if (this.lastMousepos !== null) {  // RMB pressed
         pow = control.settings.zoompow();
         nposx = (mousepos.x - this.lastMousepos.x) / pow + this.lastPos.x;
@@ -75,8 +76,10 @@ $.extend(control.gestures, {
   },
   mouselease: function (event) {
     this.lease = true;
-    var coord = this.getCoord(this.lastMousepos);
-    control.measure.setDiff(coord);
+    if(this.measureOverride){
+      var coord = this.getCoord(this.lastMousepos);
+      control.measure.setDiff(coord);
+    }
   },
   mousedown: function (event) {
     event.preventDefault();
@@ -99,7 +102,9 @@ $.extend(control.gestures, {
       this.mouseclick(event);
       this.lease = true;
     }
-    control.measure.unsetDiff();
+    if(this.measureOverride){
+      control.measure.unsetDiff();
+    }
   },
   mousewheel: function (event) {
     var wheelup, newzoom, oldpow, pos, pow, frameposx, frameposy, delta, sett;
@@ -132,8 +137,10 @@ $.extend(control.gestures, {
     //manage.console.debug("Wheeling: "+(event.originalEvent.wheelDelta > 0));
   },
   mouseclick: function (event) {
-    var coord = this.getCoord({x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height}); // mousepos as argument
-    control.measure.click(coord);
+    if(this.measureOverride){
+      var coord = this.getCoord({x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height}); // mousepos as argument
+      control.measure.click(coord);
+    }
   },
   setFramepos: function (nposx, nposy) {
     var sett = control.settings,
