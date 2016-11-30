@@ -293,7 +293,7 @@ $.extend(compute.sum_hill,{
         middle=Math.floor((lower+higher)/2);
         if(clock>=this.arclock[middle]){lower=middle;}else{higher=middle;}
       }
-      return lower;
+      return lower/this.nbody;
     },
     getClockByRatio:function(ratio){
       if(!this.arclock) return 0;

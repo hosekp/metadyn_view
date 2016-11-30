@@ -329,12 +329,11 @@ view.ctrl.slide = {
           var parsed = parseFloat($(this).val());
           if (isNaN(parsed)) parsed = 0;
           if (value.substr(-1) === "%") {
-            var percent = Math.min(Math.max(parsed, 0), 100);
+            var ratio = Math.min(Math.max(parsed/100, 0), 1);
           } else {
-            percent = compute.sum_hill.getRatioByClock(parsed);
+            ratio = compute.sum_hill.getRatioByClock(parsed);
           }
-          // view.ctrl.slide.byratio(percent/100.0);
-          control.control.setWanted(percent / 100.0);
+          control.control.setWanted(ratio);
         });
   },
   mouseup: function (event) {
