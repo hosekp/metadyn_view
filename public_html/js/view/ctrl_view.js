@@ -135,9 +135,11 @@ $.extend(view.ctrl, {
         .on("mousedown", "#resize_ctrl", $.proxy(function (event) {
           //this.settings.resize=true;
           var div = $("#main_cont");
+          var $overlayDiv = $("<div class='drag-overlay'>").appendTo("body");
           this.stopTip();
           this.temp.resizepos = {x: event.pageX - div.width(), y: event.pageY - div.height()};
           $("body")
+              //.append($overlayDiv)
               .on("mousemove", $.proxy(function (event) {
                 this.resizing = event;
                 this.stopTip();
@@ -148,6 +150,7 @@ $.extend(view.ctrl, {
                 this.redraw();
                 //this.resize(event);
                 $("body").off("mousemove").off("mouseup").off("mouseout");
+                $overlayDiv.remove();
               }, this));
           /*$("body").on("mouseout",$.proxy(function(event){
            this.render();

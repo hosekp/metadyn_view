@@ -1,138 +1,169 @@
-.axis{
+.axis {
     background-color: yellow;
 }
-.axi_all{
-    position:absolute;
+
+.axi_all {
+    position: absolute;
     /*float:left;*/
 }
-.actrl{
+
+.actrl {
     background-color: red;
 }
-.red{
+
+.red {
     background-color: red;
 }
-.halfred{
+
+.halfred {
     /*background-color: rgba(255,0,0,0.4);*/
 }
-.ctrl.button{
+
+.ctrl.button {
     height: 21px;
     min-width: 21px;
     border-width: 2px;
     border-style: solid;
-    margin-left:1px;
-    margin-right:1px;
+    margin-left: 1px;
+    margin-right: 1px;
     /*padding:1px;*/
     background-color: red;
     text-align: center;
 }
-.ctrl.button,#ctrl_select{
+
+.ctrl.button, #ctrl_select {
     border-color: red;
 }
-.ctrl.button:hover{
+
+.ctrl.button:hover {
     border-color: lightcoral;
 }
-.ctrl.button:hover:not(.text), #slider:hover, .abutton:hover{
+
+.ctrl.button:hover:not(.text), #slider:hover, .abutton:hover {
     background-color: lightcoral;
 }
-.ctrl.on{
+
+.ctrl.on {
     background-color: yellow;
     border-color: yellow;
 }
-.ctrl.on:hover{
+
+.ctrl.on:hover {
     border-color: white;
 }
-.ctrl.on:not(.text):hover{
+
+.ctrl.on:not(.text):hover {
     background-color: white;
 }
-.ctrl.text{
-    color:white;
+
+.ctrl.text {
+    color: white;
     text-align: center;
     cursor: default;
     background-color: black;
-    padding-left:2px;
-    padding-right:2px;
+    padding-left: 2px;
+    padding-right: 2px;
 }
-.axis.button{
+
+.axis.button {
     background-color: red;
 }
-.axis.button img{
-    width:calc(100% - 4px);
+
+.axis.button img {
+    width: calc(100% - 4px);
     width: -moz-calc(100% - 4px);
     width: -webkit-calc(100% - 4px);
-    height:calc(100% - 4px);
+    height: calc(100% - 4px);
     height: -moz-calc(100% - 4px);
     height: -webkit-calc(100% - 4px);
     margin: 2px;
 }
-#slide{
-    width:calc(100% - 82px);
+
+#slide {
+    width: calc(100% - 82px);
     width: -moz-calc(100% - 82px);
     width: -webkit-calc(100% - 82px);
     box-sizing: border-box;
     border: 7px solid black;
-    height:25px;
+    height: 25px;
     display: inline-block;
     background-color: darkred;
 }
-#slider{
-    position:absolute;
+
+#slider {
+    position: absolute;
     z-index: 10;
-    width:16px;
-    height:21px;
+    width: 16px;
+    height: 21px;
     border: 2px solid black;
     background-color: red;
-    left:0;
+    left: 0;
 }
-#slide_input{
+
+#slide_input {
     position: absolute;
     margin: 3px;
     margin-left: 0;
     box-sizing: border-box;
     /*right: 0;*/
-    width:80px;
-    height:20px;
+    width: 80px;
+    height: 20px;
     background-color: black;
     color: white;
     font-weight: bold;
     border-color: red;
     text-align: right;
 }
-#ctrl_select{
-    position:absolute;
-    z-index:10;
-    border-width:2px;
+
+#ctrl_select {
+    position: absolute;
+    z-index: 10;
+    border-width: 2px;
     /*border-top-width: 0px;*/
     border-style: solid;
-    display:none;
-    color:white;
+    display: none;
+    color: white;
     background-color: black;
     margin-top: 1px;
-    top:25px;
+    top: 25px;
 }
-.sel{
+
+.sel {
     padding-left: 2px;
     padding-right: 2px;
     cursor: default;
-/*    margin-left: 1px;
-    margin-right: 1px;*/
+    /*    margin-left: 1px;
+        margin-right: 1px;*/
 }
-.sel.on{
+
+.sel.on {
     background-color: yellow;
-    color:black;
+    color: black;
 }
-#axi_rnm_input{
-/*    padding:2px;
-    background-color: black;*/
+
+#axi_rnm_input {
+    /*    padding:2px;
+        background-color: black;*/
     border: 2px solid black;
-    padding:5px;
+    padding: 5px;
 }
-#tooltip{
-    border:1px solid #ccc;
-    background:white;
-    position:absolute;
-    z-index:200;
-    padding:10px;
-    left:0px;
-    top:0px;
-    display:none;
+
+#tooltip {
+    border: 1px solid #ccc;
+    background: white;
+    position: absolute;
+    z-index: 200;
+    padding: 10px;
+    left: 0px;
+    top: 0px;
+    display: none;
+}
+
+.drag-overlay {
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
