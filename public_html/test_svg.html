@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SVG</title>
+  <script type="text/javascript" src="js/libs/jquery/jquery-2.1.1.js"></script>
+</head>
+<body>
+<script>
+  function natureRange(start, end, nopti, allin) {
+    var coefs = [2, 2.5, 2], rising,
+        i = 0, step = 1, fstep = 1, diff = end - start;
+    if (start >= end) {
+      return false;
+    }
+    if (diff > nopti) {
+      rising = 1;
+    } else {
+      rising = -1;
+    }
+    while (rising * diff > nopti * fstep * rising) {
+      step = fstep;
+      fstep *= Math.pow(coefs[i % 3], rising);
+      i += 1;
+    }
+    if (rising * (diff / step - nopti) > rising * (nopti - diff / fstep)) {
+      step = fstep;
+    }
+    if (allin) {
+      start = Math.floor(start / step) * step;
+      end = Math.ceil(end / step) * step;
+    } else {
+      start = Math.ceil(start / step) * step;
+      end = Math.floor(end / step) * step;
+    }
+    return [start, end, step];
+  }
+  function drange(start, end, step) {
+    var r, arr = [];
+    if ($.isArray(start)) {
+      end = start[1];
+      step = start[2];
+      start = start[0];
+    }
+    r = start;
+    while (r <= end + step / 2) {
+      arr.push(r);
+      r += step;
+    }
+    return arr;
+  }
+  function getDec(step) {
+    var dec = 0;
+    if (step >= 1000 || step < 0.001) {
+      return -1;
+    }
+    while (step * Math.pow(10, dec) < 1) {
+      dec += 1;
+    }
+    return dec;
+  }
+  function toPrecision(val, dec) {
+    if (dec === -1) {
+      return val.toPrecision(2);
+    }
+    return val.toFixed(dec);
+  }
+  function drawAxis() {
+    var width, height, limits, min, max, diff, range, dec, i, pos, text;
+    //X-AXI
+    var svgNamespace = "http://www.w3.org/2000/svg";
+    var svgElement = document.createElementNS(svgNamespace, "svg");
+    width = 710;
+    height = 50;
+    svgElement.setAttribute("width",width.toString());
+    svgElement.setAttribute("height",height.toString());
+    var lineColor = "black";
+    var lineWidth = "2";
+    var pathPath='M 5 1 L '+(width-5)+' 1';
+    var textGroup = document.createElementNS(svgNamespace,"g");
+    textGroup.setAttribute("style","fill:black;font-size:13px");
+    min = -3.14;
+    max = 3.14;
+    diff = max - min;
+    limits = natureRange(min, max, 10, false);
+    range = drange(limits);
+    dec = getDec(limits[2]);
+    var lastPosX=width-5;
+    for (i = 0; i < range.length; i += 1) {
+      pos = 5 + (range[i] - min) / diff * (width - 10);
+      pathPath+=' M '+pos+' 1 l 0 9';
+      lastPosX=pos;
+      var tickText=document.createElementNS(svgNamespace,"text");
+      tickText.textContent=toPrecision(range[i], dec);
+      tickText.setAttribute("x",(pos-10).toString());
+      tickText.setAttribute("y","20");
+      textGroup.appendChild(tickText);
+    }
+    text = "axis X";
+    var axiLabel = document.createElementNS(svgNamespace,"text");
+    axiLabel.textContent=text;
+    axiLabel.setAttribute("x",(width / 2 - 10).toString());
+    axiLabel.setAttribute("y","35");
+    textGroup.appendChild(axiLabel);
+    var path = document.createElementNS(svgNamespace,"path");
+    path.setAttribute("d",pathPath);
+    path.setAttribute("stroke",lineColor);
+    path.setAttribute("stroke-width",lineWidth);
+    svgElement.appendChild(path);
+    svgElement.appendChild(textGroup);
+    $(svgElement).prependTo("body");
+  }
+  drawAxis();
+</script>
+</body>
+</html>

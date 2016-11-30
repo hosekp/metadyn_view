@@ -17,7 +17,10 @@ $.extend(view.ctrl, {
   listeners: [],
   inited: false,
   resizing: false,  // event
-  temp: {resizepos: false, resoldata: [16, 64, 128, 256, 512], speeddata: [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]},
+  temp: {resizepos: false,
+    resoldata: [16, 64, 128, 256, 512],
+    speeddata: [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100],
+    exportData:["SVG","PNG","TXT"]},
   tips: {
     play: "Play",
     stop: "Stop",
@@ -89,7 +92,7 @@ $.extend(view.ctrl, {
           sett = control.settings;
           ctrl = event.currentTarget.getAttribute("data-ctrl");
           //alert(ctrl);
-          if (ctrl === "resol" || ctrl === "speed") {
+          if (ctrl === "resol" || ctrl === "speed" || ctrl === "export") {
             ctrlSel = $("#ctrl_select");
             if (ctrlSel.is(":visible")) {
               ctrlSel.hide();
@@ -100,17 +103,25 @@ $.extend(view.ctrl, {
               val = sett.resol.get();
               template = '{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}px</div>{{/poss}}';
               data = this.temp.resoldata;
-            } else {
+            } else if(ctrl === "speed") {
               val = sett.speed.get();
               template = '{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
               data = this.temp.speeddata;
+            } else if(ctrl === "export"){
+              val = null;
+              template = '{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}</div>{{/poss}}';
+              data = this.temp.exportData;
             }
             obj = this.preMustache(data, val);
             //resoldata=$.extend({},this.temp.resoldata);
             rendered = Mustache.render(template, {poss: obj});
             //$(rendered).val(val);
             this.summonSelect(event.currentTarget, rendered, function (event) {
-              sett[ctrl].set(parseFloat(event.target.getAttribute("data-val")));
+              var picked = event.target.getAttribute("data-val");
+              if(ctrl==="speed" || ctrl === "resol"){
+                picked = parseFloat(picked);
+              }
+              sett[ctrl].set(picked);
               $("#ctrl_select").hide();
             });
             return;
@@ -125,10 +136,6 @@ $.extend(view.ctrl, {
           }
           if (ctrl === "reset") {
             control.control.reset();
-            return;
-          }
-          if (ctrl === "pict") {
-            sett.png.toggle();
           }
 
         }, this))

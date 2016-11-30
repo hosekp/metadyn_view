@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gradient</title>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xlink="http://www.w3.org/1999/xlink"
+     style="visibility: hidden" width="0" height="0">
+  <defs>
+    <linearGradient id="ColorScale" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="rgb(150,0,0)"></stop>
+      <stop offset="10.7%" stop-color="rgb(255,0,0)"></stop>
+      <stop offset="36%" stop-color="rgb(250,250,0)"></stop>
+      <stop offset="39%" stop-color="rgb(220,255,0)"></stop>
+      <stop offset="61.2%" stop-color="rgb(0,255,222)"></stop>
+      <stop offset="64.5%" stop-color="rgb(0,225,255)"></stop>
+      <stop offset="87%" stop-color="rgb(0,0,255)"></stop>
+      <stop offset="89.4%" stop-color="rgb(0,0,255)"></stop>
+      <stop offset="100%" stop-color="rgb(0,0,150)"></stop>
+    </linearGradient>
+  </defs>
+  <!--<rect width="1000" height="30" fill="url(#ColorScale)"></rect>-->
+</svg>
+<script>
+  /**
+   * @param {number} length
+   */
+  function createLines(length) {
+    var canvas = document.createElement("canvas");
+    canvas.setAttribute("width", length.toString());
+    canvas.setAttribute("height", "300");
+//  <canvas id="canvas" width="1000" height="300" style="width: 1000px;height: 300px"></canvas>
+//    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var i, rat, red, green, blue, sigma, hei, wid = 15, height = 300;
+    sigma = 1000.0;
+    hei = 380.0;
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    /** TOP
+     var lines=[105,355]; //red
+     var lines=[365,615]; //green
+     var lines=[645,894]; //blue
+     */
+    /** BOTTOM
+     var lines=[610]; //red
+     var lines=[110,870]; //green
+     var lines=[390]; //blue
+     */
+//    var lines=[105,110,355,365,390,610,615,645,870,894];
+    var lines = [0, 107, 360, 390, 612, 645, 870, 894, 1000];
+    for (i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      ctx.moveTo(line, height);
+      ctx.lineTo(line, 0);
+      rat = 1 - line / length;
+      red = Math.min(Math.max(hei - Math.abs(rat - 0.77) * sigma, 0), 255);
+      green = Math.min(Math.max(hei - Math.abs(rat - 0.51) * sigma, 0), 255);
+      blue = Math.min(Math.max(hei - Math.abs(rat - 0.23) * sigma, 0), 255);
+      console.log("rgb(" + red + "," + green + "," + blue + ")");
+    }
+//    for (i = 0; i < length; i += 1) {
+//    }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "red";
+    for (i = 0; i < length; i += 1) {
+      rat = 1 - i / length;
+      red = Math.min(Math.max(hei - Math.abs(rat - 0.77) * sigma, 0), 255);
+      ctx.lineTo(i, height - red);
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = "green";
+    for (i = 0; i < length; i += 1) {
+      rat = 1 - i / length;
+      green = Math.min(Math.max(hei - Math.abs(rat - 0.51) * sigma, 0), 255);
+      ctx.lineTo(i, height - green);
+//      if(Math.abs(hei - Math.abs(rat - 0.23) * sigma)<=1){
+//        console.log(i);
+//      }
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = "blue";
+    for (i = 0; i < length; i += 1) {
+      rat = 1 - i / length;
+      blue = Math.min(Math.max(hei - Math.abs(rat - 0.23) * sigma, 0), 255);
+      ctx.lineTo(i, height - blue);
+    }
+    ctx.stroke();
+    return canvas;
+  }
+  function createCanvasBar(height) {
+    var ctx, length = 15, can, imd, sigma, hei, i, rat, red, green, blue, j, ind;
+    can = document.createElement("canvas");
+    can.setAttribute("width", length);
+    can.setAttribute("height", height);
+    ctx = can.getContext("2d");
+    imd = ctx.createImageData(length, height);
+    sigma = 1000.0;
+    hei = 380.0;
+    for (i = 0; i < height; i += 1) {
+      rat = 1 - i / height;
+      red = Math.min(Math.max(hei - Math.abs(rat - 0.77) * sigma, 0), 255);
+      green = Math.min(Math.max(hei - Math.abs(rat - 0.51) * sigma, 0), 255);
+      blue = Math.min(Math.max(hei - Math.abs(rat - 0.23) * sigma, 0), 255);
+      for (j = 0; j < length; j += 1) {
+        ind = 4 * (i * length + j);
+        imd.data[ind] = red;
+        imd.data[ind + 1] = green;
+        imd.data[ind + 2] = blue;
+        imd.data[ind + 3] = 255;
+      }
+    }
+    ctx.putImageData(imd, 0, 0);
+    return can;
+  }
+  function createSvgBar(length) {
+    var svgNamespace = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNamespace, "svg");
+    svg.setAttribute("width","30");
+    svg.setAttribute("height",length.toString());
+//    svg.setAttribute("style","float:left");
+    var rect = document.createElementNS(svgNamespace,"rect");
+    rect.setAttribute("width","30");
+    rect.setAttribute("height",length.toString());
+    rect.setAttribute("fill","url(#ColorScale)");
+//
+//    <rect id="rect1" x="10" y="10" rx="15" ry="15" width="100" height="100"/>
+//        <rect x="10" y="120" rx="15" ry="15" width="100" height="100" fill="url(#Gradient2)"/>
+    svg.appendChild(rect);
+    return svg;
+  }
+  (function () {
+//    var lines = createLines(1000);
+//    document.getElementsByTagName("body").item(0).appendChild(lines);
+    var canvasBar = createCanvasBar(1000);
+    document.getElementsByTagName("body").item(0).appendChild(canvasBar);
+    var svgBar = createSvgBar(1000);
+    document.getElementsByTagName("body").item(0).appendChild(svgBar);
+  })();
+</script>
+</body>
+</html>

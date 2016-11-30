@@ -133,16 +133,6 @@ body{
 .feed_note_longtext{
     display: none;
 }
-#export_cont{
-    float:left;
-}
-#export_help{
-    margin-left: 10px;
-}
-.export_txt{
-    width:100%;
-    height:100px;
-}
 .vertical{
     /*margin-bottom:0;margin-left:0;z-index:5;*/
     /* Safari */ -webkit-transform: rotate(-90deg); 
@@ -192,3 +182,38 @@ body{
     width: 186px;
     margin: 40px 7px 7px;
 }
+#export_modal{
+    position: absolute;
+    top:100px;
+    left: 30%;
+    right: 30%;
+    width:40%;
+    z-index: 600;
+    background-color: black;
+    border: 2px solid black;
+    display: none;
+}
+#export_modal_inner{
+    border: 2px solid red;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+#export_modal_content{
+    padding: 15px;
+    color: white;
+}
+#export_modal_content a{
+    color: white;
+}
+#export_modal_bottom{
+    text-align: center;
+}
+#export_modal_close{
+    border: 2px solid red;
+    font-size: 20px;
+    color: red;
+    background-color: black;
+    margin: 5px;
+}
+
