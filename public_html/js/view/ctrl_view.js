@@ -41,6 +41,7 @@ $.extend(view.ctrl, {
       this.template = data;
       this.redraw();
       this.bind();
+      this.width = $("#cont").width();
       this.inited = true;
     }, this), "text");
     control.control.everytick(this, "render");
@@ -109,7 +110,7 @@ $.extend(view.ctrl, {
             rendered = Mustache.render(template, {poss: obj});
             //$(rendered).val(val);
             this.summonSelect(event.currentTarget, rendered, function (event) {
-              sett[ctrl].set(parseFloat(event.target.getAttribute("data-val"), 10));
+              sett[ctrl].set(parseFloat(event.target.getAttribute("data-val")));
               $("#ctrl_select").hide();
             });
             return;
@@ -128,7 +129,6 @@ $.extend(view.ctrl, {
           }
           if (ctrl === "pict") {
             sett.png.toggle();
-            return;
           }
 
         }, this))
@@ -137,19 +137,18 @@ $.extend(view.ctrl, {
           var div = $("#main_cont");
           this.stopTip();
           this.temp.resizepos = {x: event.pageX - div.width(), y: event.pageY - div.height()};
-          $("body").on("mousemove", $.proxy(function (event) {
-            this.resizing = event;
-            this.stopTip();
-          }, this));
-          $("body").on("mouseup", $.proxy(function (event) {
-            //this.settings.resize=false;
-            this.temp.resizepos = false;
-            this.redraw();
-            //this.resize(event);
-            $("body").off("mousemove");
-            $("body").off("mouseup");
-            $("body").off("mouseout");
-          }, this));
+          $("body")
+              .on("mousemove", $.proxy(function (event) {
+                this.resizing = event;
+                this.stopTip();
+              }, this))
+              .on("mouseup", $.proxy(function (event) {
+                //this.settings.resize=false;
+                this.temp.resizepos = false;
+                this.redraw();
+                //this.resize(event);
+                $("body").off("mousemove").off("mouseup").off("mouseout");
+              }, this));
           /*$("body").on("mouseout",$.proxy(function(event){
            this.render();
            this.resize(event);
@@ -326,9 +325,9 @@ view.ctrl.slide = {
           var value = $(this).val();
           var parsed = parseFloat($(this).val());
           if (isNaN(parsed)) parsed = 0;
-          if (value.substr(-1)==="%"){
+          if (value.substr(-1) === "%") {
             var percent = Math.min(Math.max(parsed, 0), 100);
-          }else{
+          } else {
             percent = compute.sum_hill.getRatioByClock(parsed);
           }
           // view.ctrl.slide.byratio(percent/100.0);
