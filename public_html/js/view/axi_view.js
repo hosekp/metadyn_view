@@ -144,6 +144,7 @@ $.extend(view.axi,{
         can.attr({width:width,height:height});
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
+        ctx.textAlign="center";
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
@@ -157,11 +158,12 @@ $.extend(view.axi,{
             pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(this.toPrecision(range[i],dec),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],dec),pos,21);
         }
         ctx.stroke();
         text=compute.axi.getName(true);
-        ctx.fillText(text,width/2-10,35);
+        ctx.textAlign="center";
+        ctx.fillText(text,width/2,36);
         
         //Y-AXI
         can=this.div.$z;
@@ -170,6 +172,7 @@ $.extend(view.axi,{
         can.attr({width:width,height:height});
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
+        ctx.textAlign="end";
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
@@ -183,13 +186,14 @@ $.extend(view.axi,{
             pos=6+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(this.toPrecision(-range[i],dec),width-30,pos+5);
+            ctx.fillText(this.toPrecision(-range[i],dec),width-7,pos+5);
         }
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
         text=this.unitsrc[control.settings.enunit.get()];
-        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,10);
+        ctx.textAlign="center";
+        ctx.fillText(text,-height/2,10);
         ctx.restore();
     },
     drawAxes2:function(){
@@ -201,6 +205,7 @@ $.extend(view.axi,{
         can.attr({width:width,height:height});
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
+        ctx.textAlign="center";
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
@@ -215,11 +220,12 @@ $.extend(view.axi,{
             pos=5+(range[i]-min)/diff*(width-10);
             ctx.moveTo(pos,1);
             ctx.lineTo(pos,10);
-            ctx.fillText(this.toPrecision(range[i],dec),pos-10,20);
+            ctx.fillText(this.toPrecision(range[i],dec),pos,21);
         }
         ctx.stroke();
         text=compute.axi.getName(true);
-        ctx.fillText(text,(width-text.length*this.letterwidth)/2,35);
+        ctx.textAlign="center";
+        ctx.fillText(text,width/2,36);
         
         // Y-AXI
         can=this.div.$y;
@@ -228,6 +234,7 @@ $.extend(view.axi,{
         can.attr({width:width,height:height});
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
+        ctx.textAlign="end";
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
@@ -244,14 +251,15 @@ $.extend(view.axi,{
             //var pos=5+(range[i]-min)/diff*(height-10);
             ctx.moveTo(width-1,pos);
             ctx.lineTo(width-5,pos);
-            ctx.fillText(this.toPrecision(range[i],dec),width-30,pos+5);
+            ctx.fillText(this.toPrecision(range[i],dec),width-7,pos+4);
         }
         ctx.stroke();
         text=compute.axi.getName(false);
         //ctx.fillText(text,5,height/2-15);
         ctx.save();
         ctx.rotate(3*Math.PI/2);
-        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,10);
+        ctx.textAlign="center";
+        ctx.fillText(text,-height/2,12);
         ctx.restore();
         
         // Z-AXI
@@ -262,6 +270,7 @@ $.extend(view.axi,{
         can.attr({width:width,height:height});
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
+        ctx.textAlign="start";
         barwid=15;
         ctx.beginPath();
         ctx.moveTo(1,margin);
@@ -279,13 +288,14 @@ $.extend(view.axi,{
             pos=margin+(range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
-            ctx.fillText(this.toPrecision(-range[i],dec),barwid+7,pos+5);
+            ctx.fillText(this.toPrecision(-range[i],dec),barwid+7,pos+3);
         }
         ctx.stroke();
         ctx.save();
         ctx.rotate(3*Math.PI/2);
         text=this.unitsrc[control.settings.enunit.get()];
-        ctx.fillText(text,-(height+text.length*this.letterwidth)/2,width-5);
+        ctx.textAlign="center";
+        ctx.fillText(text,-height/2,width-3);
         ctx.restore();
         
         this.needRedraw=false;
