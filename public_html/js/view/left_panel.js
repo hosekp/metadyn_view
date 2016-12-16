@@ -56,7 +56,7 @@ $.extend(view.panel,{
     getVisitors:function(register){
         $.ajax({
             url:"../../metadyn_counter/main.php",
-            data:{register:register},
+            data:{register:register, page_name: "metadyn_1.1"},
             dataType:"text",
             method:"GET",
             success:function(data){
