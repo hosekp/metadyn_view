@@ -6,23 +6,27 @@ control.measure = {
   inited: false,
   needRedraw: true,
   visible: false,
-  chillsOn: true,
+  chillsOn: false,
   diffOn: false,
+  diffDrawing: false,
+  extremesOn: false,
   data: {
     chills: [],
     xaxi: 0,
     yaxi: 0,
     ene: 0,
-    src: 0
+    src: 0,
+    extremes: []
   },
+  div: {},
   onload: function () {
     control.settings.measure.subscribe(this, "on");
   },
   init: function () {
-    var cont = $('<div id="measure_cont"></div>'),
+    var $cont = $('<div id="measure_cont"></div>'),
         sett = control.settings;
-    this.div.$cont = cont;
-    $("#side").append(cont);
+    this.div.$cont = $cont;
+    $("#side").append($cont);
     /*cont.on("click",".button",$.proxy(function(e){
      this.chillsOn=!this.chillsOn;
      this.needRedraw=true;
@@ -40,24 +44,43 @@ control.measure = {
     </div>\n\
     <div id="measure_chills_button" class="ctrl button lclear{{chillsOn}}" data-ctrl="closest_hills">{{chil_title}}</div>\n\
     {{#chillsOn}}\n\
-    <div id="measure_chills"><ol class="nomargin">\n\
-    {{#data.chills}}\
-    <li>{{.}} ps</li>\n\
-    {{/data.chills}}\
-    </ol></div>\n\
-    {{^data.chills}}\n\
-    {{chil_help}}\n\
-    {{/data.chills}}\n\
+      <div id="measure_chills"><ol class="nomargin">\n\
+      {{#data.chills}}\
+        <li>{{.}} ps</li>\n\
+      {{/data.chills}}\
+      </ol></div>\n\
+      {{^data.chills}}\n\
+        {{chil_help}}\n\
+      {{/data.chills}}\n\
     {{/chillsOn}}\
+    <div id="measure_extremes_button" class="ctrl button lclear{{extremesOn}}" data-ctrl="extremes">{{extremeTitle}}</div>\n\
 ';
+    draw.path.init();
     control.control.everysec(this, "render");
     sett.ncv.subscribe(this, "draw");
     sett.enunit.subscribe(this, "draw");
     sett.lang.subscribe(this, "draw");
-    draw.path.init();
+    this.bindEvents($cont);
     this.inited = true;
   },
-  div: {},
+  bindEvents: function ($cont) {
+    var self = this;
+    $cont.on('click', "#measure_chills_button", function () {
+      self.chillsOn = !self.chillsOn;
+      self.notify("draw");
+    });
+    $cont.on('click', "#measure_extremes_button", function () {
+      self.extremesOn = !self.extremesOn;
+      if (self.extremesOn) {
+        self.data.extremes = [{x: 0.5, y: 0.5}];
+      } else {
+        self.data.extremes = [];
+      }
+      draw.path.reset();
+      self.drawExtremes();
+      self.notify("draw");
+    });
+  },
   isOn: function () {
     return control.settings.measure.get();
   },
@@ -72,8 +95,10 @@ control.measure = {
       CV1: compute.axi.getName(true),
       CV2: compute.axi.getName(false),
       chillsOn: this.chillsOn ? " on" : "",
+      extremesOn: this.extremesOn ? " on" : "",
       eneTitle: !this.diffOn ? Lang("Bias") : Lang("Difference"),
       chil_title: Lang("Closest hills"),
+      extremeTitle: Lang("Extremes"),
       chil_help: Lang("Click at point you want to find closest hills to"),
       data: this.data
     });
@@ -108,33 +133,54 @@ control.measure = {
   },
   click: function (pos) {
     // if (!this.isOn()) return;
-    if (!this.chillsOn) return;
-    pos.y = 1 - pos.y;
-    this.data.chills = this.findChills([pos.x, pos.y]);
-    this.needRedraw = true;
+    if (this.chillsOn) {
+      pos.y = 1 - pos.y;
+      this.data.chills = this.findChills([pos.x, pos.y]);
+      this.needRedraw = true;
+    }
+    this.unsetDiff();
+    this.measure(pos);
+  },
+  drawExtremes: function () {
+    if (!this.extremesOn) return;
+    var extremes = this.data.extremes;
+    for (var i = 0; i < extremes.length; i++) {
+      var extreme = extremes[i];
+      draw.path.addPath([[extreme.x, extreme.y]]);
+    }
+  },
+  drawDiff: function (endPos) {
+    var data = this.data;
+    if (control.settings.ncv.get() === 1) {
+      var x = data.start[0];
+      draw.path.addPath([[x, 0], [x, 1], [endPos.x, 1], [endPos.x, 0], [x, 0]]);
+    } else {
+      draw.path.addPath([data.start, [endPos.x, endPos.y]]);
+    }
   },
   measure: function (pos) {
     var val, data, override, ncv, x;
     // if (!this.isOn()) return false;
-    val = this.getValueAt(pos);
+    if (!this.diffOn || this.diffDrawing) {
+      val = this.getValueAt(pos);
+    } else {
+      val = this.getValueAt(this.data.end);
+    }
     if (val === null) return false;
     ncv = control.settings.ncv.get();
     data = this.data;
     override = false;
+    draw.path.reset();
+    this.drawExtremes();
     if (this.diffOn) {
       val -= data.src;
       override = true;
-      if (ncv === 1) {
-        x = data.start[0];
-        draw.path.setPath([[x, 0], [x, 1], [pos.x, 1], [pos.x, 0], [x, 0]]);
-      } else {
-        draw.path.setPath([data.start, [pos.x, pos.y]]);
-      }
+      this.drawDiff(this.data.end || pos);
     } else {
       if (ncv === 1) {
-        draw.path.setPath([[pos.x, -val / compute.axi.zmax]]);
+        draw.path.addPath([[pos.x, -val / compute.axi.zmax]]);
       } else {
-        draw.path.setPath([[pos.x, pos.y]]);
+        draw.path.addPath([[pos.x, pos.y]]);
       }
     }
     data.xaxi = compute.axi.getCVval(true, pos.x).toPrecision(3);
@@ -149,22 +195,41 @@ control.measure = {
   setDiff: function (pos) {
     var val;
     // if (!this.isOn()) return;
+    this.data.end = null;
     val = this.getValueAt(pos);
-    draw.path.setPath([[pos.x, pos.y]]);
+    draw.path.reset();
+    this.drawExtremes();
+    draw.path.addPath([[pos.x, pos.y]]);
     if (val === null) return false;
     this.data.src = val;
     this.data.ene = 0;
     this.data.start = [pos.x, pos.y];
     this.diffOn = true;
+    this.diffDrawing = true;
     this.needRedraw = true;
-    //manage.console.debug("diff","on");
+    // manage.console.debug("diff","on");
+  },
+  setEndDiff: function (pos) {
+    if (!pos) {
+      if (this.diffDrawing) {
+        this.unsetDiff();
+      }
+      return;
+    }
+    this.diffDrawing = false;
+    this.data.end = pos;
+    // manage.console.debug("diff","end");
   },
   unsetDiff: function () {
     // if (!this.isOn()) return;
+    this.data.start = null;
+    this.data.end = null;
     this.diffOn = false;
+    this.diffDrawing = false;
     this.needRedraw = true;
-    draw.path.setPath([]);
-    //manage.console.debug("diff","off");
+    draw.path.reset();
+    this.drawExtremes();
+    // manage.console.debug("diff","off");
   },
   getValueAt: function (pos) {
     var trans, resol, ncv, x, y = 0, val;

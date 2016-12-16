@@ -76,7 +76,7 @@ $.extend(control.gestures, {
   },
   mouselease: function (event) {
     this.lease = true;
-    if(this.measureOverride){
+    if (this.measureOverride) {
       var coord = this.getCoord(this.lastMousepos);
       control.measure.setDiff(coord);
     }
@@ -102,8 +102,12 @@ $.extend(control.gestures, {
       this.mouseclick(event);
       this.lease = true;
     }
-    if(this.measureOverride){
-      control.measure.unsetDiff();
+    if (this.measureOverride) {
+      if (event.type === "mouseup") {
+        var mousepos = {x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height};
+        var coord = this.getCoord(mousepos);
+      }
+      control.measure.setEndDiff(coord);
     }
   },
   mousewheel: function (event) {
@@ -137,7 +141,7 @@ $.extend(control.gestures, {
     //manage.console.debug("Wheeling: "+(event.originalEvent.wheelDelta > 0));
   },
   mouseclick: function (event) {
-    if(this.measureOverride){
+    if (this.measureOverride) {
       var coord = this.getCoord({x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height}); // mousepos as argument
       control.measure.click(coord);
     }
