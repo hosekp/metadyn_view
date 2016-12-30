@@ -107,7 +107,7 @@ $.extend(control.gestures, {
         var mousepos = {x: (event.pageX - this.left) / this.width, y: (event.pageY - this.top) / this.height};
         var coord = this.getCoord(mousepos);
       }
-      control.measure.setEndDiff(coord);
+      control.measure.mouseEnd(coord);
     }
   },
   mousewheel: function (event) {

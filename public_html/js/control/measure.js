@@ -8,7 +8,8 @@ control.measure = {
   visible: false,
   chillsOn: false,
   diffOn: false,
-  diffDrawing: false,
+  fixedPointOn: false,
+  drawing: true, // actualize energy on mousemove
   extremesOn: false,
   data: {
     chills: [],
@@ -16,6 +17,8 @@ control.measure = {
     yaxi: 0,
     ene: 0,
     src: 0,
+    startPoint: null,
+    endPoint: null,
     extremes: []
   },
   div: {},
@@ -134,12 +137,22 @@ control.measure = {
   click: function (pos) {
     // if (!this.isOn()) return;
     if (this.chillsOn) {
-      pos.y = 1 - pos.y;
-      this.data.chills = this.findChills([pos.x, pos.y]);
-      this.needRedraw = true;
+      this.data.chills = this.findChills([pos.x, 1 - pos.y]);
     }
-    this.unsetDiff();
-    this.measure(pos);
+    if (this.data.endPoint && this.isCloseToPoint(pos, this.data.endPoint)) {
+      this.unsetDiff();
+      this.measure(pos);
+    } else {
+      this.unsetDiff();
+      this.setEndDiff(pos);
+      this.measure();
+    }
+    this.needRedraw = true;
+  },
+  mouseEnd:function (pos) {
+    if(this.diffOn && this.drawing){
+      this.setEndDiff(pos);
+    }
   },
   drawExtremes: function () {
     if (!this.extremesOn) return;
@@ -152,36 +165,41 @@ control.measure = {
   drawDiff: function (endPos) {
     var data = this.data;
     if (control.settings.ncv.get() === 1) {
-      var x = data.start[0];
+      var x = data.startPoint[0];
       draw.path.addPath([[x, 0], [x, 1], [endPos.x, 1], [endPos.x, 0], [x, 0]]);
     } else {
-      draw.path.addPath([data.start, [endPos.x, endPos.y]]);
+      draw.path.addPath([data.startPoint, [endPos.x, endPos.y]]);
+    }
+  },
+  drawPoint: function (pos, val) {
+    if (control.settings.ncv.get() === 1) {
+      draw.path.addPath([[pos.x, -val / compute.axi.zmax]]);
+    } else {
+      draw.path.addPath([[pos.x, pos.y]]);
     }
   },
   measure: function (pos) {
     var val, data, override, ncv, x;
     // if (!this.isOn()) return false;
-    if (!this.diffOn || this.diffDrawing) {
-      val = this.getValueAt(pos);
-    } else {
-      val = this.getValueAt(this.data.end);
+
+    if (this.data.endPoint) {
+      pos = this.data.endPoint;
+    }
+    val = this.getValueAt(pos);
+    if (this.data.startPoint) {
+      val -= this.data.src;
     }
     if (val === null) return false;
     ncv = control.settings.ncv.get();
     data = this.data;
-    override = false;
+    // override = false;
     draw.path.reset();
     this.drawExtremes();
     if (this.diffOn) {
-      val -= data.src;
-      override = true;
-      this.drawDiff(this.data.end || pos);
+      // override = true;
+      this.drawDiff(pos);
     } else {
-      if (ncv === 1) {
-        draw.path.addPath([[pos.x, -val / compute.axi.zmax]]);
-      } else {
-        draw.path.addPath([[pos.x, pos.y]]);
-      }
+      this.drawPoint(pos, val);
     }
     data.xaxi = compute.axi.getCVval(true, pos.x).toPrecision(3);
     if (ncv > 1) {
@@ -190,12 +208,12 @@ control.measure = {
     data.ene = val.toFixed(2);
     this.needRedraw = true;
     //$("#measure_ctrl_value").html(val.toFixed(1)+" kJ/mol");
-    return override;
+    return true;//override;
   },
   setDiff: function (pos) {
     var val;
     // if (!this.isOn()) return;
-    this.data.end = null;
+    this.data.endPoint = null;
     val = this.getValueAt(pos);
     draw.path.reset();
     this.drawExtremes();
@@ -203,33 +221,39 @@ control.measure = {
     if (val === null) return false;
     this.data.src = val;
     this.data.ene = 0;
-    this.data.start = [pos.x, pos.y];
+    this.data.startPoint = [pos.x, pos.y];
     this.diffOn = true;
-    this.diffDrawing = true;
+    this.drawing = true;
     this.needRedraw = true;
     // manage.console.debug("diff","on");
   },
   setEndDiff: function (pos) {
     if (!pos) {
-      if (this.diffDrawing) {
+      if (this.diffOn && this.drawing) {
         this.unsetDiff();
       }
       return;
     }
-    this.diffDrawing = false;
-    this.data.end = pos;
+    this.drawing = false;
+    this.data.endPoint = pos;
     // manage.console.debug("diff","end");
   },
   unsetDiff: function () {
     // if (!this.isOn()) return;
-    this.data.start = null;
-    this.data.end = null;
+    this.data.startPoint = null;
+    this.data.endPoint = null;
     this.diffOn = false;
-    this.diffDrawing = false;
+    this.drawing = true;
     this.needRedraw = true;
     draw.path.reset();
     this.drawExtremes();
     // manage.console.debug("diff","off");
+  },
+  isCloseToPoint: function (pos, point) {
+    // var distance2 = Math.pow(pos.x - point.x, 2) + Math.pow(pos.y - point.y, 2);
+    // manage.console.log("Distance: "+distance2);
+    // return distance2 < 0.00025;
+    return Math.pow(pos.x - point.x, 2) + Math.pow(pos.y - point.y, 2) < 0.0003;
   },
   getValueAt: function (pos) {
     var trans, resol, ncv, x, y = 0, val;
