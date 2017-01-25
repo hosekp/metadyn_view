@@ -24,6 +24,7 @@ $.extend(view.ctrl, {
   tips: {
     play: "Play",
     stop: "Stop",
+    settings: "Settings",
     measure: "Measure",
     loop: "Loop",
     resize: "Resize",
@@ -133,6 +134,9 @@ $.extend(view.ctrl, {
           if (ctrl === "loop" || ctrl === "measure" || ctrl === "play" || ctrl === "glwant") {
             sett[ctrl].toggle();
             return;
+          }
+          if(ctrl === "settings"){
+            view.sett_view.show();
           }
           if (ctrl === "reset") {
             control.control.reset();

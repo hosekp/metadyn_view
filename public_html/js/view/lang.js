@@ -39,6 +39,7 @@ $.extend(view.lang, {
     "Change axis": "Změnit osy",
     "Automatic Z axi": "Automatická Z osa",
     "Change energy units": "Změn jednotky",
+    "Energy unit": "Jednotka energie",
     "not supported": "nepodporován",
     "not implemented": "neimplementováno",
     "Could not initialise": "Nepodařil se inicializovat",
@@ -58,7 +59,9 @@ $.extend(view.lang, {
     "Variable sigma is not supported": "Proměnná velikost sigmy není podporována",
     "resize conducted": "Provedena změna velikosti",
     "Drop your HILLS files here": "Přesuňte sem HILLS soubory",
-    "Extremes": "Extrémy"
+    "Extremes": "Extrémy",
+    "Settings": "Nastavení",
+    "Text size": "Velikost textu"
   }
 });
 var Lang = function () {

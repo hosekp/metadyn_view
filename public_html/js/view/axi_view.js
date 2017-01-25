@@ -28,6 +28,7 @@ $.extend(view.axi,{
         sett.frameposy.subscribe(this,"draw");
         sett.ncv.subscribe(this,"arrange");
         sett.enunit.subscribe(this,"labels");
+        sett.textSize.subscribe(this,"draw");
     },
     loaded:function(template){
         if(template){
