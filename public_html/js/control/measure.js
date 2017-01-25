@@ -8,7 +8,6 @@ control.measure = {
   visible: false,
   chillsOn: false,
   diffOn: false,
-  fixedPointOn: false,
   drawing: true, // actualize energy on mousemove
   extremesOn: false,
   data: {
@@ -17,8 +16,8 @@ control.measure = {
     yaxi: 0,
     ene: 0,
     src: 0,
-    startPoint: null,
-    endPoint: null,
+    startPos: null,
+    endPos: null,
     extremes: []
   },
   div: {},
@@ -93,7 +92,7 @@ control.measure = {
     if (!this.needRedraw) return;
 
     rendered = Mustache.render(this.template, {
-      units: control.settings.enunit.get() === 0 ? "kJ/mol" : "kcal/mol",
+      units: this.data.ene === null ? "" : control.settings.enunit.get() === 0 ? "kJ/mol" : "kcal/mol",
       yaxi: control.settings.ncv.get() > 1,
       CV1: compute.axi.getName(true),
       CV2: compute.axi.getName(false),
@@ -139,7 +138,7 @@ control.measure = {
     if (this.chillsOn) {
       this.data.chills = this.findChills([pos.x, 1 - pos.y]);
     }
-    if (this.data.endPoint && this.isCloseToPoint(pos, this.data.endPoint)) {
+    if (this.data.endPos && this.isCloseToPos(pos, this.data.endPos)) {
       this.unsetDiff();
       this.measure(pos);
     } else {
@@ -149,26 +148,30 @@ control.measure = {
     }
     this.needRedraw = true;
   },
-  mouseEnd:function (pos) {
-    if(this.diffOn && this.drawing){
+  mouseEnd: function (pos) {
+    if (!pos && this.drawing) {
+      return this.unsetDiff();
+    }
+    if (this.diffOn && this.drawing) {
       this.setEndDiff(pos);
     }
   },
   drawExtremes: function () {
+    var extremes;
     if (!this.extremesOn) return;
-    var extremes = this.data.extremes;
+    extremes = this.data.extremes;
     for (var i = 0; i < extremes.length; i++) {
       var extreme = extremes[i];
       draw.path.addPath([[extreme.x, extreme.y]]);
     }
   },
   drawDiff: function (endPos) {
-    var data = this.data;
+    var data = this.data, startPos = data.startPos;
     if (control.settings.ncv.get() === 1) {
-      var x = data.startPoint[0];
+      var x = startPos.x;
       draw.path.addPath([[x, 0], [x, 1], [endPos.x, 1], [endPos.x, 0], [x, 0]]);
     } else {
-      draw.path.addPath([data.startPoint, [endPos.x, endPos.y]]);
+      draw.path.addPath([[startPos.x, startPos.y], [endPos.x, endPos.y]]);
     }
   },
   drawPoint: function (pos, val) {
@@ -179,15 +182,15 @@ control.measure = {
     }
   },
   measure: function (pos) {
-    var val, data, override, ncv, x;
+    var val, data, ncv;
     // if (!this.isOn()) return false;
 
-    if (this.data.endPoint) {
-      pos = this.data.endPoint;
+    if (this.data.endPos) {
+      pos = this.data.endPos;
     }
     val = this.getValueAt(pos);
-    if (this.data.startPoint) {
-      val -= this.data.src;
+    if (this.data.startPos) {
+      val -= this.getValueAt(this.data.startPos);
     }
     if (val === null) return false;
     ncv = control.settings.ncv.get();
@@ -213,15 +216,14 @@ control.measure = {
   setDiff: function (pos) {
     var val;
     // if (!this.isOn()) return;
-    this.data.endPoint = null;
+    this.data.endPos = null;
     val = this.getValueAt(pos);
     draw.path.reset();
     this.drawExtremes();
     draw.path.addPath([[pos.x, pos.y]]);
     if (val === null) return false;
-    this.data.src = val;
     this.data.ene = 0;
-    this.data.startPoint = [pos.x, pos.y];
+    this.data.startPos = pos;
     this.diffOn = true;
     this.drawing = true;
     this.needRedraw = true;
@@ -235,25 +237,30 @@ control.measure = {
       return;
     }
     this.drawing = false;
-    this.data.endPoint = pos;
+    this.data.endPos = pos;
     // manage.console.debug("diff","end");
   },
   unsetDiff: function () {
-    // if (!this.isOn()) return;
-    this.data.startPoint = null;
-    this.data.endPoint = null;
-    this.diffOn = false;
-    this.drawing = true;
-    this.needRedraw = true;
-    draw.path.reset();
+    this.clearData();
     this.drawExtremes();
     // manage.console.debug("diff","off");
   },
-  isCloseToPoint: function (pos, point) {
+  clearData: function () {
+    this.data.startPos = null;
+    this.data.endPos = null;
+    this.diffOn = false;
+    this.drawing = true;
+    this.data.xaxi = null;
+    this.data.yaxi = null;
+    this.data.ene = null;
+    this.needRedraw = true;
+    draw.path.reset();
+  },
+  isCloseToPos: function (pos, second) {
     // var distance2 = Math.pow(pos.x - point.x, 2) + Math.pow(pos.y - point.y, 2);
     // manage.console.log("Distance: "+distance2);
     // return distance2 < 0.00025;
-    return Math.pow(pos.x - point.x, 2) + Math.pow(pos.y - point.y, 2) < 0.0003;
+    return Math.pow(pos.x - second.x, 2) + Math.pow(pos.y - second.y, 2) < 0.0003;
   },
   getValueAt: function (pos) {
     var trans, resol, ncv, x, y = 0, val;
