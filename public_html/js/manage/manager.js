@@ -77,6 +77,7 @@ $.extend(manage.manager, {
       this.lastTransformed = null;
     }
     draw.drawer.draw(this.lastDrawable, compute.axi.zmax);
+    if(control.measure.isOn()) control.measure.measure(null);
     return rat;
   },
   initSpace: function () {

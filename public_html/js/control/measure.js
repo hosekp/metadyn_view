@@ -188,6 +188,7 @@ control.measure = {
     if (this.data.endPos) {
       pos = this.data.endPos;
     }
+    if(!pos) return false;
     val = this.getValueAt(pos);
     if (this.data.startPos) {
       val -= this.getValueAt(this.data.startPos);
