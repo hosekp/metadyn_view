@@ -28,7 +28,7 @@ $.extend(view.axi,{
         sett.frameposy.subscribe(this,"draw");
         sett.ncv.subscribe(this,"arrange");
         sett.enunit.subscribe(this,"labels");
-        sett.textSize.subscribe(this,"draw");
+        sett.textSize.subscribe(this,"arrange");
     },
     loaded:function(template){
         if(template){
@@ -67,6 +67,7 @@ $.extend(view.axi,{
         this.rendered=true;
     },
     arrange:function(){
+        if(!this.needArrange) return;
         var zwidth,xwidth,zheight,ywidth,ldiv;
         if(!this.rendered){return;}
         zwidth=this.zwidth;
@@ -119,12 +120,14 @@ $.extend(view.axi,{
         this.needRedraw=true;
     },
     drawAxes:function(){
+        if(!this.needRedraw) return;
         var ncv;
         /*if(this.needArrange){
             this.arrange();
         }
-        if(!this.needRedraw){return;}*/
+        if(!this.needDrawAxes){return;}*/
         if(!compute.sum_hill.haveData()){
+            this.needRedraw=false;
             return false;
         }
         ncv=control.settings.ncv.get();
@@ -135,9 +138,11 @@ $.extend(view.axi,{
         }else{
             this.drawAxes2();
         }
+        this.needRedraw=false;
     },
     drawAxes1:function(){
-        var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text;
+        var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text,font;
+        font=control.settings.textSize.get()+"px sans-serif";
         //X-AXI
         can=this.div.$x;
         width=can.width();
@@ -146,6 +151,7 @@ $.extend(view.axi,{
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
         ctx.textAlign="center";
+        ctx.font=font;
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
@@ -174,6 +180,7 @@ $.extend(view.axi,{
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
         ctx.textAlign="end";
+        ctx.font=font;
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
@@ -198,7 +205,8 @@ $.extend(view.axi,{
         ctx.restore();
     },
     drawAxes2:function(){
-        var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text,margin,bar,barwid;
+        var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text,margin,bar,barwid,font;
+        font=control.settings.textSize.get()+"px sans-serif";
         // X-AXI
         can=this.div.$x;
         width=can.width();
@@ -207,6 +215,7 @@ $.extend(view.axi,{
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
         ctx.textAlign="center";
+        ctx.font=font;
         ctx.beginPath();
         ctx.moveTo(5,1);
         ctx.lineTo(width-5,1);
@@ -236,6 +245,7 @@ $.extend(view.axi,{
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
         ctx.textAlign="end";
+        ctx.font=font;
         ctx.beginPath();
         ctx.moveTo(width-1,5);
         ctx.lineTo(width-1,height-5);
@@ -272,6 +282,7 @@ $.extend(view.axi,{
         ctx=can[0].getContext("2d");
         ctx.strokeStyle="black";
         ctx.textAlign="start";
+        ctx.font=font;
         barwid=15;
         ctx.beginPath();
         ctx.moveTo(1,margin);
@@ -298,8 +309,6 @@ $.extend(view.axi,{
         ctx.textAlign="center";
         ctx.fillText(text,-height/2,width-3);
         ctx.restore();
-        
-        this.needRedraw=false;
     },
     bind:function (){
         //var thisctrl=this;
@@ -387,9 +396,13 @@ $.extend(view.axi,{
     notify:function(args){
         if(args==="draw"){this.needRedraw=true;return;}
         if(args==="drawAxes"){this.drawAxes();return;}
-        if(args==="arrange"){this.needArrange=true;return;}
-        if(args==="resize"){this.needArrange=true;return;}
+        // if(args==="arrange"){this.arrange();return;}
         if(args==="labels"){this.setTextFrames();return;}
+        if(args==="arrange"){
+            this.needArrange=true;
+            this.arrange();
+            return;
+        }
     },
     isSquare:function(wid,hei){
         hei-=this.xwidth;

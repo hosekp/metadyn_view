@@ -26,7 +26,7 @@ $.extend(control.settings,{
         this.axi_y=this.create(1);
         this.axi_auto=this.create(1,"axa");
         this.enunit=this.create(0,"eun");  // 0=kJ/mol,  1=kcal/mol
-        this.textSize=this.create(13,"txt");
+        this.textSize=this.create(10,"txt");
         this.zoom=this.create(0,"zom");
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");

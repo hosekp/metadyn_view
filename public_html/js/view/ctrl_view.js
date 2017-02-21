@@ -149,7 +149,7 @@ $.extend(view.ctrl, {
           var $overlayDiv = $("<div class='drag-overlay'>").appendTo("body");
           this.stopTip();
           this.temp.resizepos = {x: event.pageX - div.width(), y: event.pageY - div.height()};
-          $("body")
+          $($overlayDiv)
               //.append($overlayDiv)
               .on("mousemove", $.proxy(function (event) {
                 this.resizing = event;
@@ -212,7 +212,7 @@ $.extend(view.ctrl, {
     this.width = wid;
     $("#cont").css({width: wid + "px"});
     $("#main_cont").css({height: hei + "px"});
-    view.axi.arrange();
+    view.axi.notify("arrange");
     //this.call("resize");
     /*view.axi.needArrange=true;
      view.ctrl.slide.render();
