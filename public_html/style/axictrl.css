@@ -1,7 +1,3 @@
-.axis {
-    background-color: yellow;
-}
-
 .axi_all {
     position: absolute;
     /*float:left;*/
@@ -19,52 +15,6 @@
     /*background-color: rgba(255,0,0,0.4);*/
 }
 
-.ctrl.button {
-    height: 21px;
-    min-width: 21px;
-    border-width: 2px;
-    border-style: solid;
-    margin-left: 1px;
-    margin-right: 1px;
-    /*padding:1px;*/
-    background-color: red;
-    text-align: center;
-}
-
-.ctrl.button, #ctrl_select {
-    border-color: red;
-}
-
-.ctrl.button:hover {
-    border-color: lightcoral;
-}
-
-.ctrl.button:hover:not(.text), #slider:hover, .abutton:hover {
-    background-color: lightcoral;
-}
-
-.ctrl.on {
-    background-color: yellow;
-    border-color: yellow;
-}
-
-.ctrl.on:hover {
-    border-color: white;
-}
-
-.ctrl.on:not(.text):hover {
-    background-color: white;
-}
-
-.ctrl.text {
-    color: white;
-    text-align: center;
-    cursor: default;
-    background-color: black;
-    padding-left: 2px;
-    padding-right: 2px;
-}
-
 .axis.button {
     background-color: red;
 }
@@ -79,24 +29,32 @@
     margin: 2px;
 }
 
+#slide_cont{
+    padding: 5px 0;
+}
 #slide {
     width: calc(100% - 82px);
     width: -moz-calc(100% - 82px);
     width: -webkit-calc(100% - 82px);
     box-sizing: border-box;
-    border: 7px solid black;
-    height: 25px;
+    height: 2px;
+    margin: 0 5px;
     display: inline-block;
-    background-color: darkred;
+    background-color: #ccc;
+}
+#slide_fill{
+    background-color: #ff4422;
+    height: 2px;
 }
 
 #slider {
     position: absolute;
     z-index: 10;
-    width: 16px;
-    height: 21px;
-    border: 2px solid black;
-    background-color: red;
+    width: 25px;
+    height: 25px;
+    background-color: white;
+    box-shadow: 2px 2px 5px 3px rgba(70,70,70,0.2);
+    border-radius: 5000px;
     left: 0;
 }
 
@@ -108,24 +66,17 @@
     /*right: 0;*/
     width: 80px;
     height: 20px;
-    background-color: black;
-    color: white;
-    font-weight: bold;
-    border-color: red;
     text-align: right;
 }
 
 #ctrl_select {
     position: absolute;
     z-index: 10;
-    border-width: 2px;
-    /*border-top-width: 0px;*/
-    border-style: solid;
+    border: 1px solid #aaaaaa;
+    background-color: white;
     display: none;
-    color: white;
-    background-color: black;
     margin-top: 1px;
-    top: 25px;
+    bottom: 42px;
 }
 
 .sel {
@@ -135,10 +86,16 @@
     /*    margin-left: 1px;
         margin-right: 1px;*/
 }
+.sel:hover{
+    background-color: #ccc;
+}
 
 .sel.on {
-    background-color: yellow;
-    color: black;
+    background-color: #ff4422;
+    color: white;
+}
+.sel.on:hover{
+    background-color: #ff8844;
 }
 
 #axi_rnm_input {

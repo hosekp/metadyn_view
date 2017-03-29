@@ -17,10 +17,11 @@ $.extend(view.ctrl, {
   listeners: [],
   inited: false,
   resizing: false,  // event
-  temp: {resizepos: false,
+  temp: {
+    resizepos: false,
     resoldata: [16, 64, 128, 256, 512],
-    speeddata: [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100],
-    exportData:["SVG","PNG","TXT"]},
+    speeddata: [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]
+  },
   tips: {
     play: "Play",
     stop: "Stop",
@@ -31,7 +32,7 @@ $.extend(view.ctrl, {
     glwant: "WebGL",
     resol: "Resolution",
     reset: "Reset",
-    pict: "Picture",
+    // pict: "Picture",
     slider: "Slider",
     speed: "Speed"
   },
@@ -93,7 +94,7 @@ $.extend(view.ctrl, {
           sett = control.settings;
           ctrl = event.currentTarget.getAttribute("data-ctrl");
           //alert(ctrl);
-          if (ctrl === "resol" || ctrl === "speed" || ctrl === "export") {
+          if (ctrl === "resol" || ctrl === "speed") {
             ctrlSel = $("#ctrl_select");
             if (ctrlSel.is(":visible")) {
               ctrlSel.hide();
@@ -108,10 +109,6 @@ $.extend(view.ctrl, {
               val = sett.speed.get();
               template = '{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}} x</div>{{/poss}}';
               data = this.temp.speeddata;
-            } else if(ctrl === "export"){
-              val = null;
-              template = '{{#poss}}<div class="sel {{sel}}" data-val={{val}}>{{val}}</div>{{/poss}}';
-              data = this.temp.exportData;
             }
             obj = this.preMustache(data, val);
             //resoldata=$.extend({},this.temp.resoldata);
@@ -125,21 +122,21 @@ $.extend(view.ctrl, {
               sett[ctrl].set(picked);
               $("#ctrl_select").hide();
             });
-            return;
             //control.settings.resol.set((val)%500+100);
-          }
+          }else
           if (ctrl === "resize") {
-            return;
-          }
+          }else
           if (ctrl === "loop" || ctrl === "measure" || ctrl === "play" || ctrl === "glwant") {
             sett[ctrl].toggle();
-            return;
-          }
+          }else
           if(ctrl === "settings"){
             view.sett_view.show();
-          }
+          }else
           if (ctrl === "reset") {
             control.control.reset();
+          }else
+          if(["PNG","SVG","TXT"].indexOf(ctrl)>-1){
+            sett.export.set(ctrl);
           }
 
         }, this))
@@ -268,6 +265,7 @@ view.ctrl.slide = {
   eventpos: null,
   ctrl: view.ctrl,
   slider: null,
+  $slideFill: null,
   $input: null,
   template: "",
   restWidth: 102,
@@ -280,6 +278,7 @@ view.ctrl.slide = {
       //this.render();
       this.slider = $("#slider");
       this.$input = $("#slide_input");
+      this.$slideFill = $("#slide_fill");
       // this.cont = $("#slide_cont");
       this.bind();
     }, this), "text");
@@ -305,7 +304,11 @@ view.ctrl.slide = {
     if (this.slider === null) {
       this.slider = $("#slider");
     }
+    if (this.$slideFill === null) {
+      this.$slideFill = $("#slide_fill");
+    }
     this.slider.css("left", lft);
+    this.$slideFill.css("width", lft);
     if (this.$input === null) {
       this.$input = $("#slide_input");
     }

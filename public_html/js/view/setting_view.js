@@ -39,7 +39,7 @@ $.extend(view.sett_view, {
         },
         textSize: {
           label: Lang("Text size"),
-          value: 15
+          value: control.settings.textSize.get()
         },
         closeLabel: Lang("Close"),
         header: Lang("Settings")

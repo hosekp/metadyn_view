@@ -12,7 +12,7 @@ $.extend(view.axi,{
     xwidth:40,
     ywidth:50,
     zwidth:55,
-    zheight:40,
+    // zheight:40,
     letterwidth:4.7,
     needRedraw:true,
     needArrange:true,
@@ -68,24 +68,24 @@ $.extend(view.axi,{
     },
     arrange:function(){
         if(!this.needArrange) return;
-        var zwidth,xwidth,zheight,ywidth,ldiv;
+        var zwidth,xwidth,ywidth,ldiv;
         if(!this.rendered){return;}
-        zwidth=this.zwidth;
-        xwidth=this.xwidth;
-        zheight=this.zheight;
-        ywidth=this.ywidth;
+        var bonusWidth=this.getBonusWidth();
+        zwidth=this.zwidth+bonusWidth;
+        xwidth=this.xwidth+bonusWidth;
+        ywidth=this.ywidth+bonusWidth;
         ldiv=this.div;
         if(control.settings.ncv.get()===1){
             zwidth=0;
-            ywidth=this.zwidth;
+            ywidth=this.zwidth+bonusWidth;
             ldiv.$y_cont.hide();
-            ldiv.$z_auto.css({top:"100%",width:ywidth+"px",height:zheight+"px",left:"0px"}).css({top:"-="+xwidth+"px"});
+            ldiv.$z_auto.css({top:"100%",width:ywidth+"px",height:xwidth+"px",left:"0px"}).css({top:"-="+xwidth+"px"});
             ldiv.$select.hide();
             ldiv.$z_cont.css({top:"0px",left:"0px",height:"100%",width:zwidth+"px"}).css({height:"-="+xwidth});
             ldiv.$z_text.css({left:"2px",width:"12px"});
         }else{
             ldiv.$y_cont.show();
-            ldiv.$z_auto.css({top:"100%",width:zwidth+"px",height:zheight+"px",left:"100%"}).css({top:"-="+zheight+"px",left:"-="+zwidth+"px"});
+            ldiv.$z_auto.css({top:"100%",width:zwidth+"px",height:xwidth+"px",left:"100%"}).css({top:"-="+xwidth+"px",left:"-="+zwidth+"px"});
             ldiv.$select.show();
             ldiv.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+xwidth});
             ldiv.$z_text.css({left:(zwidth-14)+"px",width:"12px"});
@@ -99,9 +99,9 @@ $.extend(view.axi,{
         ldiv.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
         ldiv.$x_text.css({top:(xwidth-14)+"px",height:"12px"});
         //ldiv.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
-        ldiv.$z_up.css({top:"0px",width:this.zwidth+"px",height:"50%"});
-        ldiv.$z.css({top:"0px",width:this.zwidth+"px",height:"100%"});
-        ldiv.$z_down.css({top:"50%",width:this.zwidth+"px",height:"50%"});
+        ldiv.$z_up.css({top:"0px",width:zwidth+"px",height:"50%"});
+        ldiv.$z.css({top:"0px",width:zwidth+"px",height:"100%"});
+        ldiv.$z_down.css({top:"50%",width:zwidth+"px",height:"50%"});
         //ldiv.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
         this.setTextFrames();
         this.needRedraw=true;
@@ -118,6 +118,13 @@ $.extend(view.axi,{
         textlen=this.letterwidth*this.unitsrc[control.settings.enunit.get()].length;
         this.div.$z_text.css({top:"50%",height:textlen+"px"}).css({top:"-="+(textlen/2)+"px"});  // Z-axi
         this.needRedraw=true;
+    },
+    getBonusWidth:function(){
+        var textSize=control.settings.textSize.get();
+        if(textSize<12) return 0;
+        if(textSize<17) return 5;
+        if(textSize<22) return 10;
+        return 15;
     },
     drawAxes:function(){
         if(!this.needRedraw) return;
@@ -319,7 +326,7 @@ $.extend(view.axi,{
             //alert(ctrl);
             if(ctrl==="auto"){
                 autoset=control.settings.axi_auto.cycle(3);
-                this.div.$z_auto.children("img").attr("src","img/new/"+this.autosrc[autoset]+".png");
+                this.div.$z_auto.children("img").attr("src","img/"+this.autosrc[autoset]+".png");
 
                 /*if(autoset){
                     this.div.$z_auto.addClass("on");
@@ -329,6 +336,10 @@ $.extend(view.axi,{
                 //this.div.$z_auto.children("img").attr("src","img/new/auto"+(this.autoset?"_on":"")+".png");
             }else if(ctrl==="units"){
                 control.settings.enunit.cycle(2);
+            }else if(ctrl==="up"){
+                console.log("up");
+            }else if(ctrl==="down"){
+                console.log("down");
             }else if(ctrl==="x_text"){
                 pos=$(event.currentTarget).offset();
                 this.renamer.put(pos.left,pos.top,true);

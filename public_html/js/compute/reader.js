@@ -92,19 +92,22 @@ compute.reader={
     },
     init:function(){
         this.template='\
-<input id="file" type="file" multiple style="display:none"/>\
-<div id="file_but" class="ctrl button left text">{{chs_but_text}}</div>\
-<div id="file_seld" class="left">{{fchosed}}</div>\
-<div id="lang_sel" class="ctrl button right">\
-    <img alt="{{lang}}" src="img/{{lang}}.png" />\
+<div class="right file_cont_left">\
+    <div id="examples_button" class="ctrl ctrl_link unselect {{exa}}">{{exa_but_text}}</div>\
+    <img id="lang_sel" class="ctrl lang_select" alt="{{lang}}" width="30px" height="30px" src="img/{{lang}}.png" />\
 </div>\
-<div id="examples_button" class="ctrl text unselect button right {{exa}}">{{exa_but_text}}</div>\
+<div class="file_cont_left">\
+    <div class="metadyn_name"><span class="metadyn_name_first">Metadyn</span><span class="metadyn_name_second">View</span></div>\
+    <input id="file" type="file" multiple style="display:none"/>\
+    <div id="file_but" class="ctrl button text">{{chs_but_text}}</div>\
+    <div id="file_seld">{{fchosed}}</div>\
+</div>\
 <div class="lclear">\
 ';
         this.seltempl='\
-<div id="examples" class="red" style="display:none;position:absolute;">\
+<div id="examples" class="examples_select">\
     {{#examples}}\
-    <div id="example_{{id}}" class="example ctrl button text" style="example" data-path="data/{{id}}">{{name}}</div>\
+    <div id="example_{{id}}" class="example ctrl button text" data-path="data/{{id}}">{{name}}</div>\
     {{/examples}}\
 </div>\
 ';

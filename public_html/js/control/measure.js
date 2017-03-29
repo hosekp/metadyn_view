@@ -118,7 +118,7 @@ control.measure = {
       this.init();
     }
     control.gestures.measureOverride = true;
-    this.div.$cont.show();
+    this.div.$cont.css("display","inline-block");
   },
   hide: function () {
     if (!this.inited) return;

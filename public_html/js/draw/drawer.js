@@ -14,7 +14,7 @@ $.extend(draw.drawer,{
         var newcan=this.getCan(),
         oldcan=this.$can;
         if(newcan===oldcan){return;}
-        this.$can_cont=$("#canvas_cont");
+        this.$can_cont=$("#canvas_cont").removeClass("empty");
         if(oldcan!==null){
             oldcan.replaceWith(newcan);
         }else{
