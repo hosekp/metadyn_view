@@ -7,6 +7,8 @@
 }
 #leftp_logo{
     cursor: pointer;
+    height: auto;
+    margin-bottom: 30px;
 }
 #leftp_logo img{
     width: 90%;
@@ -14,10 +16,14 @@
     margin:5%
 }
 .leftp.button{
+    color: inherit;
+    text-decoration: none;
+    display: block;
     padding-top: 5px;
     height: 28px;
     text-align: center;
     cursor: pointer;
+    line-height: 28px;
 }
 .leftp.button:hover{
     background-color: rgba(0,0,0,0.12);

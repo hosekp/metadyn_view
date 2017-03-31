@@ -18,6 +18,9 @@
 .axis.button {
     background-color: red;
 }
+.axi_rename_cont{
+    z-index: 20;
+}
 
 .axis.button img {
     width: calc(100% - 4px);
@@ -70,6 +73,12 @@
     width: 80px;
     height: 20px;
     text-align: right;
+    border: none;
+}
+#slide_input:focus, #axi_rnm_input:focus{
+    outline: none;
+    border: 1px solid #ff4422;
+    box-shadow: 0 0 10px #ff4422;
 }
 
 #ctrl_select {
@@ -103,9 +112,6 @@
 }
 
 #axi_rnm_input {
-    /*    padding:2px;
-        background-color: black;*/
-    border: 2px solid black;
     padding: 5px;
 }
 

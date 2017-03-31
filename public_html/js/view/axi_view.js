@@ -442,7 +442,7 @@ view.axi.renamer={
     inited:false,
     init:function(){
         var template='\n\
-<div id="axi_rnm_cont" class="axi_all">\n\
+<div id="axi_rnm_cont" class="axi_all axi_rename_cont">\n\
     <input id="axi_rnm_input" />\n\
 </div>';
         this.div.$cont=$(template);

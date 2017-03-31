@@ -34,7 +34,10 @@ $.extend(view.ctrl, {
     reset: "Reset",
     // pict: "Picture",
     slider: "Slider",
-    speed: "Speed"
+    speed: "Speed",
+    SVG: ["Export as","SVG"],
+    PNG: ["Export as","PNG"],
+    TXT: ["Export as","TXT"]
   },
   //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
   init: function () {
@@ -131,8 +134,11 @@ $.extend(view.ctrl, {
           }else
           if (ctrl === "resize") {
           }else
-          if (ctrl === "loop" || ctrl === "measure" || ctrl === "play" || ctrl === "glwant") {
+          if (ctrl === "loop" || ctrl === "measure" || ctrl === "glwant") {
             sett[ctrl].toggle();
+          }else
+          if(ctrl === "play" || ctrl === "stop"){
+            sett.play.set(ctrl==="play");
           }else
           if(ctrl === "settings"){
             view.sett_view.toggle();

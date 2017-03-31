@@ -14,9 +14,9 @@ $.extend(view.lang, {
     "Nothing to draw": "Nic k vykreslení",
     "opened": "otevřeno",
     "Close": "Zavřít",
-    "To get the picture, just press right mouse button over it and select Save image as..": "Klikněte pravým tlačítkem myši na obrázek a dejte Uložit obrázek jako ..",
+    // "To get the picture, just press right mouse button over it and select Save image as..": "Klikněte pravým tlačítkem myši na obrázek a dejte Uložit obrázek jako ..",
     //"To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
-    "Choose files": "Vyber soubory",
+    "Choose files": "Vyberte soubory",
     "Examples": "Příklady",
     "Drop yours HILLS files here": "Upusť zde soubory",
     "Counter": "Počítadlo:",
@@ -62,27 +62,34 @@ $.extend(view.lang, {
     "Extremes": "Extrémy",
     "Settings": "Nastavení",
     "Text size": "Velikost textu",
-    "Export": "Export"
+    "Export": "Export",
+    "Export as": "Exportovat jako"
   }
 });
-var Lang = function () {
+var Lang = function (arg1) {
   var args, dict, ret, i, nel,
       lan = control.settings.lang.get();
   if (lan === "eng") {
-    //if(!args.pop){
-    //}
-    args = Array.prototype.slice.call(arguments);
-    return args.join(" ");
-  }
-  args = arguments;
-  dict = view.lang[lan];
-  ret = [];
-  for (i = 0; i < args.length; i += 1) {
-    nel = dict[args[i]];
-    if (nel === undefined) {
-      nel = args[i];
+    if (arg1.pop) {
+      ret = arg1;
+    } else {
+      ret = Array.prototype.slice.call(arguments);
     }
-    ret.push(nel);
+  } else {
+    if (arg1.pop) {
+      args = arg1;
+    } else {
+      args = arguments;
+    }
+    dict = view.lang[lan];
+    ret = [];
+    for (i = 0; i < args.length; i += 1) {
+      nel = dict[args[i]];
+      if (nel === undefined) {
+        nel = args[i];
+      }
+      ret.push(nel);
+    }
   }
   return ret.join(" ");
 };

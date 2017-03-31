@@ -28,6 +28,7 @@ body {
     background-color: #e7e7e7;
     color: #303030;
     font-family: Lato-Regular, Arial, sans-serif;
+    font-size: 14px;
 }
 
 #all {
@@ -75,8 +76,8 @@ body {
     margin-left: 5px;
     max-width: 300px;
     overflow: auto;
-    bottom: 0;
-    right: 0;
+    bottom: 5px;
+    right: 5px;
 }
 
 #side {
