@@ -165,6 +165,7 @@ $(function () {
   manage.manager.init();
   control.measure.onload();
   view.exporter.onload();
+  view.sett_view.onload();
   manage.tests.onload();
   control.settings.init();
   view.panel.init();

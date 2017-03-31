@@ -7,6 +7,7 @@ $.extend(view.axi,{
     tips:{up:"Increase",down:"Decrease",select:"Change axis",auto:"Automatic Z axi",units:"Change energy units"},
     autosrc:["manual","semiauto","auto"],
     unitsrc:["Energy [kJ/mol]","Energy [kcal/mol]"],
+    fontType:"px Lato-Heavy,sans-serif",
     div:{},
     template:"",
     xwidth:40,
@@ -149,7 +150,7 @@ $.extend(view.axi,{
     },
     drawAxes1:function(){
         var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text,font;
-        font=control.settings.textSize.get()+"px sans-serif";
+        font=control.settings.textSize.get()+this.fontType;
         //X-AXI
         can=this.div.$x;
         width=can.width();
@@ -213,7 +214,7 @@ $.extend(view.axi,{
     },
     drawAxes2:function(){
         var can,width,height,ctx,limits,min,max,diff,range,dec,i,pos,text,margin,bar,barwid,font;
-        font=control.settings.textSize.get()+"px sans-serif";
+        font=control.settings.textSize.get()+this.fontType;
         // X-AXI
         can=this.div.$x;
         width=can.width();
@@ -281,7 +282,7 @@ $.extend(view.axi,{
         ctx.restore();
         
         // Z-AXI
-        margin=7;
+        margin=5;
         can=this.div.$z;
         width=can.width();
         height=can.height();
@@ -292,19 +293,16 @@ $.extend(view.axi,{
         ctx.font=font;
         barwid=15;
         ctx.beginPath();
-        ctx.moveTo(1,margin);
-        ctx.lineTo(1,height-margin);
-        ctx.lineTo(barwid,height-margin);
+        ctx.moveTo(barwid,height-margin);
         ctx.lineTo(barwid,margin);
-        ctx.lineTo(1,margin);
         bar=this.bar.get(height-2*margin);
-        ctx.putImageData(bar,1,margin);
+        ctx.putImageData(bar,0,margin);
         max=compute.axi.zmax;
         limits=this.natureRange(0,max,10,false);
         range=this.drange(limits);
         dec=this.getDec(limits[2]);
         for(i=0;i<range.length;i+=1){
-            pos=margin+(range[i]/max)*(height-2*margin);
+            pos=margin+1+(range[i]/max)*(height-2*margin);
             ctx.moveTo(barwid,pos);
             ctx.lineTo(barwid+5,pos);
             ctx.fillText(this.toPrecision(-range[i],dec),barwid+7,pos+3);
@@ -405,14 +403,13 @@ $.extend(view.axi,{
         return val.toFixed(dec);
     },
     notify:function(args){
-        if(args==="draw"){this.needRedraw=true;return;}
-        if(args==="drawAxes"){this.drawAxes();return;}
+        if(args==="draw"){this.needRedraw=true;}else
+        if(args==="drawAxes"){this.drawAxes();}else
         // if(args==="arrange"){this.arrange();return;}
-        if(args==="labels"){this.setTextFrames();return;}
+        if(args==="labels"){this.setTextFrames();}else
         if(args==="arrange"){
             this.needArrange=true;
             this.arrange();
-            return;
         }
     },
     isSquare:function(wid,hei){
@@ -489,7 +486,7 @@ view.axi.bar={
     lastBar:null,
     ctx:null,
     get:function(height){
-        var wid=15,can,imd,sigma,hei,i,rat,red,green,blue,j,ind;
+        var wid=10,can,imd,sigma,hei,i,rat,red,green,blue,j,ind;
         if(height===this.lastHei){
             return this.lastBar;
         }

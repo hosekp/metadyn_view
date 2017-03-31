@@ -9,7 +9,9 @@ if (view.sett_view === undefined) {
 }
 $.extend(view.sett_view, {
   inited: false,
-  shown: false,
+  onload: function () {
+    control.settings.sett_view.subscribe(this, "render");
+  },
   init: function () {
     this.$popup = $('<div id="settings_popup"></div>');
     this.$popup.appendTo("body");
@@ -25,12 +27,14 @@ $.extend(view.sett_view, {
     this.render();
   },
   show: function () {
-    this.shown = true;
-    this.render();
+    control.settings.sett_view.set(true);
+  },
+  toggle: function () {
+    control.settings.sett_view.toggle();
   },
   render: function () {
     var rendered;
-    if (this.shown) {
+    if (control.settings.sett_view.get()) {
       if (!this.inited) this.init();
       if (!this.template) return;
       rendered = Mustache.render(this.template, {
@@ -50,13 +54,11 @@ $.extend(view.sett_view, {
       if (this.$popup) this.$popup.hide();
     }
   },
-  hide: function () {
-    this.shown = false;
-    this.render();
-  },
   bind: function () {
     var $popup = this.$popup;
-    $popup.find("#settings_popup_close").click($.proxy(this.hide, this));
+    $popup.find("#settings_popup_close").click(function () {
+      control.settings.sett_view.set(false);
+    });
     $popup.find("#energy_unit_select").change(function () {
       var value = parseInt($(this).val());
       control.settings.enunit.set(value);

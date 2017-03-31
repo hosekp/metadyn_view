@@ -1,0 +1,34 @@
+
+#measure_cont {
+    margin-top: 70px;
+    background-color: #cdcdcd;
+    padding: 15px;
+    min-width: 200px;
+    line-height: 25px;
+}
+
+#measure_NW, #measure_ene_header{
+    font-family: Lato-Heavy,ArialBold,sans-serif;
+    margin-left: 5px;
+}
+.measure_NESW {
+    display: inline-block;
+    min-width: 100px;
+}
+#measure_cont .button{
+    font-family: Lato-Heavy,ArialBold,sans-serif;
+    padding: 5px;
+    border-top: 1px solid rgba(0,0,0,0.12);
+    cursor: pointer;
+    /*text-decoration: underline;*/
+}
+#measure_cont .button:hover{
+    background-color: rgba(0,0,0,0.12);
+    /*text-decoration: none;*/
+}
+#measure_cont .button.on{
+    color: #f14213;
+}
+#measure_cont .button.on:hover{
+    color: #d43a12;
+}

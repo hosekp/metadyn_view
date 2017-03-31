@@ -61,7 +61,8 @@ $.extend(view.lang, {
     "Drop your HILLS files here": "Přesuňte sem HILLS soubory",
     "Extremes": "Extrémy",
     "Settings": "Nastavení",
-    "Text size": "Velikost textu"
+    "Text size": "Velikost textu",
+    "Export": "Export"
   }
 });
 var Lang = function () {

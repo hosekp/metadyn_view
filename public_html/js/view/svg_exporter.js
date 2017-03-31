@@ -10,10 +10,14 @@ if (view.axi === undefined) {
 $.extend(view.axi, {
   svgNamespace: "http://www.w3.org/2000/svg",
   prepareSvg: function () {
+    var $main_can = $(".main_can");
+    if (!$main_can[0]) {
+      manage.console.warning("Exporter:", "Nothing to draw");
+      return;
+    }
     var width, height;
     var svgElement = document.createElementNS(this.svgNamespace, "svg");
     var $main_cont = $("#main_cont");
-    var $main_can = $(".main_can");
     width = $main_cont.width();
     height = $main_cont.height();
     svgElement.setAttribute("width", width.toString());

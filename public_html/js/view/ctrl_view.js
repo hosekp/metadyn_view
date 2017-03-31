@@ -62,19 +62,24 @@ $.extend(view.ctrl, {
   getSettings: function () {
     var sett = control.settings;
     return {
-      play: sett.play.get(),
+      play: sett.play.get()?" on":"",
+      stop: sett.play.get()?"":" on",
       measure: sett.measure.get() ? "on" : "",
       loop: sett.loop.get() ? "on" : "",
       resol: sett.resol.get(),
       resize: (!!this.temp.resizepos) ? "on" : "",
       speed: sett.speed.get(),
-      webgl: sett.glwant.get() ? "on" : ""
+      webgl: sett.glwant.get() ? "on" : "",
+      settings: sett.sett_view.get() ? " on" : ""
     };
   },
   render: function () {
     if (this.ctrlRequested) {
-      var vars = {sett: this.getSettings()},
-          rendered = Mustache.render(this.template, vars);
+      var vars = {
+          export_lang: Lang("Export"),
+          sett: this.getSettings()
+        },
+        rendered = Mustache.render(this.template, vars);
       this.div.html(rendered);
       //manage.console.debug("CTRL redrawed");
       this.ctrlRequested = false;
@@ -130,7 +135,7 @@ $.extend(view.ctrl, {
             sett[ctrl].toggle();
           }else
           if(ctrl === "settings"){
-            view.sett_view.show();
+            view.sett_view.toggle();
           }else
           if (ctrl === "reset") {
             control.control.reset();

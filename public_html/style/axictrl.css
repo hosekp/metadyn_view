@@ -57,6 +57,9 @@
     border-radius: 5000px;
     left: 0;
 }
+/*#slider:hover{*/
+    /*background-color: rgba(0,0,0,0.12);*/
+/*}*/
 
 #slide_input {
     position: absolute;
@@ -72,17 +75,18 @@
 #ctrl_select {
     position: absolute;
     z-index: 10;
-    border: 1px solid #aaaaaa;
+    border: 1px solid #cdcdcd;
     background-color: white;
     display: none;
     margin-top: 1px;
     bottom: 42px;
+    padding: 5px 0;
 }
 
 .sel {
-    padding-left: 2px;
-    padding-right: 2px;
     cursor: default;
+    padding: 0 10px;
+    font-family: Lato-Heavy,ArialBold,sans-serif;
     /*    margin-left: 1px;
         margin-right: 1px;*/
 }
@@ -123,4 +127,7 @@
     position: absolute;
     left: 0;
     top: 0;
+}
+.ctrl_export_label{
+    color: #999999;
 }

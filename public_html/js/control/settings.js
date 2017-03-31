@@ -31,6 +31,7 @@ $.extend(control.settings,{
         this.frameposx=this.create(0,"pox");
         this.frameposy=this.create(0,"poy");
         //this.zoomcoef=this.create(2);
+        this.sett_view=this.create(false);
         this.export=this.create(false);
         this.lang=this.create("eng","lan");
         this.webgl=function(){

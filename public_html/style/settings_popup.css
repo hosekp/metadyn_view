@@ -1,25 +1,20 @@
 #settings_popup {
-    position: absolute;
+    position: fixed;
     left: 50%;
     margin-left: -200px;
     width: 400px;
     top: 200px;
     z-index: 1000;
-    border: 2px solid black;
     box-sizing: border-box;
-    color: white;
-    background-color: darkred;
-}
-
-#settings_popup_cont {
-    border: 2px solid red;
+    /*box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);*/
+    box-shadow: 5px 14px 28px rgba(0,0,0,0.25), 0 0 10px rgba(0,0,0,0.22);
+    background-color: white;
 }
 
 #settings_popup_header {
     width: 100%;
     box-sizing: border-box;
     padding: 10px 20px;
-    background-color: black;
 }
 
 #settings_popup_header h1 {
@@ -28,7 +23,6 @@
 
 #settings_popup_body {
     padding: 20px;
-    border: 2px solid black;
 }
 
 #settings_popup_close {
@@ -39,7 +33,6 @@
 
 .settings_option {
     margin-bottom: 5px;
-    border-bottom: 1px solid #660000;
     padding-bottom: 5px;
 }
 
@@ -51,3 +44,7 @@
 #settings_popup input, #settings_popup select {
     width: 180px;
 }
+.icon-cancel:before{
+    content: '\e5c9';
+}
+

@@ -18,20 +18,15 @@ $.extend(manage.console,{
         this.$console=$("#cons").show();
     },
     addText:function(string,loglvl){
-        var txt,colors,str,i;
+        var txt;
         if(control.settings.loglvl.get()<loglvl){return;}
         if(this.$console===null){this.init();}
         txt=this.constext;
-        colors={1:"red",2:"orange",3:"black",4:"blue",2.5:"green"};
-        txt.push("<span style='color:"+colors[loglvl]+"'>"+string+"</span>");
+        txt.push("<div class='cons_text_level_"+loglvl+"'>"+string+"</div>");
         if(txt.length>20){
             txt.shift();
         }
-        str="";
-        for(i=0;i<txt.length;i++){
-            str=txt[i]+"<br>"+str;
-        }
-        this.$console.html(str);
+        this.$console.html(txt.join(""));
     },
     debug:function(){this.addText(Lang.apply(null,arguments),4);},
     log:function(){this.addText(Lang.apply(null,arguments),3);},

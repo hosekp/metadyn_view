@@ -34,28 +34,33 @@ control.measure = {
      this.needRedraw=true;
      },this));*/
     this.template = '\
-    <div id=measure_NW" class="measure_NESW" style="float:left">\n\
-        <div id="measure_ene_title">{{eneTitle}}: </div>\n\
-        <div id="measure_xaxi_title">{{CV1}}: </div>\n\
-        {{#yaxi}}<div id="measure_yaxi_title">{{CV2}}: </div>{{/yaxi}}\n\
-    </div>\n\
-    <div id="measure_NE" class="measure_NESW" style="float:left">\n\
-        <div id="measure_ene"><span id=measure_ene_value">{{data.ene}}</span><span id="measure_ene_units"> {{units}}</span></div>\n\
-        <div id="measure_xaxi">{{data.xaxi}}</div>\n\
-        {{#yaxi}}<div id="measure_yaxi">{{data.yaxi}}</div>{{/yaxi}}\n\
-    </div>\n\
-    <div id="measure_chills_button" class="ctrl button lclear{{chillsOn}}" data-ctrl="closest_hills">{{chil_title}}</div>\n\
-    {{#chillsOn}}\n\
-      <div id="measure_chills"><ol class="nomargin">\n\
+    {{^data.ene}}\
+      <div id="measure_ene_header">{{eneTitle}}</div>\
+    {{/data.ene}}\
+    {{#data.ene}}\
+      <div id="measure_NW" class="measure_NESW">\
+          <div id="measure_ene_title">{{eneTitle}}: </div>\
+          <div id="measure_xaxi_title">{{CV1}}: </div>\
+          {{#yaxi}}<div id="measure_yaxi_title">{{CV2}}: </div>{{/yaxi}}\
+      </div>\
+      <div id="measure_NE" class="measure_NESW">\
+          <div id="measure_ene"><span id=measure_ene_value">{{data.ene}}</span><span id="measure_ene_units"> {{units}}</span></div>\
+          <div id="measure_xaxi">{{data.xaxi}}</div>\
+          {{#yaxi}}<div id="measure_yaxi">{{data.yaxi}}</div>{{/yaxi}}\
+      </div>\
+    {{/data.ene}}\
+    <div id="measure_chills_button" class="ctrl button lclear{{chillsOn}}" data-ctrl="closest_hills">{{chil_title}}</div>\
+    {{#chillsOn}}\
+      <div id="measure_chills"><ol class="nomargin">\
       {{#data.chills}}\
-        <li>{{.}} ps</li>\n\
+        <li>{{.}} ps</li>\
       {{/data.chills}}\
-      </ol></div>\n\
-      {{^data.chills}}\n\
-        {{chil_help}}\n\
-      {{/data.chills}}\n\
+      </ol></div>\
+      {{^data.chills}}\
+        {{chil_help}}\
+      {{/data.chills}}\
     {{/chillsOn}}\
-    <div id="measure_extremes_button" class="ctrl button lclear{{extremesOn}}" data-ctrl="extremes">{{extremeTitle}}</div>\n\
+    <div id="measure_extremes_button" class="ctrl button lclear{{extremesOn}}" data-ctrl="extremes">{{extremeTitle}}</div>\
 ';
     draw.path.init();
     control.control.everysec(this, "render");

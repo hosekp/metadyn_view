@@ -123,7 +123,8 @@ $.extend(view.exporter, {
     link.setAttribute("download", "bias.txt");
     link.click();
   },
-  exportSvg:function (svg) {
+  exportSvg: function (svg) {
+    if (!svg) return;
     var link = document.createElement("a");
     var blob = new Blob([svg.outerHTML], {type: 'image/svg+xml'});
     var url = URL.createObjectURL(blob);
@@ -131,7 +132,7 @@ $.extend(view.exporter, {
     link.setAttribute("href", url);
     link.setAttribute("target", "_blank");
     link.setAttribute("download", "plot.svg");
-    link.setAttribute("href-lang",'image/svg+xml');
+    link.setAttribute("href-lang", 'image/svg+xml');
     link.click();
     // <a href-lang='image/svg+xml' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>
   },

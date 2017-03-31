@@ -3,6 +3,7 @@
     width:200px;
     float:left;
     padding: 20px;
+    font-family: Lato-Heavy,ArialBold,sans-serif;
 }
 #leftp_logo{
     cursor: pointer;
@@ -13,13 +14,26 @@
     margin:5%
 }
 .leftp.button{
-    font-weight: bold;
     padding-top: 5px;
-    width: calc( 100% - 2px );
     height: 28px;
     text-align: center;
     cursor: pointer;
 }
+.leftp.button:hover{
+    background-color: rgba(0,0,0,0.12);
+}
 .leftp.button+.leftp.button{
-    border-top: 1px solid #aaaaaa;
+    border-top: 1px solid #cdcdcd;
+}
+#leftp_counter{
+    margin-top: 70px;
+    color: #9a9a9a;
+    text-align: center;
+}
+.leftp_partners{
+    color: #f13505;
+    text-align: center;
+    margin-top: 25px;
+    padding: 5px;
+    border-bottom: 1px solid #cdcdcd;
 }
