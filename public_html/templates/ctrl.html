@@ -10,23 +10,27 @@
 </div>
 <div class="ctrl_second_line">
     <div class="right">
-        <div id="resize_ctrl" class="ctrl right button {{sett.resize}} tip" data-ctrl="resize">
-            <img alt="Resize" src="img/resize.png" />
+        <div id="settings_ctrl" class="ctrl button{{sett.settings}} tip icon icon-settings" data-ctrl="settings">
         </div>
-        <div id="webgl_ctrl" class="ctrl right button {{sett.webgl}} tip" data-ctrl="glwant">
-            GL
+        <!--<div id="measure_ctrl" class="ctrl right button {{sett.measure}} tip" data-ctrl="measure">-->
+            <!--<img alt="Measure" src="img/measure{{#sett.measure}}_white{{/sett.measure}}.png" />-->
+        <!--</div>-->
+        <div id="measure_ctrl" class="ctrl button {{sett.measure}} tip icon icon-measure" data-ctrl="measure">
         </div>
-
-        <div id="resol_ctrl" class="ctrl right text button unselect tip" data-ctrl="resol">
-            {{sett.resol}}px
-        </div>
-        <div id="speed_ctrl" class="ctrl right text button unselect tip" data-ctrl="speed">
+        <div id="speed_ctrl" class="ctrl text button unselect tip" data-ctrl="speed">
             {{sett.speed}} x
         </div>
-        <div id="measure_ctrl" class="ctrl right button {{sett.measure}} tip" data-ctrl="measure">
-            <img alt="Measure" src="img/measure{{#sett.measure}}_white{{/sett.measure}}.png" />
+        <div id="resol_ctrl" class="ctrl text button unselect tip" data-ctrl="resol">
+            {{sett.resol}}px
         </div>
-        <div id="settings_ctrl" class="ctrl right button{{sett.settings}} tip icon icon-settings" data-ctrl="settings">
+        <div id="webgl_ctrl" class="ctrl button {{sett.webgl}} tip" data-ctrl="glwant">
+            GL
+        </div>
+        <div id="image_size_info" class="image_size_info tip" data-ctrl="resolution">
+            <span class="icon icon-resolution"></span>
+            <span id="image_size_info_numbers" class="image_size_info-numbers"></span> px
+        </div>
+        <div id="resize_ctrl" class="ctrl button {{sett.resize}} tip icon icon-resize" data-ctrl="resize">
         </div>
     </div>
     <div id="ctrl_select"></div>

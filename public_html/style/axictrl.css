@@ -21,6 +21,20 @@
 .axi_rename_cont{
     z-index: 20;
 }
+.image_size_info{
+    display: inline-block;
+    margin-left: 15px;
+    margin-right: 5px;
+    vertical-align: sub;
+}
+.image_size_info .icon{
+    font-size: 20px;
+    line-height: 0.9;
+    vertical-align: text-top;
+}
+.image_size_info-numbers{
+    font-weight: bold;
+}
 
 .axis.button img {
     width: calc(100% - 4px);
@@ -33,7 +47,7 @@
 }
 
 #slide_cont{
-    padding: 5px 0;
+    padding-top: 10px;
 }
 #slide {
     width: calc(100% - 82px);

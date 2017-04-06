@@ -415,7 +415,7 @@ $.extend(view.axi,{
     isSquare:function(wid,hei){
         hei-=this.xwidth;
         wid-=this.ywidth+this.zwidth;
-        if(Math.abs(wid-hei)<25){return (wid-hei)/2;}
+        if(Math.abs(wid-hei)<25){return Math.floor((wid-hei)/2);}
         return 0;
     },
     subscribe:function(ctx,args){

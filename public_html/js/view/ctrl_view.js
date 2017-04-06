@@ -13,7 +13,8 @@ $.extend(view.ctrl, {
   tooltipdiv: null,
   tooldelay: false,
   ctrlRequested: false,
-  width: 600,
+  width: null,
+  height: null,
   listeners: [],
   inited: false,
   resizing: false,  // event
@@ -37,7 +38,8 @@ $.extend(view.ctrl, {
     speed: "Speed",
     SVG: ["Export as","SVG"],
     PNG: ["Export as","PNG"],
-    TXT: ["Export as","TXT"]
+    TXT: ["Export as","TXT"],
+    resolution: "Current resolution of plot"
   },
   //settings:{play:false,measure:false,loop:true,resize:false,resol:100},  // temporary
   init: function () {
@@ -49,7 +51,9 @@ $.extend(view.ctrl, {
       this.template = data;
       this.redraw();
       this.bind();
-      this.width = $("#cont").width();
+      var $cont = $("#main_cont");
+      this.width = $cont.width();
+      this.height = $cont.height();
       this.inited = true;
     }, this), "text");
     control.control.everytick(this, "render");
@@ -84,6 +88,7 @@ $.extend(view.ctrl, {
         },
         rendered = Mustache.render(this.template, vars);
       this.div.html(rendered);
+      this.writeImageDimension();
       //manage.console.debug("CTRL redrawed");
       this.ctrlRequested = false;
     }
@@ -102,6 +107,9 @@ $.extend(view.ctrl, {
           sett = control.settings;
           ctrl = event.currentTarget.getAttribute("data-ctrl");
           //alert(ctrl);
+          if(ctrl=== "resolution"){
+            return;
+          }else
           if (ctrl === "resol" || ctrl === "speed") {
             ctrlSel = $("#ctrl_select");
             if (ctrlSel.is(":visible")) {
@@ -218,15 +226,20 @@ $.extend(view.ctrl, {
       hei += sqdif;
     }
     this.width = wid;
+    this.height = hei;
     $("#cont").css({width: wid + "px"});
     $("#main_cont").css({height: hei + "px"});
     view.axi.notify("arrange");
+    this.writeImageDimension();
     //this.call("resize");
     /*view.axi.needArrange=true;
      view.ctrl.slide.render();
      control.gestures.needRecompute=true;
      control.control.needRedraw=true;*/
     this.resizing = false;
+  },
+  writeImageDimension: function () {
+    this.div.find("#image_size_info_numbers").text(this.width+" x "+this.height);
   },
   bindTips: function (div, tips) {
     div

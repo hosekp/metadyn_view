@@ -94,7 +94,9 @@ compute.reader={
         this.template='\
 <div class="right file_cont_half">\
     <div id="examples_button" class="ctrl ctrl_link unselect {{exa}}">{{exa_but_text}}</div>\
-    <img id="lang_sel" class="ctrl lang_select" alt="{{lang}}" width="30px" height="30px" src="img/{{lang}}.png" />\
+    <div id="lang_sel" class="ctrl lang_select">\
+      <img alt="{{lang}}" width="30px" height="30px" src="img/{{lang}}.png" />\
+    </div>\
 </div>\
 <div class="file_cont_half">\
     <div class="metadyn_name"><span class="metadyn_name_first">Metadyn</span><span class="metadyn_name_second">View</span></div>\
@@ -137,7 +139,7 @@ compute.reader={
             lang:control.settings.lang.get(),
             exa:this.exaopen?" on":"",
             fchosed:this.chosed,
-            chs_but_text:Lang("Choose files"),
+            chs_but_text:Lang("CHOOSE FILES"),
             exa_but_text:Lang("Examples")
         };
         rendered=Mustache.render(this.template,obj);

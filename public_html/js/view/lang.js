@@ -16,7 +16,7 @@ $.extend(view.lang, {
     "Close": "Zavřít",
     // "To get the picture, just press right mouse button over it and select Save image as..": "Klikněte pravým tlačítkem myši na obrázek a dejte Uložit obrázek jako ..",
     //"To get the picture, just press right mouse button over it and select Save image as..":"Klikněte pravým tlačítkem myši na obrázek a dejte Uložit jako ..",
-    "Choose files": "Vyberte soubory",
+    "CHOOSE FILES": "VYBERTE SOUBORY",
     "Examples": "Příklady",
     "Drop yours HILLS files here": "Upusť zde soubory",
     "Counter": "Počítadlo:",
@@ -63,7 +63,8 @@ $.extend(view.lang, {
     "Settings": "Nastavení",
     "Text size": "Velikost textu",
     "Export": "Export",
-    "Export as": "Exportovat jako"
+    "Export as": "Exportovat jako",
+    "Current resolution of plot": "Současná velikost grafu"
   }
 });
 var Lang = function (arg1) {

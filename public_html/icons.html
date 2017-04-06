@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Icons</title>
+  <script type="text/javascript" src="js/libs/jquery/jquery-2.1.1.js"></script>
+  <style>
+    @font-face {
+      font-family: 'MaterialIcons';
+      src: url('fonts/MaterialIcons-Regular.woff') format('woff');
+    }
+    .sign{
+      /*width:60px;*/
+      display: inline-block;
+    }
+
+    .code {
+      font-size: 15px;
+      color: #999999;
+      display: none;
+    }
+    /*.sign:hover .code{*/
+      /*display: inline-block;*/
+    /*}*/
+
+    .material {
+      font-family: MaterialIcons;
+      font-size: 15px;
+      color: black;
+      cursor: default;
+    }
+
+  </style>
+</head>
+<body>
+<div id="fonts"></div>
+<script type="application/javascript">
+  var text = "";
+  for (var i = 57344; i < 61440; i++) {
+    text += "<div class='sign'>\
+    <span class='material'>" + String.fromCharCode(i) + "</span> \
+    <span class='code'>" + i.toString(16) + "</span> \
+  </div>";
+//    <span>"+String.fromCharCode(i)+"</span>\
+  }
+  $("#fonts").html(text);
+  $(".sign").click(function () {
+    $(this).find(".code").toggle();
+  });
+
+</script>
+</body>
+</html>

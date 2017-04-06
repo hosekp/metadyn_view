@@ -15,11 +15,6 @@
     src: url('../fonts/MaterialIcons-Regular.woff') format('woff');
 }
 
-@font-face {
-    font-family: 'EasyIcons';
-    src: url('../fonts/easy_icons.woff') format('woff');
-}
-
 html {
 }
 
@@ -61,7 +56,6 @@ body {
 }
 
 #ctrl_cont {
-    height: 25px;
     position: relative;
 }
 
@@ -122,7 +116,7 @@ body {
     border: 1px solid #e4e4e4;
     border-radius: 2px;
     display: inline-block;
-    margin: 5px;
+    margin: 5px 2px;
     height: 25px;
     line-height: 28px;
     vertical-align: middle;
@@ -159,6 +153,7 @@ body {
 }
 
 .lang_select {
+    position: relative;
     border-radius: 5000px;
     overflow: hidden;
     display: inline-block;
@@ -166,18 +161,27 @@ body {
     margin-left: 20px;
 }
 
+.lang_select:hover:before {
+    position: absolute;
+    content: '';
+    height: 30px;
+    width: 30px;
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
 .ctrl_material_button {
     cursor: pointer;
     display: inline-block;
     color: #888888;
-    font-family: MaterialIcons, EasyIcons, sans-serif;
+    font-family: MaterialIcons, sans-serif;
     font-size: 25px;
     padding: 5px;
     vertical-align: middle;
     border-radius: 2px;
 }
-.icon:before{
-    font-family: MaterialIcons, EasyIcons, sans-serif;
+
+.icon:before {
+    font-family: MaterialIcons, sans-serif;
 }
 
 .ctrl_material_button:hover {
@@ -186,6 +190,10 @@ body {
 
 .ctrl_material_button.on {
     color: #f14213;
+}
+
+.button:before {
+    font-size: 20px;
 }
 
 .icon-play:before {
@@ -201,13 +209,24 @@ body {
 }
 
 .icon-loop:before {
-    content: '\00e8';
-    margin-top: -5px;
+    content: '\e86a';
+}
+
+.icon-resolution:before {
+    /*content: '\e85b';*/
+    content: '\E8C4';
+}
+
+.icon-resize:before {
+    content: '\e06e';
+}
+
+.icon-measure:before {
+    content: '\e41c';
 }
 
 .icon-settings:before {
     content: '\e8b8';
-    font-size: larger;
 }
 
 .left {
@@ -303,6 +322,7 @@ body {
 
 .ctrl_second_line {
     position: relative;
+    margin-top: 15px;
 }
 
 .vertical {
