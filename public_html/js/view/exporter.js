@@ -126,7 +126,9 @@ $.extend(view.exporter, {
   exportSvg: function (svg) {
     if (!svg) return;
     var link = document.createElement("a");
-    var blob = new Blob([svg.outerHTML], {type: 'image/svg+xml'});
+    var header = '<?xml version="1.0" standalone="no"?>\
+        \n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+    var blob = new Blob([header,svg.outerHTML], {type: 'image/svg+xml'});
     var url = URL.createObjectURL(blob);
     this.$modalCont.empty().append(link);
     link.setAttribute("href", url);
@@ -134,7 +136,6 @@ $.extend(view.exporter, {
     link.setAttribute("download", "plot.svg");
     link.setAttribute("href-lang", 'image/svg+xml');
     link.click();
-    // <a href-lang='image/svg+xml' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>
   },
   notify: function (args) {
     if (args === "export") {
