@@ -14,10 +14,10 @@ $.extend(view.panel,{
     init:function(){
         control.control.everysec(this,"render");
         control.settings.lang.subscribe(this,"draw");
-        this.$left=$("#leftp").on("click",".button",function(event){
-            var href=event.currentTarget.getAttribute("data-href");
-            window.open(href,"_blank");
-        });
+        // this.$left=$("#leftp").on("click",".button",function(event){
+        //     var href=event.currentTarget.getAttribute("data-href");
+        //     window.open(href,"_blank");
+        // });
     },
     redraw:function(){
         this.needRender=true;
