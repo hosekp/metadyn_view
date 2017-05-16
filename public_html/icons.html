@@ -9,25 +9,46 @@
       font-family: 'MaterialIcons';
       src: url('fonts/MaterialIcons-Regular.woff') format('woff');
     }
-    .sign{
+
+    .sign {
       /*width:60px;*/
       display: inline-block;
     }
 
     .code {
+      font-family: Arial, sans-serif;
       font-size: 15px;
       color: #999999;
-      display: none;
+      /*cursor: text;*/
+      background-color: white;
+      vertical-align: text-bottom;
     }
-    /*.sign:hover .code{*/
-      /*display: inline-block;*/
-    /*}*/
 
     .material {
       font-family: MaterialIcons;
       font-size: 15px;
       color: black;
       cursor: default;
+    }
+
+    .material-hover {
+      font-family: MaterialIcons;
+      display: none;
+      font-size: 30px;
+      position: absolute;
+      background-color: #eeeeee;
+      border: 1px solid #777777;
+      padding: 3px;
+      line-height: 25px;
+    }
+
+    .material:hover + .material-hover, .material-hover--active {
+      display: block;
+    }
+
+    .material-hover-sign {
+      vertical-align: bottom;
+      cursor: not-allowed;
     }
 
   </style>
@@ -39,14 +60,33 @@
   for (var i = 57344; i < 61440; i++) {
     text += "<div class='sign'>\
     <span class='material'>" + String.fromCharCode(i) + "</span> \
-    <span class='code'>" + i.toString(16) + "</span> \
+    <span class='material-hover'>\
+      <span class='material-hover-sign'>" + String.fromCharCode(i) + "</span>\
+      <span class='code'>" + i.toString(16) + "</span> \
+    </span> \
   </div>";
-//    <span>"+String.fromCharCode(i)+"</span>\
   }
+  var selectText = function (container) {
+    if (document.selection) {
+      var textRange = document.body.createTextRange();
+      textRange.moveToElementText(container);
+      textRange.select();
+    } else if (window.getSelection) {
+      var range = document.createRange();
+      range.selectNode(container);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
   $("#fonts").html(text);
   $(".sign").click(function () {
-    $(this).find(".code").toggle();
+    $(this).find(".material-hover").toggleClass("material-hover--active");
   });
+  $(".code").click(function (event) {
+    selectText(this);
+    event.stopPropagation();
+  })
 
 </script>
 </body>
