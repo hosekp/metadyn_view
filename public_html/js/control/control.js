@@ -9,7 +9,6 @@ if (control.control === undefined) {
 }
 $.extend(control.control, {
   actratio: 0,
-  wantedratio: 0,
   stats: null,
   needRedraw: true,
   running: false,
@@ -31,6 +30,7 @@ $.extend(control.control, {
     sett.frameposy.subscribe(this, null);
     sett.resol.subscribe(this, null);
     sett.play.subscribe(this, "toggle");
+    sett.progress.subscribe(this, "setTo");
     view.axi.subscribe(this, "resize");
   },
   start: function () {
@@ -46,7 +46,7 @@ $.extend(control.control, {
     }
     dt = stamp - this.lasttime;
     if (this.running) {
-      nratio = this.wantedratio + dt * control.settings.speed.get() / 10000;
+      nratio = control.settings.progress.get() + dt * control.settings.speed.get() / 10000;
       if (nratio > 1) {
         nratio = 1;
       }
@@ -127,13 +127,14 @@ $.extend(control.control, {
   },
   draw: function () {
     var rat;
+    var wanted = control.settings.progress.get();
     if (this.needRedraw) {
-      rat = manage.manager.draw(this.wantedratio);
+      rat = manage.manager.draw(wanted);
       if (rat === false) {
         this.needRedraw = true;
         return false;
       }
-      this.needRedraw = (rat !== this.wantedratio);
+      this.needRedraw = (rat !== wanted);
       return rat;
     }
     return false;
@@ -141,7 +142,7 @@ $.extend(control.control, {
   },
   stop: function () {
     this.running = false;
-    this.wantedratio = this.actratio;
+    control.settings.progress.set(this.actratio);
   },
   toggle: function () {
     if (control.settings.play.get()) {
@@ -169,10 +170,11 @@ $.extend(control.control, {
     //manage.console.debug("Control: Actual set to "+rat);
   },
   setWanted: function (rat) {
-    if (this.wantedratio === rat) {
+    var progress = control.settings.progress;
+    if (progress.get() === rat) {
       return;
     }
-    this.wantedratio = rat;
+    progress.set(rat);
     //view.ctrl.slide.byratio(rat);
     this.needRedraw = true;
     //manage.console.debug("Control: Wanted set to "+rat);
@@ -180,6 +182,9 @@ $.extend(control.control, {
   notify: function (args) {
     if (args === "toggle") {
       return this.toggle();
+    }
+    if(args === "setTo"){
+      return this.set(control.settings.progress.get());
     }
     //if(args==="resize"){}
     this.needRedraw = true;

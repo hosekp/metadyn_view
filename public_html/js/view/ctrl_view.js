@@ -145,8 +145,11 @@ $.extend(view.ctrl, {
           if (ctrl === "loop" || ctrl === "measure" || ctrl === "glwant") {
             sett[ctrl].toggle();
           }else
-          if(ctrl === "play" || ctrl === "stop"){
-            sett.play.set(ctrl==="play");
+          if(ctrl === "play"){
+            sett.play.toggle();
+          }else
+          if(ctrl === "stop"){
+            sett.play.set(false);
           }else
           if(ctrl === "settings"){
             view.sett_view.toggle();
@@ -294,6 +297,7 @@ view.ctrl.slide = {
   template: "",
   restWidth: 102,
   ratio: 0.0,
+  redrawRequested: true,
   init: function () {
     $.get("templates/slide.html", $.proxy(function (data) {
       var rendered = Mustache.render(data, {left: this.left()});
@@ -305,6 +309,7 @@ view.ctrl.slide = {
       this.$slideFill = $("#slide_fill");
       // this.cont = $("#slide_cont");
       this.bind();
+      control.control.everytick(this, "render");
     }, this), "text");
     view.axi.subscribe(this, "resize");
   },
@@ -316,9 +321,13 @@ view.ctrl.slide = {
   },
   byratio: function (val) {
     this.ratio = val;
-    this.render();
+    this.redraw();
+  },
+  redraw:function () {
+    this.redrawRequested = true;
   },
   render: function () {
+    if(!this.redrawRequested) return;
     //manage.console.debug("left="+left);
     //this.left=lft;
     //div.css("left",lft);
@@ -339,6 +348,7 @@ view.ctrl.slide = {
     //var ratio = this.toratio(lft);
     var time = compute.sum_hill.getClockByRatio(this.ratio);
     this.$input.val(time + " ps");
+    this.redrawRequested = false;
     // this.$input.val(percent + " %");
     // this.move(this.left());
   },
@@ -382,6 +392,9 @@ view.ctrl.slide = {
   },
   notify: function (args) {
     if (args === "resize") {
+      this.redraw();
+    }
+    if(args === "render"){
       this.render();
     }
   }

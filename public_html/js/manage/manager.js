@@ -109,6 +109,7 @@ $.extend(manage.manager, {
   purge: function () {
     compute.sum_hill.purge();
     //this.reset();
+    control.settings.progress.set(0);
     this.setResol();
     view.axi.needRedraw = true;
     compute.axi.reset();

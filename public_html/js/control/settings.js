@@ -21,7 +21,7 @@ $.extend(control.settings,{
         this.ncv=this.create(0);
         this.glcan=this.create(true);
         this.glwant=this.create(true,"wgl");
-        this.loglvl=this.create(4,"log");
+        this.loglvl=this.create(3,"log");
         this.axi_x=this.create(0);
         this.axi_y=this.create(1);
         this.axi_auto=this.create(1,"axa");
@@ -34,12 +34,15 @@ $.extend(control.settings,{
         this.sett_view=this.create(false);
         this.export=this.create(false);
         this.lang=this.create("eng","lan");
+        this.progress=this.create(0,"prg");
+        this.hills=this.create(null,"hil");
         this.webgl=function(){
             if(!this.glwant.value){return false;}
             if(!this.glcan.value){return false;}
             if(this.ncv.get()===1){return false;}
             return true;
         };
+        this.enhanceSpecial();
     },
     zoompow:function(){
         return this.zmpw;
@@ -78,7 +81,6 @@ $.extend(control.settings,{
         }
         if(!this.hashRequested){return;}
         //compute.axi.profiler.time(1);
-        view.ctrl.redraw();
         ret="";
         //if(this.play.value!==this.play.def){ret+="&run="+this.play.value;}
         //if(!this.measure.isdef()){ret+="&mes="+this.measure.value;}
@@ -113,6 +115,14 @@ $.extend(control.settings,{
     notify:function(args){
         if(args==="newHash"){this.newHash();}
         if(args==="zoompow"){if(this.zoom.value===0){this.zmpw=1;return;} this.zmpw=Math.pow(2,this.zoom.value);}
+    },
+    enhanceSpecial:function () {
+      this.progress.get = function () {
+        var value = this.value;
+        if(value>1) return 1;
+        if(value<0) return 0;
+        return value;
+      };
     }
 });
 control.settings.template={

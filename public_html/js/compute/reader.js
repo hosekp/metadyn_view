@@ -90,6 +90,26 @@ compute.reader={
         
         
     },
+    readFromUrl:function () {
+        var url = control.settings.hills.get();
+        if(!url) return;
+        if ((url.indexOf("http://") > -1 || url.indexOf("https://")>-1)&& url.indexOf("metadyn.vscht.cz")===-1){
+            url = "https://cors-anywhere.herokuapp.com/" + url
+        }
+        $.ajax({
+            url: url,
+            type: "GET",
+            crossDomain: true,
+            dataType: "text",
+            success: function (data) {
+              manage.manager.purge();
+              compute.parser.parse(data);
+            },
+            error: function (xhr, status) {
+              alert("Wrong URL "+status);
+            }
+        });
+    },
     init:function(){
         this.template='\
 <div class="right file_cont_half">\
@@ -116,6 +136,7 @@ compute.reader={
         this.render();
         this.inited=true;
         this.initEvents();
+        control.settings.hills.subscribe(this,"hillsUrl");
         control.settings.lang.subscribe(this,"redraw");
         control.control.everysec(this,"render");
     },
@@ -159,6 +180,7 @@ compute.reader={
     notify:function(args){
         if(args==="redraw"){this.needRender=1;}
         if(args==="render"){this.render();}
+        if(args==="hillsUrl"){this.readFromUrl();}
     },
     setChosed:function(string){
         this.chosed=string;
