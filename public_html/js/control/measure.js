@@ -79,7 +79,7 @@ control.measure = {
     $cont.on('click', "#measure_extremes_button", function () {
       self.extremesOn = !self.extremesOn;
       if (self.extremesOn) {
-        self.data.extremes = [{x: 0.5, y: 0.5}];
+        self.data.extremes = self.findExtremes();
       } else {
         self.data.extremes = [];
       }
@@ -123,7 +123,7 @@ control.measure = {
       this.init();
     }
     control.gestures.measureOverride = true;
-    this.div.$cont.css("display","inline-block");
+    this.div.$cont.css("display", "inline-block");
   },
   hide: function () {
     if (!this.inited) return;
@@ -166,8 +166,7 @@ control.measure = {
     if (!this.extremesOn) return;
     extremes = this.data.extremes;
     for (var i = 0; i < extremes.length; i++) {
-      var extreme = extremes[i];
-      draw.path.addPath([[extreme.x, extreme.y]]);
+      draw.path.addPath(extremes[i]);
     }
   },
   drawDiff: function (endPos) {
@@ -193,7 +192,7 @@ control.measure = {
     if (this.data.endPos) {
       pos = this.data.endPos;
     }
-    if(!pos) return false;
+    if (!pos) return false;
     val = this.getValueAt(pos);
     if (this.data.startPos) {
       val -= this.getValueAt(this.data.startPos);
@@ -293,6 +292,112 @@ control.measure = {
       ret.push((compute.sum_hill.artime[ihills[i]]).toFixed(2));
     }
     return ret;
+  },
+  findExtremes: function () {
+    var resol = control.settings.resol.get();
+    var ncv = control.settings.ncv.get();
+    var ix, iy = 0;
+    var extremes = [];
+    var iExtremes = [];
+    if (ncv === 2) {
+      iExtremes.push({x: resol - 1, y: resol - 1});
+      for (var x = 0.05; x < 1; x += 0.1) {
+        for (var y = 0.05; y < 1; y += 0.1) {
+          ix = Math.floor(x * resol);
+          iy = Math.floor((1 - y) * resol);
+          var ipos = this.iterateExtreme2(ix, iy, iExtremes);
+          if (!ipos) continue;
+          iExtremes.push(ipos);
+          extremes.push([[
+            ipos.x / resol,
+            1 - ipos.y / resol
+          ]]);
+        }
+      }
+    } else if (ncv === 1) {
+      iExtremes.push(resol - 1);
+      for (x = 0.05; x < 1; x += 0.1) {
+        ix = Math.floor(x * resol);
+        ix = this.iterateExtreme1(ix, iExtremes);
+        if (ix === null) continue;
+        iExtremes.push(ix);
+        extremes.push([[ix / resol, 0], [ix / resol, 1]]);
+      }
+    }
+    return extremes;
+  },
+  iterateExtreme1: function (ix, others) {
+    var trans, resol, val;
+    trans = manage.manager.lastSpace.getArr(32);
+    if (trans === null) return null;
+    resol = control.settings.resol.get();
+    var nextVal = trans[ix];
+    while (true) {
+      val = nextVal;
+      if (ix > 0) {
+        nextVal = trans[ix - 1];
+        if (nextVal > val) {
+          ix--;
+          continue;
+        }
+      }
+      if (ix < resol - 1) {
+        nextVal = trans[ix + 1];
+        if (nextVal >= val) {
+          ix++;
+          continue;
+        }
+      }
+      break;
+    }
+    for (var i = 0; i < others.length; i++) {
+      if (others[i] === ix) return null;
+    }
+    return ix;
+  },
+  iterateExtreme2: function (ix, iy, others) {
+    var trans, resol, val;
+    trans = manage.manager.lastSpace.getArr(32);
+    if (trans === null) return null;
+    resol = control.settings.resol.get();
+    var nextVal = trans[ix + iy * resol];
+    while (true) {
+      val = nextVal;
+      if (ix > 0) {
+        nextVal = trans[ix - 1 + iy * resol];
+        if (nextVal > val) {
+          ix--;
+          continue;
+        }
+      }
+      if (ix < resol - 1) {
+        nextVal = trans[ix + 1 + iy * resol];
+        if (nextVal >= val) {
+          ix++;
+          continue;
+        }
+      }
+      if (iy > 0) {
+        nextVal = trans[ix + (iy - 1) * resol];
+        if (nextVal > val) {
+          iy--;
+          continue;
+        }
+      }
+      if (iy < resol - 1) {
+        nextVal = trans[ix + (iy + 1) * resol];
+        if (nextVal >= val) {
+          iy++;
+          continue
+        }
+      }
+      break;
+    }
+    for (var i = 0; i < others.length; i++) {
+      var other = others[i];
+      if (other.x === ix && other.y === iy) return null;
+    }
+    return {x: ix, y: iy};
   },
   notify: function (args) {
     if (args === "on") {
