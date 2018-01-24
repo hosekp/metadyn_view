@@ -39,22 +39,21 @@ control.extremes = {
     var steps = 20;
     if (ncv === 2) {
       // if (1 === Math.pow(1, 2)) {
-        for (ix = 0; ix < steps; ix++) {
-          var x = ix / steps;
-          for (iy = 0; iy < steps; iy++) {
-            var y = iy / steps;
-            var sx = Math.floor(x * resol);
-            var sy = Math.floor((1 - y - 1 / steps) * resol);
-            var ex = Math.floor((x + 1 / steps) * resol);
-            var ey = Math.floor((1 - y) * resol);
-            var ipos = this.findBoxedExtremes2(sx, sy, ex, ey);
-            if (!ipos) continue;
-            extremes.push([[
-              (ipos.x+0.5) / resol,
-              1 - (ipos.y+0.5) / resol
-            ]]);
-          }
+      for (ix = 0; ix < steps; ix++) {
+        var x = ix / steps;
+        for (iy = 0; iy < steps; iy++) {
+          var sx = Math.floor(x * resol);
+          var sy = resol - Math.floor((iy + 1) / steps * resol);
+          var ex = Math.floor((x + 1 / steps) * resol);
+          var ey = resol - Math.floor(iy / steps * resol);
+          var ipos = this.findBoxedExtremes2(sx, sy, ex, ey);
+          if (!ipos) continue;
+          extremes.push([[
+            (ipos.x + 0.5) / resol,
+            1 - (ipos.y + 0.5) / resol
+          ]]);
         }
+      }
       // } else {
       //   iExtremes.push({x: resol - 1, y: resol - 1});
       //   for (var x = 0.05; x < 1; x += 0.1) {
@@ -184,23 +183,21 @@ control.extremes = {
     trans = manage.manager.lastSpace.getArr(32);
     if (trans === null) return null;
     resol = control.settings.resol.get();
-    var yMins = [];
+    var maxIndex = 0;
+    var max = -Infinity;
     for (var y = sy; y < ey; y++) {
-      var yMin = Math.max.apply(null, trans.subarray(sx + y * resol, ex + y * resol));
-      yMins.push(yMin);
+      var end = ex + y * resol;
+      for (var i = sx + y * resol; i < end; i++) {
+        if (trans[i] > max) {
+          maxIndex = i;
+          max = trans[i];
+        }
+      }
     }
-    var min = Math.max.apply(null, yMins);
-    for (var i = 0; i < yMins.length; i++) {
-      if (yMins[i] === min) break;
-    }
-    y = sy + i;
+    y = Math.floor(maxIndex / resol);
+    var x = maxIndex % resol;
     if (y === 0) return null;
     if (y === resol - 1) return null;
-    var row = trans.subarray(sx + y * resol, ex + y * resol);
-    for (i = 0; i < row.length; i++) {
-      if (row[i] === min) break;
-    }
-    var x = i + sx;
     if (x === 0) return null;
     if (x === resol - 1) return null;
     var val = trans[x + y * resol];
@@ -228,17 +225,6 @@ control.extremes = {
     if (y === ey - 1) {
       if (val <= trans[x + (y + 1) * resol]) return null;
     }
-    // console.log({
-    //   sx: sx,
-    //   ex: ex,
-    //   sy: sy,
-    //   ey: ey,
-    //   x: x,
-    //   y: y,
-    //   min: min,
-    //   yMins: yMins,
-    //   row: row
-    // });
     return {x: x, y: y};
   }
 };
