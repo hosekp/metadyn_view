@@ -9,7 +9,6 @@ control.measure = {
   chillsOn: false,
   diffOn: false,
   drawing: true, // actualize energy on mousemove
-  extremesOn: false,
   data: {
     chills: [],
     xaxi: 0,
@@ -17,8 +16,7 @@ control.measure = {
     ene: 0,
     src: 0,
     startPos: null,
-    endPos: null,
-    extremes: []
+    endPos: null
   },
   div: {},
   onload: function () {
@@ -76,17 +74,7 @@ control.measure = {
       self.chillsOn = !self.chillsOn;
       self.notify("draw");
     });
-    $cont.on('click', "#measure_extremes_button", function () {
-      self.extremesOn = !self.extremesOn;
-      if (self.extremesOn) {
-        self.data.extremes = self.findExtremes();
-      } else {
-        self.data.extremes = [];
-      }
-      draw.path.reset();
-      self.drawExtremes();
-      self.notify("draw");
-    });
+    control.extremes.bindEvents($cont);
   },
   isOn: function () {
     return control.settings.measure.get();
@@ -102,7 +90,7 @@ control.measure = {
       CV1: compute.axi.getName(true),
       CV2: compute.axi.getName(false),
       chillsOn: this.chillsOn ? " on" : "",
-      extremesOn: this.extremesOn ? " on" : "",
+      extremesOn: control.extremes.extremesOn ? " on" : "",
       eneTitle: !this.diffOn ? Lang("Bias") : Lang("Difference"),
       chil_title: Lang("Closest hills"),
       extremeTitle: Lang("Extremes"),
@@ -161,14 +149,6 @@ control.measure = {
       this.setEndDiff(pos);
     }
   },
-  drawExtremes: function () {
-    var extremes;
-    if (!this.extremesOn) return;
-    extremes = this.data.extremes;
-    for (var i = 0; i < extremes.length; i++) {
-      draw.path.addPath(extremes[i]);
-    }
-  },
   drawDiff: function (endPos) {
     var data = this.data, startPos = data.startPos;
     if (control.settings.ncv.get() === 1) {
@@ -202,7 +182,7 @@ control.measure = {
     data = this.data;
     // override = false;
     draw.path.reset();
-    this.drawExtremes();
+    control.extremes.drawExtremes();
     if (this.diffOn) {
       // override = true;
       this.drawDiff(pos);
@@ -224,7 +204,7 @@ control.measure = {
     this.data.endPos = null;
     val = this.getValueAt(pos);
     draw.path.reset();
-    this.drawExtremes();
+    control.extremes.drawExtremes();
     draw.path.addPath([[pos.x, pos.y]]);
     if (val === null) return false;
     this.data.ene = 0;
@@ -247,7 +227,7 @@ control.measure = {
   },
   unsetDiff: function () {
     this.clearData();
-    this.drawExtremes();
+    control.extremes.drawExtremes();
     // manage.console.debug("diff","off");
   },
   clearData: function () {
@@ -292,112 +272,6 @@ control.measure = {
       ret.push((compute.sum_hill.artime[ihills[i]]).toFixed(2));
     }
     return ret;
-  },
-  findExtremes: function () {
-    var resol = control.settings.resol.get();
-    var ncv = control.settings.ncv.get();
-    var ix, iy = 0;
-    var extremes = [];
-    var iExtremes = [];
-    if (ncv === 2) {
-      iExtremes.push({x: resol - 1, y: resol - 1});
-      for (var x = 0.05; x < 1; x += 0.1) {
-        for (var y = 0.05; y < 1; y += 0.1) {
-          ix = Math.floor(x * resol);
-          iy = Math.floor((1 - y) * resol);
-          var ipos = this.iterateExtreme2(ix, iy, iExtremes);
-          if (!ipos) continue;
-          iExtremes.push(ipos);
-          extremes.push([[
-            ipos.x / resol,
-            1 - ipos.y / resol
-          ]]);
-        }
-      }
-    } else if (ncv === 1) {
-      iExtremes.push(resol - 1);
-      for (x = 0.05; x < 1; x += 0.1) {
-        ix = Math.floor(x * resol);
-        ix = this.iterateExtreme1(ix, iExtremes);
-        if (ix === null) continue;
-        iExtremes.push(ix);
-        extremes.push([[ix / resol, 0], [ix / resol, 1]]);
-      }
-    }
-    return extremes;
-  },
-  iterateExtreme1: function (ix, others) {
-    var trans, resol, val;
-    trans = manage.manager.lastSpace.getArr(32);
-    if (trans === null) return null;
-    resol = control.settings.resol.get();
-    var nextVal = trans[ix];
-    while (true) {
-      val = nextVal;
-      if (ix > 0) {
-        nextVal = trans[ix - 1];
-        if (nextVal > val) {
-          ix--;
-          continue;
-        }
-      }
-      if (ix < resol - 1) {
-        nextVal = trans[ix + 1];
-        if (nextVal >= val) {
-          ix++;
-          continue;
-        }
-      }
-      break;
-    }
-    for (var i = 0; i < others.length; i++) {
-      if (others[i] === ix) return null;
-    }
-    return ix;
-  },
-  iterateExtreme2: function (ix, iy, others) {
-    var trans, resol, val;
-    trans = manage.manager.lastSpace.getArr(32);
-    if (trans === null) return null;
-    resol = control.settings.resol.get();
-    var nextVal = trans[ix + iy * resol];
-    while (true) {
-      val = nextVal;
-      if (ix > 0) {
-        nextVal = trans[ix - 1 + iy * resol];
-        if (nextVal > val) {
-          ix--;
-          continue;
-        }
-      }
-      if (ix < resol - 1) {
-        nextVal = trans[ix + 1 + iy * resol];
-        if (nextVal >= val) {
-          ix++;
-          continue;
-        }
-      }
-      if (iy > 0) {
-        nextVal = trans[ix + (iy - 1) * resol];
-        if (nextVal > val) {
-          iy--;
-          continue;
-        }
-      }
-      if (iy < resol - 1) {
-        nextVal = trans[ix + (iy + 1) * resol];
-        if (nextVal >= val) {
-          iy++;
-          continue
-        }
-      }
-      break;
-    }
-    for (var i = 0; i < others.length; i++) {
-      var other = others[i];
-      if (other.x === ix && other.y === iy) return null;
-    }
-    return {x: ix, y: iy};
   },
   notify: function (args) {
     if (args === "on") {
