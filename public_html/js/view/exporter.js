@@ -47,14 +47,7 @@ $.extend(view.exporter, {
     this.resizeCanvas($canvas, $main_cont.width(), $main_cont.height());
     this.redrawCanvas(ctx, $main_cont);
     // $("#cont").hide();
-    var link = document.createElement("a");
-    link.setAttribute("href", $canvas[0].toDataURL('image/png'));
-    link.setAttribute("target", "_blank");
-    link.appendChild(document.createTextNode(Lang("Download plot")));
-    // $('<a download="plot.png" href="'+$canvas[0].toDataURL('image/png')+'">Download</a>');
-    this.$modalCont.empty().append(link);
-    link.setAttribute("download", "plot.png");
-    link.click();
+    $canvas[0].toBlob(function(blob){saveAs(blob,'plot.png')});
   },
   resizeCanvas: function ($canvas, width, height) {
     $canvas.width(width).height(height).attr({width: width, height: height});
