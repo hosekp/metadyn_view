@@ -69,7 +69,7 @@ $.extend(view.axi,{
     },
     arrange:function(){
         if(!this.needArrange) return;
-        var zwidth,xwidth,ywidth,ldiv;
+        var zwidth,xwidth,ywidth,ldiv,ewidth;
         if(!this.rendered){return;}
         var bonusWidth=this.getBonusWidth();
         zwidth=this.zwidth+bonusWidth;
@@ -79,12 +79,14 @@ $.extend(view.axi,{
         if(control.settings.ncv.get()===1){
             zwidth=0;
             ywidth=this.zwidth+bonusWidth;
+            ewidth=ywidth;
             ldiv.$y_cont.hide();
-            ldiv.$z_auto.css({top:"100%",width:ywidth+"px",height:xwidth+"px",left:"0px"}).css({top:"-="+xwidth+"px"});
+            ldiv.$z_auto.css({top:"100%",width:ewidth+"px",height:xwidth+"px",left:"0px"}).css({top:"-="+xwidth+"px"});
             ldiv.$select.hide();
-            ldiv.$z_cont.css({top:"0px",left:"0px",height:"100%",width:zwidth+"px"}).css({height:"-="+xwidth});
+            ldiv.$z_cont.css({top:"0px",left:"0px",height:"100%",width:ewidth+"px"}).css({height:"-="+xwidth});
             ldiv.$z_text.css({left:"2px",width:"12px"});
         }else{
+            ewidth=zwidth;
             ldiv.$y_cont.show();
             ldiv.$z_auto.css({top:"100%",width:zwidth+"px",height:xwidth+"px",left:"100%"}).css({top:"-="+xwidth+"px",left:"-="+zwidth+"px"});
             ldiv.$select.show();
@@ -100,9 +102,9 @@ $.extend(view.axi,{
         ldiv.$x.css({top:"0px",left:"0px",height:"100%",width:"100%"});
         ldiv.$x_text.css({top:(xwidth-14)+"px",height:"12px"});
         //ldiv.$z_cont.css({top:"0px",left:"100%",height:"100%",width:zwidth+"px"}).css({left:"-="+zwidth+"px",height:"-="+this.xwidth});
-        ldiv.$z_up.css({top:"0px",width:zwidth+"px",height:"50%"});
-        ldiv.$z.css({top:"0px",width:zwidth+"px",height:"100%"});
-        ldiv.$z_down.css({top:"50%",width:zwidth+"px",height:"50%"});
+        ldiv.$z_up.css({top:"0px",width:ewidth+"px",height:"50%"});
+        ldiv.$z.css({top:"0px",width:ewidth+"px",height:"100%"});
+        ldiv.$z_down.css({top:"50%",width:ewidth+"px",height:"50%"});
         //ldiv.$z_text.css({left:(this.zwidth-14)+"px",width:"12px"});
         this.setTextFrames();
         this.needRedraw=true;
